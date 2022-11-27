@@ -1,0 +1,47 @@
+[package]
+name = "com-crofsoft-app-evolve"
+version = "0.1.0"
+authors = ["David Wallace Croft <david@croftsoft.com>"]
+# https://crates.io/categories
+categories = ["games"]
+description = "Evolve the movement of critters through food distribution"
+edition = "2021"
+homepage = "https://www.croftsoft.com/"
+# https://doc.rust-lang.org/cargo/reference/manifest.html#the-keywords-field
+keywords = ["evolution", "simulation"]
+license = "MIT"
+publish = false
+readme = "README.md"
+repository = "https://github.com/david-wallace-croft/com-croftsoft-app-evolve"
+
+[dependencies]
+console_error_panic_hook = "0.1.7"
+js-sys = "0.3.60"
+wasm-bindgen = "0.2.83"
+wee_alloc = { version = "0.4.5", optional = true }
+
+[dependencies.web-sys]
+version = "0.3.60"
+features = [
+  "CanvasRenderingContext2d",
+  "Document",
+  "HtmlCanvasElement",
+  "HtmlDivElement",
+  "Window",
+  "console",
+]
+
+[dev-dependencies]
+futures = "0.3.25"
+js-sys = "0.3.60"
+wasm-bindgen-futures = "0.4.33"
+wasm-bindgen-test = "0.3.33"
+
+[features]
+default = ["wee_alloc"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+lto = true
