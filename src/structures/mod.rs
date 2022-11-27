@@ -1,0 +1,45 @@
+// =============================================================================
+//! - Structures for CroftSoft Evolve
+//!
+//! # Metadata
+//! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
+//! - Author: [`David Wallace Croft`]
+//! - Rust version: 2022-11-27
+//! - Rust since: 2022-11-27
+//! - Java version: 2008-04-19
+//! - Java since: 1996-09-01
+//!
+//! # History
+//! - Adapted from the Java package com.croftsoft.apps.evolve
+//!   - In the Java-based [`CroftSoft Apps Library`]
+//!
+//! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
+//! [`CroftSoft Inc`]: https://www.croftsoft.com/
+//! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
+// =============================================================================
+
+#![allow(dead_code)]
+
+pub struct Bug<const G: usize> {
+  // TODO: color
+  pub energy: usize,
+  pub genes_x: [bool; G],
+  pub genes_y: [bool; G],
+  pub x: usize,
+  pub y: usize,
+}
+
+pub struct Evolve<const G: usize> {
+  // TODO: animatedComponent
+  // TODO: bounds Rectangle
+  pub bugs: Vec<Bug<G>>,
+  pub bugs_alive: usize,
+  // TODO: droughtButton
+  // TODO: edenCheckBox
+  // TODO: random
+  pub flora_growth_rate: usize,
+  pub flora_present: Vec<Vec<bool>>,
+  // TODO: growthRateSpinnerNumberModel
+  // TODO: resetButton
+  pub time: usize,
+}

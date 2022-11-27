@@ -10,6 +10,10 @@ use web_sys::HtmlCanvasElement;
 use web_sys::HtmlDivElement;
 use wee_alloc::WeeAlloc;
 
+mod constants;
+mod structures;
+mod trait_imps;
+
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: WeeAlloc = WeeAlloc::INIT;
