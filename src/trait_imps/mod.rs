@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-11-30
+//! - Rust version: 2022-12-01
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -22,15 +22,18 @@
 
 use core::cell::RefCell;
 
-use crate::structures::Evolve;
+use crate::{
+  constants::{SPACE_HEIGHT, SPACE_WIDTH},
+  structures::Evolve,
+};
 
-impl<const G: usize, const L: usize> Default for Evolve<G, L> {
+impl<const G: usize> Default for Evolve<G> {
   fn default() -> Self {
     Evolve {
       bugs: RefCell::new(Vec::new()),
       bugs_alive: 0,
       flora_growth_rate: 0,
-      flora_present: [false; L],
+      flora_present: [false; SPACE_HEIGHT * SPACE_WIDTH],
       time: 0,
     }
   }

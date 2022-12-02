@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-11-30
+//! - Rust version: 2022-12-01
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -22,6 +22,8 @@
 
 use core::cell::RefCell;
 
+use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
+
 pub struct Bug<const G: usize> {
   // TODO: color
   pub energy: usize,
@@ -30,7 +32,7 @@ pub struct Bug<const G: usize> {
   pub position: usize,
 }
 
-pub struct Evolve<const G: usize, const L: usize> {
+pub struct Evolve<const G: usize> {
   // TODO: animatedComponent
   // TODO: bounds Rectangle
   pub bugs: RefCell<Vec<Bug<G>>>,
@@ -39,7 +41,7 @@ pub struct Evolve<const G: usize, const L: usize> {
   // TODO: edenCheckBox
   // TODO: random
   pub flora_growth_rate: usize,
-  pub flora_present: [bool; L],
+  pub flora_present: [bool; SPACE_HEIGHT * SPACE_WIDTH],
   // TODO: growthRateSpinnerNumberModel
   // TODO: resetButton
   pub time: usize,

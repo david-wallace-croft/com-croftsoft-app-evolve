@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-11-30
+//! - Rust version: 2022-12-01
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -26,6 +26,6 @@ use crate::{
   structures::{Bug, Evolve},
 };
 
-impl<const G: usize, const L: usize> Evolve<G, L> {
+impl<const G: usize> Evolve<G> {
   // TODO
 }
