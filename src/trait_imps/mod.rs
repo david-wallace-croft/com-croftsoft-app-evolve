@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-01
+//! - Rust version: 2022-12-02
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -23,17 +23,31 @@
 use core::cell::RefCell;
 
 use crate::{
-  constants::{SPACE_HEIGHT, SPACE_WIDTH},
-  structures::Evolve,
+  constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH},
+  structures::{Bug, Evolve},
 };
+
+impl<const G: usize> Default for Bug<G> {
+  fn default() -> Self {
+    Bug {
+      alive: false,
+      energy: 0,
+      genes_x: [false; G],
+      genes_y: [false; G],
+      position: 0,
+    }
+  }
+}
 
 impl<const G: usize> Default for Evolve<G> {
   fn default() -> Self {
     Evolve {
-      bugs: RefCell::new(Vec::new()),
+      bugs: RefCell::new([Bug::default(); BUGS_MAX]),
       bugs_alive: 0,
+      eden_check_box: false,
       flora_growth_rate: 0,
       flora_present: [false; SPACE_HEIGHT * SPACE_WIDTH],
+      growth_rate_spinner_number_model: 0,
       time: 0,
     }
   }
