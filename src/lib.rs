@@ -11,6 +11,7 @@ use web_sys::HtmlDivElement;
 use wee_alloc::WeeAlloc;
 
 mod constants;
+mod enums;
 mod functions;
 mod methods;
 mod structures;

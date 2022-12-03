@@ -24,6 +24,7 @@ use core::cell::RefCell;
 
 use crate::{
   constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH},
+  enums::Color,
   structures::{Bug, Evolve},
 };
 
@@ -31,6 +32,7 @@ impl<const G: usize> Default for Bug<G> {
   fn default() -> Self {
     Bug {
       alive: false,
+      color: Color::Normal,
       energy: 0,
       genes_x: [false; G],
       genes_y: [false; G],

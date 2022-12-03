@@ -22,12 +22,15 @@
 
 use core::cell::RefCell;
 
-use crate::constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH};
+use crate::{
+  constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH},
+  enums::Color,
+};
 
 #[derive(Copy, Clone)]
 pub struct Bug<const G: usize> {
   pub alive: bool,
-  // TODO: color
+  pub color: Color,
   pub energy: usize,
   pub genes_x: [bool; G],
   pub genes_y: [bool; G],

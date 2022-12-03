@@ -20,6 +20,7 @@
 
 #![allow(dead_code)]
 #![allow(unused_imports)]
+#![allow(unused_variables)]
 
 use crate::{
   constants::{BIRTH_ENERGY, FLORA_ENERGY, GENES_MAX, MAX_ENERGY, SPACE_WIDTH},
@@ -27,6 +28,14 @@ use crate::{
 };
 
 impl<const G: usize> Evolve<G> {
+  pub fn create_status_string(
+    bugs_alive: usize,
+    time: usize,
+    genes_average_string: &str,
+  ) {
+    // TODO
+  }
+
   pub fn to_index_from_xy(
     x: usize,
     y: usize,

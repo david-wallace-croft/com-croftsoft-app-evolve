@@ -30,9 +30,6 @@ pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;
 pub const BIRTH_ENERGY_COST: usize = 20;
 pub const BUGS_MAX: usize = 10_000;
-// TODO: COLOR_CRUISER red
-// TODO: COLOR_NORMAL magenta
-// TODO: COLOR_TWIRLER blue
 pub const EDEN_HEIGHT: usize = 2;
 pub const EDEN_WIDTH: usize = 2;
 pub const EDEN_X0: usize = (SPACE_WIDTH - EDEN_WIDTH) / 2;
