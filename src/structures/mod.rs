@@ -22,6 +22,8 @@
 
 use core::cell::RefCell;
 
+use web_sys::CanvasRenderingContext2d;
+
 use crate::{
   constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH},
   enums::Color,
@@ -50,4 +52,11 @@ pub struct Evolve<const G: usize> {
   pub growth_rate_spinner_number_model: usize,
   // TODO: resetButton
   pub time: usize,
+}
+
+pub struct View<'a, const G: usize> {
+  pub context: CanvasRenderingContext2d,
+  pub evolve: &'a Evolve<G>,
+  pub height: f64,
+  pub width: f64,
 }

@@ -19,6 +19,8 @@
 // =============================================================================
 
 use js_sys::Object;
+use structures::Evolve;
+use structures::View;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::console;
@@ -45,27 +47,47 @@ static ALLOC: WeeAlloc = WeeAlloc::INIT;
 pub fn main_js() -> Result<(), JsValue> {
   console_error_panic_hook::set_once();
   let document: Document = window().unwrap().document().unwrap();
-  hello_canvas(&document);
+  // hello_canvas(&document);
   hello_console();
-  hello_div(&document);
+  // hello_div(&document);
+  start(&document);
   Ok(())
 }
 
-fn hello_canvas(document: &Document) {
-  let element: Element = document.get_element_by_id("canvas").unwrap();
-  let html_canvas_element: HtmlCanvasElement = element.dyn_into().unwrap();
-  let object: Object = html_canvas_element.get_context("2d").unwrap().unwrap();
-  let canvas_context: CanvasRenderingContext2d = object.dyn_into().unwrap();
-  canvas_context.set_font("normal 14px serif");
-  canvas_context.stroke_text("Hello, Canvas!", 0.0, 14.0).unwrap();
-}
+// fn hello_canvas(document: &Document) {
+//   let element: Element = document.get_element_by_id("canvas").unwrap();
+//   let html_canvas_element: HtmlCanvasElement = element.dyn_into().unwrap();
+//   let object: Object = html_canvas_element.get_context("2d").unwrap().unwrap();
+//   let canvas_context: CanvasRenderingContext2d = object.dyn_into().unwrap();
+//   canvas_context.set_font("normal 14px serif");
+//   canvas_context.stroke_text("Hello, Canvas!", 0.0, 14.0).unwrap();
+// }
 
 fn hello_console() {
   console::log_1(&JsValue::from_str("Hello, Console!"));
 }
 
-fn hello_div(document: &Document) {
-  let element: Element = document.get_element_by_id("div").unwrap();
-  let html_div_element: HtmlDivElement = element.dyn_into().unwrap();
-  html_div_element.insert_adjacent_text("afterbegin", "Hello, Div!").unwrap();
+// fn hello_div(document: &Document) {
+//   let element: Element = document.get_element_by_id("div").unwrap();
+//   let html_div_element: HtmlDivElement = element.dyn_into().unwrap();
+//   html_div_element.insert_adjacent_text("afterbegin", "Hello, Div!").unwrap();
+// }
+
+fn start(document: &Document) {
+  let element: Element = document.get_element_by_id("canvas").unwrap();
+  let html_canvas_element: HtmlCanvasElement = element.dyn_into().unwrap();
+  let object: Object = html_canvas_element.get_context("2d").unwrap().unwrap();
+  let context: CanvasRenderingContext2d = object.dyn_into().unwrap();
+  context.set_font("normal 14px serif");
+  context.stroke_text("Hello, Canvas!", 0.0, 14.0).unwrap();
+  let height: f64 = html_canvas_element.height() as f64;
+  let width: f64 = html_canvas_element.width() as f64;
+  let evolve = &Evolve::<8>::default();
+  let view = View {
+    context,
+    height,
+    evolve,
+    width,
+  };
+  view.paint();
 }

@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-03
+//! - Rust version: 2022-12-04
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -22,6 +22,7 @@
 #![allow(unused_variables)]
 
 use rand::{rngs::ThreadRng, Rng};
+use wasm_bindgen::JsValue;
 
 use crate::{
   constants::{
@@ -30,7 +31,7 @@ use crate::{
     SPACE_HEIGHT, SPACE_WIDTH,
   },
   enums::Color,
-  structures::{Bug, Evolve},
+  structures::{Bug, Evolve, View},
 };
 
 impl<const G: usize> Evolve<G> {
@@ -193,11 +194,6 @@ impl<const G: usize> Evolve<G> {
     }
   }
 
-  pub fn paint(&self) {
-    // TODO
-    todo!();
-  }
-
   pub fn plot_bugs(&self) {
     // TODO
   }
@@ -250,6 +246,12 @@ impl<const G: usize> Evolve<G> {
   pub fn update(&mut self) {
     self.move_bugs();
     self.grow_flora();
-    self.paint();
+  }
+}
+
+impl<'a, const G: usize> View<'a, G> {
+  pub fn paint(&self) {
+    self.context.set_fill_style(&JsValue::from_str("black"));
+    self.context.fill_rect(0.0, 0.0, self.width, self.height);
   }
 }
