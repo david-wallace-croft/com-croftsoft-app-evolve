@@ -18,6 +18,8 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+#![allow(unused_imports)]
+
 use js_sys::Object;
 use structures::Evolve;
 use structures::View;
@@ -82,7 +84,8 @@ fn start(document: &Document) {
   context.stroke_text("Hello, Canvas!", 0.0, 14.0).unwrap();
   let height: f64 = html_canvas_element.height() as f64;
   let width: f64 = html_canvas_element.width() as f64;
-  let evolve = &Evolve::<8>::default();
+  let evolve = &mut Evolve::<8>::default();
+  evolve.reset();
   let view = View {
     context,
     height,

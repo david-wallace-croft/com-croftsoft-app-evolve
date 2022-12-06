@@ -198,10 +198,6 @@ impl<const G: usize> Evolve<G> {
     // TODO
   }
 
-  pub fn plot_flora(&self) {
-    // TODO
-  }
-
   pub fn reset(&mut self) {
     for index in 0..BUGS_MAX {
       self.create_new_bug(SPACE_WIDTH / 2, SPACE_HEIGHT / 2, index);
@@ -253,5 +249,18 @@ impl<'a, const G: usize> View<'a, G> {
   pub fn paint(&self) {
     self.context.set_fill_style(&JsValue::from_str("black"));
     self.context.fill_rect(0.0, 0.0, self.width, self.height);
+  }
+
+  pub fn plot_flora(&self) {
+    self.context.set_fill_style(&JsValue::from_str("green"));
+    for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
+      if self.evolve.flora_present[index] {
+        // TODO: replace with PlotLib.xy()
+        // Scale by canvas size
+        let x: f64 = Evolve::<8>::to_x_from_index(index) as f64;
+        let y: f64 = Evolve::<8>::to_y_from_index(index) as f64;
+        self.context.fill_rect(x - 0.5, y - 0.5, 1.0, 1.0);
+      }
+    }
   }
 }
