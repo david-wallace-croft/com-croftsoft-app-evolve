@@ -14,7 +14,10 @@ module.exports = {
     filename: "[name].js"
   },
   devServer: {
-    contentBase: dist,
+    // contentBase: dist,
+  },
+  experiments: {
+    syncWebAssembly: true,
   },
   plugins: [
     new CopyPlugin([

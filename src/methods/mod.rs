@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-04
+//! - Rust version: 2022-12-05
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -249,6 +249,7 @@ impl<'a, const G: usize> View<'a, G> {
   pub fn paint(&self) {
     self.context.set_fill_style(&JsValue::from_str("black"));
     self.context.fill_rect(0.0, 0.0, self.width, self.height);
+    self.plot_flora();
   }
 
   pub fn plot_flora(&self) {

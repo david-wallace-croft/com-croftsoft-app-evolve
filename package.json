@@ -4,17 +4,16 @@
   "author": "David Wallace Croft <david@croftsoft.com>",
   "description": "Evolve critter movements via food distribution",
   "scripts": {
-    "build": "rimraf dist pkg && cross-env NODE_OPTIONS=--openssl-legacy-provider webpack",
-    "start": "rimraf dist pkg && cross-env NODE_OPTIONS=--openssl-legacy-provider webpack-dev-server --open -d",
+    "build": "rimraf dist pkg && cross-env webpack",
+    "start": "rimraf dist pkg && cross-env webpack serve --open",
     "test": "cargo test && wasm-pack test --firefox --headless"
   },
   "devDependencies": {
     "@wasm-tool/wasm-pack-plugin": "^1.6.0",
+    "@webpack-cli/serve": "^2.0.1",
     "copy-webpack-plugin": "^5.1.2",
-    "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
-    "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.3"
+    "webpack": "^5.75.0",
+    "webpack-dev-server": "^4.11.1"
   }
 }
