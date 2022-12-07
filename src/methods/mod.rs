@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-05
+//! - Rust version: 2022-12-06
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -23,6 +23,7 @@
 
 use rand::{rngs::ThreadRng, Rng};
 use wasm_bindgen::JsValue;
+use web_sys::console;
 
 use crate::{
   constants::{
@@ -50,6 +51,8 @@ impl<const G: usize> Evolve<G> {
     }
     bug.position = Evolve::<G>::to_index_from_xy(x, y);
     self.set_bug_color(&mut bug);
+    // let bug_str = format!("{:?}", bug);
+    // console::log_1(&JsValue::from_str(&bug_str));
   }
 
   pub fn create_new_bug_if_dead(
@@ -194,14 +197,14 @@ impl<const G: usize> Evolve<G> {
     }
   }
 
-  pub fn plot_bugs(&self) {
-    // TODO
-  }
-
   pub fn reset(&mut self) {
     for index in 0..BUGS_MAX {
       self.create_new_bug(SPACE_WIDTH / 2, SPACE_HEIGHT / 2, index);
     }
+    // for bug in self.bugs.borrow().iter() {
+    //   let bug_str = format!("{:?}", bug);
+    //   console::log_1(&JsValue::from_str(&bug_str));
+    // }
     self.set_all_flora_present(true);
     self.eden_check_box = true; // TODO: event?
     self.growth_rate_spinner_number_model = INIT_GROWTH_RATE; // TODO: event?
@@ -250,17 +253,49 @@ impl<'a, const G: usize> View<'a, G> {
     self.context.set_fill_style(&JsValue::from_str("black"));
     self.context.fill_rect(0.0, 0.0, self.width, self.height);
     self.plot_flora();
+    self.plot_bugs();
+  }
+
+  pub fn plot_bugs(&self) {
+    let scale_x = self.width / SPACE_WIDTH as f64;
+    let scale_y = self.height / SPACE_HEIGHT as f64;
+    let width = scale_x / 2.0;
+    let height = scale_y / 2.0;
+    for bug in self.evolve.bugs.borrow().iter() {
+      // let bug_str = format!("{:?}", bug);
+      // console::log_1(&JsValue::from_str(&bug_str));
+      if bug.energy == 0 {
+        continue;
+      }
+      let bug_color = match bug.color {
+        Color::Cruiser => "red",
+        Color::Normal => "magenta",
+        Color::Twirler => "blue",
+      };
+      self.context.set_fill_style(&JsValue::from_str(bug_color));
+      let index = bug.position;
+      let x: f64 = Evolve::<8>::to_x_from_index(index) as f64;
+      let y: f64 = Evolve::<8>::to_y_from_index(index) as f64;
+      let corner_x = scale_x * (x + 0.5);
+      let corner_y = scale_y * (y + 0.5);
+      self.context.fill_rect(corner_x, corner_y, width, height);
+    }
   }
 
   pub fn plot_flora(&self) {
+    let scale_x = self.width / SPACE_WIDTH as f64;
+    let scale_y = self.height / SPACE_HEIGHT as f64;
+    let width = scale_x / 2.0;
+    let height = scale_y / 2.0;
     self.context.set_fill_style(&JsValue::from_str("green"));
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
       if self.evolve.flora_present[index] {
         // TODO: replace with PlotLib.xy()
-        // Scale by canvas size
         let x: f64 = Evolve::<8>::to_x_from_index(index) as f64;
         let y: f64 = Evolve::<8>::to_y_from_index(index) as f64;
-        self.context.fill_rect(x - 0.5, y - 0.5, 1.0, 1.0);
+        let corner_x = scale_x * (x + 0.5);
+        let corner_y = scale_y * (y + 0.5);
+        self.context.fill_rect(corner_x, corner_y, width, height);
       }
     }
   }
