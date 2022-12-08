@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-06
+//! - Rust version: 2022-12-07
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -31,26 +31,41 @@ use crate::{
     FLORA_ENERGY, GENES_MAX, INIT_GROWTH_RATE, MAX_ENERGY, MOVE_COST,
     SPACE_HEIGHT, SPACE_WIDTH,
   },
-  enums::Color,
+  enums::Species,
   structures::{Bug, Evolve, View},
 };
+
+impl<const G: usize> Bug<G> {
+  pub fn update_species(&mut self) {
+    // TODO: change color to classfication or species
+    let mut x_count = 0;
+    let mut y_count = 0;
+    for i in 0..G {
+      if self.genes_x[i] {
+        x_count += 1;
+      }
+      if self.genes_y[i] {
+        y_count += 1;
+      }
+    }
+    let mut species = Species::Normal;
+    if x_count == G / 2 && y_count == G / 2 {
+      species = Species::Twirler;
+    } else if x_count == 0 || x_count == G || y_count == 0 || y_count == G {
+      species = Species::Cruiser;
+    }
+    self.species = species;
+  }
+}
 
 impl<const G: usize> Evolve<G> {
   pub fn create_new_bug(
     &mut self,
     x: usize,
     y: usize,
-    index: usize,
   ) {
-    let mut bug = self.bugs.borrow_mut()[index];
-    bug.alive = true;
-    bug.energy = BABY_ENERGY;
-    for gene_index in 0..G {
-      bug.genes_x[gene_index] = rand::random();
-      bug.genes_y[gene_index] = rand::random();
-    }
-    bug.position = Evolve::<G>::to_index_from_xy(x, y);
-    self.set_bug_color(&mut bug);
+    let bug = Bug::new(x, y);
+    self.bugs.push(bug);
     // let bug_str = format!("{:?}", bug);
     // console::log_1(&JsValue::from_str(&bug_str));
   }
@@ -60,17 +75,17 @@ impl<const G: usize> Evolve<G> {
     x: usize,
     y: usize,
   ) {
-    let index_option: Option<usize> = self.index_of_first_dead_bug();
-    if let Some(index) = index_option {
-      self.create_new_bug(x, y, index);
+    if self.bugs.len() >= BUGS_MAX {
+      return;
     }
+    self.create_new_bug(x, y);
   }
 
   pub fn genes_average_string(&self) -> String {
     let mut gene_x_string = String::from("X:  ");
     let mut gene_y_string = String::from("Y:  ");
     let mut bugs_alive: usize = 0;
-    for bug in self.bugs.borrow().iter() {
+    for bug in self.bugs.iter() {
       if bug.energy > 0 {
         bugs_alive += 1;
       }
@@ -78,7 +93,7 @@ impl<const G: usize> Evolve<G> {
     for i in 0..G {
       let mut x_sum: usize = 0;
       let mut y_sum: usize = 0;
-      for bug in self.bugs.borrow().iter() {
+      for bug in self.bugs.iter() {
         if bug.energy > 0 {
           if bug.genes_x[i] {
             x_sum += 1;
@@ -133,15 +148,6 @@ impl<const G: usize> Evolve<G> {
     }
   }
 
-  pub fn index_of_first_dead_bug(&self) -> Option<usize> {
-    for (index, bug) in self.bugs.borrow().iter().enumerate() {
-      if bug.energy == 0 {
-        return Some(index);
-      }
-    }
-    None
-  }
-
   pub fn init(&mut self) {
     // TODO
   }
@@ -151,8 +157,7 @@ impl<const G: usize> Evolve<G> {
     if self.time >= GENES_MAX {
       self.time = 0;
     }
-
-    for (index, bug) in self.bugs.borrow_mut().iter_mut().enumerate() {
+    for bug in self.bugs.iter_mut() {
       let mut x = Evolve::<G>::to_x_from_index(bug.position);
       let mut y = Evolve::<G>::to_y_from_index(bug.position);
       if bug.energy > 0 {
@@ -162,9 +167,10 @@ impl<const G: usize> Evolve<G> {
             bug.energy = MAX_ENERGY;
           }
         }
-        if bug.energy >= BIRTH_ENERGY {
-          self.give_birth(bug);
-        }
+        // TODO: But need to go outside of iteration since it grows vector
+        // if bug.energy >= BIRTH_ENERGY {
+        //   self.give_birth(bug);
+        // }
         if rand::random() {
           if bug.genes_x[self.time] {
             if x < SPACE_WIDTH - 1 {
@@ -199,7 +205,7 @@ impl<const G: usize> Evolve<G> {
 
   pub fn reset(&mut self) {
     for index in 0..BUGS_MAX {
-      self.create_new_bug(SPACE_WIDTH / 2, SPACE_HEIGHT / 2, index);
+      self.create_new_bug(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
     }
     // for bug in self.bugs.borrow().iter() {
     //   let bug_str = format!("{:?}", bug);
@@ -217,29 +223,6 @@ impl<const G: usize> Evolve<G> {
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
       self.flora_present[index] = flora_present;
     }
-  }
-
-  pub fn set_bug_color(
-    &mut self,
-    bug: &mut Bug<G>,
-  ) {
-    let mut x_count = 0;
-    let mut y_count = 0;
-    for i in 0..G {
-      if bug.genes_x[i] {
-        x_count += 1;
-      }
-      if bug.genes_y[i] {
-        y_count += 1;
-      }
-    }
-    let mut color = Color::Normal;
-    if x_count == G / 2 && y_count == G / 2 {
-      color = Color::Twirler;
-    } else if x_count == 0 || x_count == G || y_count == 0 || y_count == G {
-      color = Color::Cruiser;
-    }
-    bug.color = color;
   }
 
   pub fn update(&mut self) {
@@ -261,16 +244,16 @@ impl<'a, const G: usize> View<'a, G> {
     let scale_y = self.height / SPACE_HEIGHT as f64;
     let width = scale_x / 2.0;
     let height = scale_y / 2.0;
-    for bug in self.evolve.bugs.borrow().iter() {
+    for bug in self.evolve.bugs.iter() {
       // let bug_str = format!("{:?}", bug);
       // console::log_1(&JsValue::from_str(&bug_str));
       if bug.energy == 0 {
         continue;
       }
-      let bug_color = match bug.color {
-        Color::Cruiser => "red",
-        Color::Normal => "magenta",
-        Color::Twirler => "blue",
+      let bug_color = match bug.species {
+        Species::Cruiser => "red",
+        Species::Normal => "magenta",
+        Species::Twirler => "blue",
       };
       self.context.set_fill_style(&JsValue::from_str(bug_color));
       let index = bug.position;

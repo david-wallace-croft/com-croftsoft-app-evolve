@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-06
+//! - Rust version: 2022-12-07
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -26,23 +26,21 @@ use web_sys::CanvasRenderingContext2d;
 
 use crate::{
   constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH},
-  enums::Color,
+  enums::Species,
 };
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug)]
 pub struct Bug<const G: usize> {
-  pub alive: bool,
-  pub color: Color,
   pub energy: usize,
   pub genes_x: [bool; G],
   pub genes_y: [bool; G],
   pub position: usize,
+  pub species: Species,
 }
 
 pub struct Evolve<const G: usize> {
   // TODO: animatedComponent
-  // TODO: bounds Rectangle
-  pub bugs: RefCell<[Bug<G>; BUGS_MAX]>,
+  pub bugs: Vec<Bug<G>>,
   pub bugs_alive: usize,
   // TODO: droughtButton
   pub eden_check_box: bool,

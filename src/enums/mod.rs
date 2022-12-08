@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-06
+//! - Rust version: 2022-12-07
 //! - Rust since: 2022-12-03
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,8 +18,8 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-#[derive(Copy, Clone, Debug)]
-pub enum Color {
+#[derive(Debug)]
+pub enum Species {
   Cruiser, // red
   Normal,  // magenta
   Twirler, // blue
