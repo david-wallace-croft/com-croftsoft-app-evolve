@@ -4,8 +4,8 @@
   "author": "David Wallace Croft <david@croftsoft.com>",
   "description": "Evolve critter movements via food distribution",
   "scripts": {
-    "build": "rimraf dist pkg && cross-env webpack",
-    "start": "rimraf dist pkg && cross-env webpack serve --open",
+    "build": "rimraf dist pkg && webpack",
+    "start": "rimraf dist pkg && webpack serve",
     "test": "cargo test && wasm-pack test --firefox --headless"
   },
   "devDependencies": {
