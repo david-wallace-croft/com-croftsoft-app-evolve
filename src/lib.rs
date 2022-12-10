@@ -22,7 +22,7 @@
 
 use js_sys::Object;
 use models::world::structures::World;
-use views::world::structures::WorldPainter;
+use views::world::WorldPainter;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::console;
