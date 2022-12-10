@@ -18,6 +18,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use super::bugs::BugsUpdater;
 use super::flora::FloraUpdater;
 use crate::constants::{
   EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1, SPACE_HEIGHT, SPACE_WIDTH,
@@ -26,6 +27,7 @@ use crate::models::world::structures::World;
 use rand::{rngs::ThreadRng, Rng};
 
 pub struct WorldUpdater<const G: usize> {
+  pub bugs_updater: BugsUpdater<G>,
   pub flora_updater: FloraUpdater<G>,
 }
 
@@ -35,13 +37,16 @@ impl<const G: usize> WorldUpdater<G> {
     world: &mut World<G>,
   ) {
     self.flora_updater.update(world);
+    self.bugs_updater.update(world);
   }
 }
 
 impl<const G: usize> Default for WorldUpdater<G> {
   fn default() -> Self {
+    let bugs_updater = BugsUpdater::default();
     let flora_updater = FloraUpdater::default();
     Self {
+      bugs_updater,
       flora_updater,
     }
   }
