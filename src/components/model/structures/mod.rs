@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-07
+//! - Rust version: 2022-12-10
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -24,7 +24,7 @@ use core::cell::RefCell;
 
 use web_sys::CanvasRenderingContext2d;
 
-use crate::{
+use super::{
   constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH},
   enums::Species,
 };
@@ -50,11 +50,4 @@ pub struct Evolve<const G: usize> {
   pub growth_rate_spinner_number_model: usize,
   // TODO: resetButton
   pub time: usize,
-}
-
-pub struct View<'a, const G: usize> {
-  pub context: CanvasRenderingContext2d,
-  pub evolve: &'a Evolve<G>,
-  pub height: f64,
-  pub width: f64,
 }

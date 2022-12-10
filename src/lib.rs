@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-05
+//! - Rust version: 2022-12-10
 //! - Rust since: 2022-09-12
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -20,9 +20,9 @@
 
 #![allow(unused_imports)]
 
+use components::model::structures::Evolve;
+use components::view::structures::View;
 use js_sys::Object;
-use structures::Evolve;
-use structures::View;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::console;
@@ -34,12 +34,7 @@ use web_sys::HtmlCanvasElement;
 use web_sys::HtmlDivElement;
 use wee_alloc::WeeAlloc;
 
-mod constants;
-mod enums;
-mod functions;
-mod methods;
-mod structures;
-mod trait_imps;
+mod components;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
