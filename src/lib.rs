@@ -22,7 +22,7 @@
 
 use js_sys::Object;
 use models::world::structures::World;
-use views::world::WorldPainter;
+use painters::world::WorldPainter;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::console;
@@ -35,7 +35,7 @@ use web_sys::HtmlDivElement;
 use wee_alloc::WeeAlloc;
 
 mod models;
-mod views;
+mod painters;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
@@ -80,8 +80,9 @@ fn start(document: &Document) {
   context.stroke_text("Hello, Canvas!", 0.0, 14.0).unwrap();
   let canvas_height: f64 = html_canvas_element.height() as f64;
   let canvas_width: f64 = html_canvas_element.width() as f64;
-  let mut evolve = World::<8>::default();
-  evolve.reset();
-  let view = WorldPainter::new(canvas_height, canvas_width, &context, &evolve);
-  view.paint();
+  let mut world = World::<8>::default();
+  world.reset();
+  let world_painter =
+    WorldPainter::new(canvas_height, canvas_width, &context, &world);
+  world_painter.paint();
 }

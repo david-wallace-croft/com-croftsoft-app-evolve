@@ -26,9 +26,9 @@ use crate::models::world::constants::{
   MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
 };
 use crate::models::world::structures::World;
-use crate::views::background::BackgroundPainter;
-use crate::views::bugs::BugsPainter;
-use crate::views::flora::FloraPainter;
+use crate::painters::background::BackgroundPainter;
+use crate::painters::bugs::BugsPainter;
+use crate::painters::flora::FloraPainter;
 use rand::{rngs::ThreadRng, Rng};
 use wasm_bindgen::JsValue;
 use web_sys::{console, CanvasRenderingContext2d};
