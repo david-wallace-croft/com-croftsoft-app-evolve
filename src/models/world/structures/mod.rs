@@ -18,8 +18,8 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::models::bug::Bug;
-use crate::models::world::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 
 pub struct World<const G: usize> {
   // TODO: animatedComponent

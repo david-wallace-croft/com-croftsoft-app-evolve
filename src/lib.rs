@@ -35,6 +35,7 @@ use web_sys::HtmlCanvasElement;
 use web_sys::HtmlDivElement;
 use wee_alloc::WeeAlloc;
 
+mod constants;
 mod models;
 mod painters;
 

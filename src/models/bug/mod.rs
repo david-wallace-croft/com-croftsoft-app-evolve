@@ -18,14 +18,13 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::models::world::constants::{
-  BABY_ENERGY, BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH,
+use crate::constants::{
+  BABY_ENERGY, BIRTH_ENERGY_COST, BUGS_MAX, GENES_MAX, SPACE_HEIGHT,
+  SPACE_WIDTH,
 };
 
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
-
-use super::world::constants::{BIRTH_ENERGY_COST, GENES_MAX};
 
 #[derive(Debug)]
 pub struct Bug<const G: usize> {

@@ -18,8 +18,8 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::models::bug::Species;
-use crate::models::world::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::models::world::structures::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;

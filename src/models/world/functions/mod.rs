@@ -21,7 +21,7 @@
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
 
-use crate::models::world::constants::{
+use crate::constants::{
   BABY_ENERGY, BIRTH_ENERGY, FLORA_ENERGY, GENES_MAX, MAX_ENERGY, SPACE_WIDTH,
 };
 use crate::models::world::structures::World;

@@ -18,11 +18,9 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use crate::constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH};
 use crate::models::bug::Bug;
-use crate::models::world::{
-  constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH},
-  structures::World,
-};
+use crate::models::world::structures::World;
 
 impl<const G: usize> Default for World<G> {
   fn default() -> Self {

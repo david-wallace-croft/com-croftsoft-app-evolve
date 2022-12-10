@@ -18,13 +18,13 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::models::bug::Bug;
-use crate::models::bug::Species;
-use crate::models::world::constants::{
+use crate::constants::{
   BABY_ENERGY, BIRTH_ENERGY, BIRTH_ENERGY_COST, BUGS_MAX, EDEN_X0, EDEN_X1,
   EDEN_Y0, EDEN_Y1, FLORA_ENERGY, GENES_MAX, INIT_GROWTH_RATE, MAX_ENERGY,
   MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
 };
+use crate::models::bug::Bug;
+use crate::models::bug::Species;
 use crate::models::world::structures::World;
 use crate::painters::background::BackgroundPainter;
 use crate::painters::bugs::BugsPainter;
