@@ -24,7 +24,7 @@ use core::cell::RefCell;
 
 use web_sys::CanvasRenderingContext2d;
 
-use super::super::model::structures::Evolve;
+use super::super::models::structures::Evolve;
 
 pub struct View<'a, const G: usize> {
   pub context: CanvasRenderingContext2d,

@@ -20,7 +20,7 @@
 
 #![allow(unused_imports)]
 
-use components::model::structures::Evolve;
+use components::models::structures::Evolve;
 use components::view::structures::View;
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
