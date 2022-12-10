@@ -22,7 +22,7 @@
 
 use js_sys::Object;
 use models::world::structures::Evolve;
-use views::world::structures::View;
+use views::world::structures::WorldPainter;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::console;
@@ -78,15 +78,10 @@ fn start(document: &Document) {
   let context: CanvasRenderingContext2d = object.dyn_into().unwrap();
   context.set_font("normal 14px serif");
   context.stroke_text("Hello, Canvas!", 0.0, 14.0).unwrap();
-  let height: f64 = html_canvas_element.height() as f64;
-  let width: f64 = html_canvas_element.width() as f64;
+  let canvas_height: f64 = html_canvas_element.height() as f64;
+  let canvas_width: f64 = html_canvas_element.width() as f64;
   let evolve = &mut Evolve::<8>::default();
   evolve.reset();
-  let view = View {
-    context,
-    height,
-    evolve,
-    width,
-  };
+  let view = WorldPainter::new(canvas_height, canvas_width, context, evolve);
   view.paint();
 }

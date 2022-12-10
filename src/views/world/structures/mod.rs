@@ -20,15 +20,16 @@
 
 #![allow(dead_code)]
 
-use core::cell::RefCell;
-
+use crate::models::world::structures::Evolve;
 use web_sys::CanvasRenderingContext2d;
 
-use crate::models::world::structures::Evolve;
-
-pub struct View<'a, const G: usize> {
+pub struct WorldPainter<'a, const G: usize> {
+  pub bug_height: f64,
+  pub bug_width: f64,
+  pub canvas_height: f64,
+  pub canvas_width: f64,
   pub context: CanvasRenderingContext2d,
   pub evolve: &'a Evolve<G>,
-  pub height: f64,
-  pub width: f64,
+  pub scale_x: f64,
+  pub scale_y: f64,
 }
