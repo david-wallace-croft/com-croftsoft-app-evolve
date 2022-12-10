@@ -1,5 +1,5 @@
 // =============================================================================
-//! - Functions for CroftSoft Evolve
+//! - Functions for WorldPainter
 //!
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
@@ -33,24 +33,26 @@ use crate::models::world::constants::{
   MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
 };
 use crate::models::world::structures::World;
+use crate::views::background::BackgroundPainter;
 use crate::views::world::structures::WorldPainter;
 
-impl<'a, const G: usize> WorldPainter<'a, G> {
+impl<'a, 'b, const G: usize> WorldPainter<'a, 'b, G> {
   pub fn new(
     canvas_height: f64,
     canvas_width: f64,
-    context: CanvasRenderingContext2d,
-    evolve: &'a World<G>,
+    context: &'a CanvasRenderingContext2d,
+    evolve: &'b World<G>,
   ) -> Self {
+    let background_painter =
+      BackgroundPainter::new(canvas_height, canvas_width, context);
     let scale_x = canvas_width / SPACE_WIDTH as f64;
     let scale_y = canvas_height / SPACE_HEIGHT as f64;
     let bug_height = scale_y / 2.0;
     let bug_width = scale_x / 2.0;
     Self {
+      background_painter,
       bug_height,
       bug_width,
-      canvas_height,
-      canvas_width,
       context,
       evolve,
       scale_x,

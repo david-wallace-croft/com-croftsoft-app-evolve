@@ -1,5 +1,5 @@
 // =============================================================================
-//! - Methods for CroftSoft Evolve
+//! - Methods for WorldPainter
 //!
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
@@ -35,16 +35,11 @@ use crate::models::world::constants::{
 use crate::models::world::structures::World;
 use crate::views::world::structures::WorldPainter;
 
-impl<'a, const G: usize> WorldPainter<'a, G> {
+impl<'a, 'b, const G: usize> WorldPainter<'a, 'b, G> {
   pub fn paint(&self) {
-    self.paint_background();
+    self.background_painter.paint();
     self.paint_flora();
     self.paint_bugs();
-  }
-
-  fn paint_background(&self) {
-    self.context.set_fill_style(&JsValue::from_str("black"));
-    self.context.fill_rect(0.0, 0.0, self.canvas_width, self.canvas_height);
   }
 
   fn paint_bugs(&self) {
