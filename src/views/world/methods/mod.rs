@@ -32,7 +32,7 @@ use crate::models::world::constants::{
   MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
 };
 use crate::models::world::structures::Evolve;
-use crate::views::structures::View;
+use crate::views::world::structures::View;
 
 impl<'a, const G: usize> View<'a, G> {
   pub fn paint(&self) {

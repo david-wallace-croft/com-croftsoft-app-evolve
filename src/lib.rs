@@ -22,7 +22,7 @@
 
 use js_sys::Object;
 use models::world::structures::Evolve;
-use views::structures::View;
+use views::world::structures::View;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::console;
