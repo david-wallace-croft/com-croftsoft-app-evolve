@@ -32,27 +32,6 @@ use crate::models::bug::Species;
 use crate::models::world::structures::World;
 
 impl<const G: usize> World<G> {
-  pub fn create_new_bug(
-    &mut self,
-    position: usize,
-  ) {
-    let bug = Bug::new(position);
-    self.bugs.push(bug);
-    // let bug_str = format!("{:?}", bug);
-    // console::log_1(&JsValue::from_str(&bug_str));
-  }
-
-  // TODO: Is this method still needed?
-  pub fn create_new_bug_if_dead(
-    &mut self,
-    position: usize,
-  ) {
-    if self.bugs.len() >= BUGS_MAX {
-      return;
-    }
-    self.create_new_bug(position);
-  }
-
   pub fn genes_average_string(&self) -> String {
     let mut gene_x_string = String::from("X:  ");
     let mut gene_y_string = String::from("Y:  ");
@@ -90,33 +69,5 @@ impl<const G: usize> World<G> {
     result.push_str("    ");
     result.push_str(&gene_y_string);
     result
-  }
-
-  pub fn init(&mut self) {
-    // TODO
-  }
-
-  pub fn reset(&mut self) {
-    let position: usize =
-      World::<G>::to_index_from_xy(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
-    for _i in 0..BUGS_MAX {
-      self.create_new_bug(position);
-    }
-    // for bug in self.bugs.borrow().iter() {
-    //   let bug_str = format!("{:?}", bug);
-    //   console::log_1(&JsValue::from_str(&bug_str));
-    // }
-    self.set_all_flora_present(true);
-    self.eden_check_box = true; // TODO: event?
-    self.growth_rate_spinner_number_model = INIT_GROWTH_RATE; // TODO: event?
-  }
-
-  pub fn set_all_flora_present(
-    &mut self,
-    flora_present: bool,
-  ) {
-    for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
-      self.flora_present[index] = flora_present;
-    }
   }
 }

@@ -21,8 +21,10 @@
 use super::bugs::BugsUpdater;
 use super::flora::FloraUpdater;
 use crate::constants::{
-  EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1, SPACE_HEIGHT, SPACE_WIDTH,
+  BUGS_MAX, EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1, INIT_GROWTH_RATE, SPACE_HEIGHT,
+  SPACE_WIDTH,
 };
+use crate::models::bug::Bug;
 use crate::models::world::structures::World;
 use rand::{rngs::ThreadRng, Rng};
 
@@ -32,6 +34,26 @@ pub struct WorldUpdater<const G: usize> {
 }
 
 impl<const G: usize> WorldUpdater<G> {
+  pub fn reset(
+    &self,
+    world: &mut World<G>,
+  ) {
+    let position: usize =
+      World::<G>::to_index_from_xy(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
+    world.bugs.clear();
+    for _i in 0..BUGS_MAX {
+      let bug = Bug::new(position);
+      // let bug_str = format!("{:?}", bug);
+      // console::log_1(&JsValue::from_str(&bug_str));
+      world.bugs.push(bug);
+    }
+    for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
+      world.flora_present[index] = true;
+    }
+    world.eden_check_box = true; // TODO: event?
+    world.growth_rate_spinner_number_model = INIT_GROWTH_RATE; // TODO: event?
+  }
+
   pub fn update(
     &self,
     world: &mut World<G>,

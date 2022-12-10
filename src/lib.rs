@@ -84,9 +84,8 @@ fn start(document: &Document) {
   let canvas_width: f64 = html_canvas_element.width() as f64;
   let world_painter = WorldPainter::new(canvas_height, canvas_width, &context);
   let mut world = World::<8>::default();
-  world.reset();
-  world_painter.paint(&world);
   let world_updater = WorldUpdater::<8>::default();
+  world_updater.reset(&mut world);
   world_updater.update(&mut world);
   world_painter.paint(&world);
 }
