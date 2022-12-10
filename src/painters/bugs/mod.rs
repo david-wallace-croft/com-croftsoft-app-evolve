@@ -18,7 +18,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::models::bug::enums::Species;
+use crate::models::bug::Species;
 use crate::models::world::structures::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;

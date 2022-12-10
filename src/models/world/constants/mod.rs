@@ -18,8 +18,6 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-#![allow(dead_code)]
-
 pub static FONT_NAME: &str = "TimesRoman";
 pub static FRAME_ICON_FILENAME: &str = "/images/david.png";
 pub static SHUTDOWN_CONFIRMATION_PROMPT: &str = "Close CroftSoft Evolve?";

@@ -18,41 +18,13 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-#![allow(dead_code)]
-#![allow(unused_imports)]
-#![allow(unused_variables)]
-
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
 
-use crate::models::bug::enums::Species;
-use crate::models::bug::structures::Bug;
 use crate::models::world::constants::{
   BABY_ENERGY, BIRTH_ENERGY, FLORA_ENERGY, GENES_MAX, MAX_ENERGY, SPACE_WIDTH,
 };
 use crate::models::world::structures::World;
-
-impl<const G: usize> Bug<G> {
-  pub fn new(position: usize) -> Self {
-    let color = Species::Normal;
-    let energy: usize = BABY_ENERGY;
-    let mut genes_x: [bool; G] = [false; G];
-    let mut genes_y: [bool; G] = [false; G];
-    for index in 0..G {
-      genes_x[index] = rand::random();
-      genes_y[index] = rand::random();
-    }
-    let mut bug = Bug {
-      species: color,
-      energy,
-      genes_x,
-      genes_y,
-      position,
-    };
-    bug.update_species();
-    bug
-  }
-}
 
 impl<const G: usize> World<G> {
   pub fn create_status_string(

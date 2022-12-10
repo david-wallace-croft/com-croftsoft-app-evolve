@@ -18,10 +18,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-#![allow(dead_code)]
-
-use crate::models::bug::enums::Species;
-use crate::models::bug::structures::Bug;
+use crate::models::bug::Bug;
 use crate::models::world::{
   constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH},
   structures::World,

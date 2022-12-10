@@ -18,15 +18,12 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-#![allow(dead_code)]
-#![allow(unused_variables)]
-
 use rand::{rngs::ThreadRng, Rng};
 use wasm_bindgen::JsValue;
 use web_sys::console;
 
-use crate::models::bug::enums::Species;
-use crate::models::bug::structures::Bug;
+use crate::models::bug::Bug;
+use crate::models::bug::Species;
 use crate::models::world::{
   constants::{
     BABY_ENERGY, BIRTH_ENERGY, BIRTH_ENERGY_COST, BUGS_MAX, EDEN_X0, EDEN_X1,
@@ -35,47 +32,6 @@ use crate::models::world::{
   },
   structures::World,
 };
-
-impl<const G: usize> Bug<G> {
-  pub fn give_birth(&mut self) -> Self {
-    self.energy -= BIRTH_ENERGY_COST;
-    let mut baby_bug = Bug::new(self.position);
-    for index in 0..GENES_MAX {
-      baby_bug.genes_x[index] = self.genes_x[index];
-      baby_bug.genes_y[index] = self.genes_y[index];
-    }
-    let mut thread_rng: ThreadRng = rand::thread_rng();
-    let mutant_gene_index: usize = thread_rng.gen_range(0..G);
-    if rand::random() {
-      baby_bug.genes_x[mutant_gene_index] = self.genes_x[mutant_gene_index];
-    } else {
-      baby_bug.genes_y[mutant_gene_index] = self.genes_y[mutant_gene_index];
-    }
-    baby_bug.update_species();
-    baby_bug
-  }
-
-  pub fn update_species(&mut self) {
-    // TODO: change color to classfication or species
-    let mut x_count = 0;
-    let mut y_count = 0;
-    for i in 0..G {
-      if self.genes_x[i] {
-        x_count += 1;
-      }
-      if self.genes_y[i] {
-        y_count += 1;
-      }
-    }
-    let mut species = Species::Normal;
-    if x_count == G / 2 && y_count == G / 2 {
-      species = Species::Twirler;
-    } else if x_count == 0 || x_count == G || y_count == 0 || y_count == G {
-      species = Species::Cruiser;
-    }
-    self.species = species;
-  }
-}
 
 impl<const G: usize> World<G> {
   pub fn create_new_bug(
@@ -140,7 +96,7 @@ impl<const G: usize> World<G> {
 
   pub fn grow_flora(&mut self) {
     let mut thread_rng: ThreadRng = rand::thread_rng();
-    for i in 0..self.flora_growth_rate {
+    for _i in 0..self.flora_growth_rate {
       // Randomly position food flora
       let x: usize = thread_rng.gen_range(0..SPACE_WIDTH);
       let y: usize = thread_rng.gen_range(0..SPACE_HEIGHT);
@@ -229,7 +185,7 @@ impl<const G: usize> World<G> {
   pub fn reset(&mut self) {
     let position: usize =
       World::<G>::to_index_from_xy(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
-    for index in 0..BUGS_MAX {
+    for _i in 0..BUGS_MAX {
       self.create_new_bug(position);
     }
     // for bug in self.bugs.borrow().iter() {

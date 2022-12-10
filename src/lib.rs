@@ -18,6 +18,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+#![allow(dead_code)]
 #![allow(unused_imports)]
 
 use js_sys::Object;

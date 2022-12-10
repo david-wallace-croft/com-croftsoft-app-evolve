@@ -1,11 +1,11 @@
 // =============================================================================
-//! - Structures for CroftSoft Evolve
+//! - Structures for the World model
 //!
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Rust version: 2022-12-10
-//! - Rust since: 2022-11-27
+//! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
 //!
@@ -18,15 +18,8 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-#![allow(dead_code)]
-
-use core::cell::RefCell;
-
-use web_sys::CanvasRenderingContext2d;
-
-use crate::models::bug::enums::Species;
-use crate::models::bug::structures::Bug;
-use crate::models::world::constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH};
+use crate::models::bug::Bug;
+use crate::models::world::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 
 pub struct World<const G: usize> {
   // TODO: animatedComponent
