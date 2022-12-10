@@ -1,2 +1,2 @@
 pub mod models;
-pub mod view;
+pub mod views;
