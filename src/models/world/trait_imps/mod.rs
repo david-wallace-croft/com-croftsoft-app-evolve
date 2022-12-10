@@ -24,12 +24,12 @@ use crate::models::bug::enums::Species;
 use crate::models::bug::structures::Bug;
 use crate::models::world::{
   constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH},
-  structures::Evolve,
+  structures::World,
 };
 
-impl<const G: usize> Default for Evolve<G> {
+impl<const G: usize> Default for World<G> {
   fn default() -> Self {
-    Evolve {
+    World {
       bugs: Vec::<Bug<G>>::new(),
       bugs_alive: 0,
       eden_check_box: false,

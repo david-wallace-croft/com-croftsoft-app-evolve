@@ -20,7 +20,7 @@
 
 #![allow(dead_code)]
 
-use crate::models::world::structures::Evolve;
+use crate::models::world::structures::World;
 use web_sys::CanvasRenderingContext2d;
 
 pub struct WorldPainter<'a, const G: usize> {
@@ -29,7 +29,7 @@ pub struct WorldPainter<'a, const G: usize> {
   pub canvas_height: f64,
   pub canvas_width: f64,
   pub context: CanvasRenderingContext2d,
-  pub evolve: &'a Evolve<G>,
+  pub evolve: &'a World<G>,
   pub scale_x: f64,
   pub scale_y: f64,
 }

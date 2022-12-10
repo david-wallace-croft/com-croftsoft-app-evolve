@@ -30,7 +30,7 @@ use crate::models::bug::structures::Bug;
 use crate::models::world::constants::{
   BABY_ENERGY, BIRTH_ENERGY, FLORA_ENERGY, GENES_MAX, MAX_ENERGY, SPACE_WIDTH,
 };
-use crate::models::world::structures::Evolve;
+use crate::models::world::structures::World;
 
 impl<const G: usize> Bug<G> {
   pub fn new(position: usize) -> Self {
@@ -54,7 +54,7 @@ impl<const G: usize> Bug<G> {
   }
 }
 
-impl<const G: usize> Evolve<G> {
+impl<const G: usize> World<G> {
   pub fn create_status_string(
     bugs_alive: usize,
     time: usize,

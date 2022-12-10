@@ -32,7 +32,7 @@ use crate::models::world::constants::{
   EDEN_Y0, EDEN_Y1, FLORA_ENERGY, GENES_MAX, INIT_GROWTH_RATE, MAX_ENERGY,
   MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
 };
-use crate::models::world::structures::Evolve;
+use crate::models::world::structures::World;
 use crate::views::world::structures::WorldPainter;
 
 impl<'a, const G: usize> WorldPainter<'a, G> {
@@ -40,7 +40,7 @@ impl<'a, const G: usize> WorldPainter<'a, G> {
     canvas_height: f64,
     canvas_width: f64,
     context: CanvasRenderingContext2d,
-    evolve: &'a Evolve<G>,
+    evolve: &'a World<G>,
   ) -> Self {
     let scale_x = canvas_width / SPACE_WIDTH as f64;
     let scale_y = canvas_height / SPACE_HEIGHT as f64;

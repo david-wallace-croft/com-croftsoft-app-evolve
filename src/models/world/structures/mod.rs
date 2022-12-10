@@ -28,7 +28,7 @@ use crate::models::bug::enums::Species;
 use crate::models::bug::structures::Bug;
 use crate::models::world::constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH};
 
-pub struct Evolve<const G: usize> {
+pub struct World<const G: usize> {
   // TODO: animatedComponent
   pub bugs: Vec<Bug<G>>,
   pub bugs_alive: usize,

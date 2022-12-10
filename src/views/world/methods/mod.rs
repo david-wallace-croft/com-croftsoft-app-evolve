@@ -32,7 +32,7 @@ use crate::models::world::constants::{
   EDEN_Y0, EDEN_Y1, FLORA_ENERGY, GENES_MAX, INIT_GROWTH_RATE, MAX_ENERGY,
   MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
 };
-use crate::models::world::structures::Evolve;
+use crate::models::world::structures::World;
 use crate::views::world::structures::WorldPainter;
 
 impl<'a, const G: usize> WorldPainter<'a, G> {
@@ -56,8 +56,8 @@ impl<'a, const G: usize> WorldPainter<'a, G> {
       };
       self.context.set_fill_style(&JsValue::from_str(bug_color));
       let index = bug.position;
-      let x: f64 = Evolve::<8>::to_x_from_index(index) as f64;
-      let y: f64 = Evolve::<8>::to_y_from_index(index) as f64;
+      let x: f64 = World::<8>::to_x_from_index(index) as f64;
+      let y: f64 = World::<8>::to_y_from_index(index) as f64;
       let corner_x = self.scale_x * (x + 0.5);
       let corner_y = self.scale_y * (y + 0.5);
       self.context.fill_rect(
@@ -76,8 +76,8 @@ impl<'a, const G: usize> WorldPainter<'a, G> {
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
       if self.evolve.flora_present[index] {
         // TODO: replace with PlotLib.xy()
-        let x: f64 = Evolve::<8>::to_x_from_index(index) as f64;
-        let y: f64 = Evolve::<8>::to_y_from_index(index) as f64;
+        let x: f64 = World::<8>::to_x_from_index(index) as f64;
+        let y: f64 = World::<8>::to_y_from_index(index) as f64;
         let corner_x = self.scale_x * (x + 0.5);
         let corner_y = self.scale_y * (y + 0.5);
         self.context.fill_rect(corner_x, corner_y, width, height);

@@ -33,7 +33,7 @@ use crate::models::world::{
     EDEN_Y0, EDEN_Y1, FLORA_ENERGY, GENES_MAX, INIT_GROWTH_RATE, MAX_ENERGY,
     MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
   },
-  structures::Evolve,
+  structures::World,
 };
 
 impl<const G: usize> Bug<G> {
@@ -77,7 +77,7 @@ impl<const G: usize> Bug<G> {
   }
 }
 
-impl<const G: usize> Evolve<G> {
+impl<const G: usize> World<G> {
   pub fn create_new_bug(
     &mut self,
     position: usize,
@@ -144,14 +144,14 @@ impl<const G: usize> Evolve<G> {
       // Randomly position food flora
       let x: usize = thread_rng.gen_range(0..SPACE_WIDTH);
       let y: usize = thread_rng.gen_range(0..SPACE_HEIGHT);
-      let index: usize = Evolve::<G>::to_index_from_xy(x, y);
+      let index: usize = World::<G>::to_index_from_xy(x, y);
       self.flora_present[index] = true;
     }
     // Replenishing the Garden of Eden
     if self.eden_check_box {
       for x in EDEN_X0..=EDEN_X1 {
         for y in EDEN_Y0..=EDEN_Y1 {
-          let index: usize = Evolve::<G>::to_index_from_xy(x, y);
+          let index: usize = World::<G>::to_index_from_xy(x, y);
           self.flora_present[index] = true;
         }
       }
@@ -173,8 +173,8 @@ impl<const G: usize> Evolve<G> {
       if bug.energy == 0 {
         continue;
       }
-      let mut x = Evolve::<G>::to_x_from_index(bug.position);
-      let mut y = Evolve::<G>::to_y_from_index(bug.position);
+      let mut x = World::<G>::to_x_from_index(bug.position);
+      let mut y = World::<G>::to_y_from_index(bug.position);
       if self.flora_present[bug.position] {
         bug.energy = bug.energy.saturating_add(FLORA_ENERGY);
         if bug.energy > MAX_ENERGY {
@@ -211,7 +211,7 @@ impl<const G: usize> Evolve<G> {
           y = SPACE_HEIGHT - 1;
         }
       }
-      bug.position = Evolve::<G>::to_index_from_xy(x, y);
+      bug.position = World::<G>::to_index_from_xy(x, y);
       bug.energy = bug.energy.saturating_sub(MOVE_COST);
     }
     let mut dead_bug_indices = Vec::<usize>::new();
@@ -228,7 +228,7 @@ impl<const G: usize> Evolve<G> {
 
   pub fn reset(&mut self) {
     let position: usize =
-      Evolve::<G>::to_index_from_xy(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
+      World::<G>::to_index_from_xy(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
     for index in 0..BUGS_MAX {
       self.create_new_bug(position);
     }
