@@ -80,13 +80,11 @@ fn start(document: &Document) {
   let html_canvas_element: HtmlCanvasElement = element.dyn_into().unwrap();
   let object: Object = html_canvas_element.get_context("2d").unwrap().unwrap();
   let context: CanvasRenderingContext2d = object.dyn_into().unwrap();
-  context.set_font("normal 14px serif");
-  context.stroke_text("Hello, Canvas!", 0.0, 14.0).unwrap();
   let canvas_height: f64 = html_canvas_element.height() as f64;
   let canvas_width: f64 = html_canvas_element.width() as f64;
+  let world_painter = WorldPainter::new(canvas_height, canvas_width, &context);
   let mut world = World::<8>::default();
   world.reset();
-  let world_painter = WorldPainter::new(canvas_height, canvas_width, &context);
   world_painter.paint(&world);
   let world_updater = WorldUpdater::<8>::default();
   world_updater.update(&mut world);
