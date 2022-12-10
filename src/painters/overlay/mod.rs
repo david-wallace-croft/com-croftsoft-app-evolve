@@ -85,7 +85,7 @@ impl<'a, const G: usize> OverlayPainter<'a, G> {
   }
 
   pub fn new(context: &'a CanvasRenderingContext2d) -> Self {
-    let fill_style: JsValue = JsValue::from_str("red");
+    let fill_style: JsValue = JsValue::from_str("white");
     Self {
       context,
       fill_style,
@@ -98,7 +98,7 @@ impl<'a, const G: usize> OverlayPainter<'a, G> {
   ) {
     let status_string = self.make_status_string(world);
     self.context.set_fill_style(&self.fill_style);
-    self.context.set_font("normal 140px serif");
-    self.context.stroke_text(&status_string, 0.0, 140.0).unwrap();
+    self.context.set_font("bold 18px serif");
+    self.context.fill_text(&status_string, 4.0, 18.0).unwrap();
   }
 }
