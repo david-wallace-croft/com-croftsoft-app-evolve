@@ -25,13 +25,12 @@
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
 
-use super::{
-  enums::Species,
-  structures::{Bug, Evolve},
-};
+use crate::models::bug::enums::Species;
+use crate::models::bug::structures::Bug;
 use crate::models::world::constants::{
   BABY_ENERGY, BIRTH_ENERGY, FLORA_ENERGY, GENES_MAX, MAX_ENERGY, SPACE_WIDTH,
 };
+use crate::models::world::structures::Evolve;
 
 impl<const G: usize> Bug<G> {
   pub fn new(position: usize) -> Self {

@@ -20,10 +20,11 @@
 
 #![allow(dead_code)]
 
-use super::{
+use crate::models::bug::enums::Species;
+use crate::models::bug::structures::Bug;
+use crate::models::world::{
   constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH},
-  enums::Species,
-  structures::{Bug, Evolve},
+  structures::Evolve,
 };
 
 impl<const G: usize> Default for Evolve<G> {
