@@ -20,12 +20,12 @@
 
 use crate::models::world::structures::World;
 use crate::views::background::BackgroundPainter;
+use crate::views::bugs::BugsPainter;
 use web_sys::CanvasRenderingContext2d;
 
 pub struct WorldPainter<'a, 'b, const G: usize> {
   pub background_painter: BackgroundPainter<'a>,
-  pub bug_height: f64,
-  pub bug_width: f64,
+  pub bugs_painter: BugsPainter<'a, 'b, G>,
   pub context: &'a CanvasRenderingContext2d,
   pub evolve: &'b World<G>,
   pub scale_x: f64,

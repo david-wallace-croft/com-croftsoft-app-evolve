@@ -39,29 +39,7 @@ impl<'a, 'b, const G: usize> WorldPainter<'a, 'b, G> {
   pub fn paint(&self) {
     self.background_painter.paint();
     self.paint_flora();
-    self.paint_bugs();
-  }
-
-  fn paint_bugs(&self) {
-    for bug in self.evolve.bugs.iter() {
-      let bug_color = match bug.species {
-        Species::Cruiser => "red",
-        Species::Normal => "magenta",
-        Species::Twirler => "blue",
-      };
-      self.context.set_fill_style(&JsValue::from_str(bug_color));
-      let index = bug.position;
-      let x: f64 = World::<8>::to_x_from_index(index) as f64;
-      let y: f64 = World::<8>::to_y_from_index(index) as f64;
-      let corner_x = self.scale_x * (x + 0.5);
-      let corner_y = self.scale_y * (y + 0.5);
-      self.context.fill_rect(
-        corner_x,
-        corner_y,
-        self.bug_width,
-        self.bug_height,
-      );
-    }
+    self.bugs_painter.paint();
   }
 
   fn paint_flora(&self) {
