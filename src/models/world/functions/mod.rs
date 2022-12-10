@@ -26,11 +26,11 @@
 use rand::{rngs::ThreadRng, Rng};
 
 use super::{
-  constants::{
-    BABY_ENERGY, BIRTH_ENERGY, FLORA_ENERGY, GENES_MAX, MAX_ENERGY, SPACE_WIDTH,
-  },
   enums::Species,
   structures::{Bug, Evolve},
+};
+use crate::models::world::constants::{
+  BABY_ENERGY, BIRTH_ENERGY, FLORA_ENERGY, GENES_MAX, MAX_ENERGY, SPACE_WIDTH,
 };
 
 impl<const G: usize> Bug<G> {

@@ -20,9 +20,9 @@
 
 #![allow(unused_imports)]
 
-use components::models::structures::Evolve;
-use components::views::structures::View;
 use js_sys::Object;
+use models::world::structures::Evolve;
+use views::structures::View;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::console;
@@ -34,7 +34,8 @@ use web_sys::HtmlCanvasElement;
 use web_sys::HtmlDivElement;
 use wee_alloc::WeeAlloc;
 
-mod components;
+mod models;
+mod views;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]

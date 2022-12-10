@@ -25,17 +25,14 @@ use rand::{rngs::ThreadRng, Rng};
 use wasm_bindgen::JsValue;
 use web_sys::console;
 
-use crate::components::models::structures::Evolve;
-
-use super::{
-  super::models::constants::{
-    BABY_ENERGY, BIRTH_ENERGY, BIRTH_ENERGY_COST, BUGS_MAX, EDEN_X0, EDEN_X1,
-    EDEN_Y0, EDEN_Y1, FLORA_ENERGY, GENES_MAX, INIT_GROWTH_RATE, MAX_ENERGY,
-    MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
-  },
-  super::models::enums::Species,
-  structures::View,
+use crate::models::world::constants::{
+  BABY_ENERGY, BIRTH_ENERGY, BIRTH_ENERGY_COST, BUGS_MAX, EDEN_X0, EDEN_X1,
+  EDEN_Y0, EDEN_Y1, FLORA_ENERGY, GENES_MAX, INIT_GROWTH_RATE, MAX_ENERGY,
+  MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
 };
+use crate::models::world::enums::Species;
+use crate::models::world::structures::Evolve;
+use crate::views::structures::View;
 
 impl<'a, const G: usize> View<'a, G> {
   pub fn paint(&self) {
