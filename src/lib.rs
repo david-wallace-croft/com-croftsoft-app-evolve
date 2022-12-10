@@ -21,7 +21,9 @@
 #![allow(dead_code)]
 #![allow(unused_imports)]
 
+use futures::Future;
 use js_sys::Object;
+use loopers::world::WorldLooper;
 use models::world::World;
 use painters::world::WorldPainter;
 use updaters::world::WorldUpdater;
@@ -38,6 +40,7 @@ use wee_alloc::WeeAlloc;
 
 mod constants;
 mod functions;
+mod loopers;
 mod models;
 mod painters;
 mod updaters;
@@ -87,6 +90,19 @@ fn start(document: &Document) {
   let mut world = World::<8>::default();
   let world_updater = WorldUpdater::<8>::default();
   world_updater.reset(&mut world);
-  world_updater.update(&mut world);
   world_painter.paint(&world);
+  let world_looper = WorldLooper {
+    world_painter,
+    world_updater,
+  };
+  world_looper.loop_once(&mut world);
 }
+
+// fn spawn_local<F>(future: F)
+// where
+//   F: Future<Output = ()> + 'static,
+// {
+//   wasm_bindgen_futures::spawn_local(future);
+// }
+
+// async fn start(
