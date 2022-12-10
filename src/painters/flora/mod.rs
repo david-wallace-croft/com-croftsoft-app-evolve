@@ -24,22 +24,20 @@ use crate::models::world::structures::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
-pub struct FloraPainter<'a, 'b, const G: usize> {
+pub struct FloraPainter<'a, const G: usize> {
   pub context: &'a CanvasRenderingContext2d,
   pub fill_style: JsValue,
   pub flora_height: f64,
   pub flora_width: f64,
   pub scale_x: f64,
   pub scale_y: f64,
-  pub world: &'b World<G>,
 }
 
-impl<'a, 'b, const G: usize> FloraPainter<'a, 'b, G> {
+impl<'a, const G: usize> FloraPainter<'a, G> {
   pub fn new(
     context: &'a CanvasRenderingContext2d,
     scale_x: f64,
     scale_y: f64,
-    world: &'b World<G>,
   ) -> Self {
     let fill_style = JsValue::from_str("green");
     let flora_height = scale_y / 2.0;
@@ -51,14 +49,16 @@ impl<'a, 'b, const G: usize> FloraPainter<'a, 'b, G> {
       flora_width,
       scale_x,
       scale_y,
-      world,
     }
   }
 
-  pub fn paint(&self) {
+  pub fn paint(
+    &self,
+    world: &World<G>,
+  ) {
     self.context.set_fill_style(&self.fill_style);
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
-      if self.world.flora_present[index] {
+      if world.flora_present[index] {
         // TODO: replace with PlotLib.xy()
         let x: f64 = World::<G>::to_x_from_index(index) as f64;
         let y: f64 = World::<G>::to_y_from_index(index) as f64;

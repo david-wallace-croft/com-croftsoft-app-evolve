@@ -23,7 +23,7 @@ use crate::models::world::structures::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
-pub struct BugsPainter<'a, 'b, const G: usize> {
+pub struct BugsPainter<'a, const G: usize> {
   pub bug_color_cruiser: JsValue,
   pub bug_color_normal: JsValue,
   pub bug_color_twirler: JsValue,
@@ -33,15 +33,13 @@ pub struct BugsPainter<'a, 'b, const G: usize> {
   pub fill_style: JsValue,
   pub scale_x: f64,
   pub scale_y: f64,
-  pub world: &'b World<G>,
 }
 
-impl<'a, 'b, const G: usize> BugsPainter<'a, 'b, G> {
+impl<'a, const G: usize> BugsPainter<'a, G> {
   pub fn new(
     context: &'a CanvasRenderingContext2d,
     scale_x: f64,
     scale_y: f64,
-    world: &'b World<G>,
   ) -> Self {
     let bug_color_cruiser = JsValue::from_str("red");
     let bug_color_normal = JsValue::from_str("magenta");
@@ -59,12 +57,14 @@ impl<'a, 'b, const G: usize> BugsPainter<'a, 'b, G> {
       fill_style,
       scale_x,
       scale_y,
-      world,
     }
   }
 
-  pub fn paint(&self) {
-    for bug in self.world.bugs.iter() {
+  pub fn paint(
+    &self,
+    world: &World<G>,
+  ) {
+    for bug in world.bugs.iter() {
       let bug_color = match bug.species {
         Species::Cruiser => &self.bug_color_cruiser,
         Species::Normal => &self.bug_color_normal,

@@ -24,6 +24,7 @@
 use js_sys::Object;
 use models::world::structures::World;
 use painters::world::WorldPainter;
+use updaters::world::WorldUpdater;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::console;
@@ -38,6 +39,7 @@ use wee_alloc::WeeAlloc;
 mod constants;
 mod models;
 mod painters;
+mod updaters;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
@@ -84,7 +86,9 @@ fn start(document: &Document) {
   let canvas_width: f64 = html_canvas_element.width() as f64;
   let mut world = World::<8>::default();
   world.reset();
-  let world_painter =
-    WorldPainter::new(canvas_height, canvas_width, &context, &world);
-  world_painter.paint();
+  let world_painter = WorldPainter::new(canvas_height, canvas_width, &context);
+  world_painter.paint(&world);
+  let world_updater = WorldUpdater::<8>::default();
+  world_updater.update(&mut world);
+  world_painter.paint(&world);
 }

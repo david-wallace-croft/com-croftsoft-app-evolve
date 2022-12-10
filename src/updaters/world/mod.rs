@@ -1,5 +1,5 @@
 // =============================================================================
-//! - Structures for the World model
+//! - WorldUpdater for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
@@ -18,20 +18,31 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
-use crate::models::bug::Bug;
-use crate::updaters::flora::FloraUpdater;
+use super::flora::FloraUpdater;
+use crate::constants::{
+  EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1, SPACE_HEIGHT, SPACE_WIDTH,
+};
+use crate::models::world::structures::World;
+use rand::{rngs::ThreadRng, Rng};
 
-pub struct World<const G: usize> {
-  // TODO: animatedComponent
-  pub bugs: Vec<Bug<G>>,
-  pub bugs_alive: usize,
-  // TODO: droughtButton
-  pub eden_check_box: bool,
-  // TODO: random
-  pub flora_growth_rate: usize,
-  pub flora_present: [bool; SPACE_HEIGHT * SPACE_WIDTH],
-  pub growth_rate_spinner_number_model: usize,
-  // TODO: resetButton
-  pub time: usize,
+pub struct WorldUpdater<const G: usize> {
+  pub flora_updater: FloraUpdater<G>,
+}
+
+impl<const G: usize> WorldUpdater<G> {
+  pub fn update(
+    &self,
+    world: &mut World<G>,
+  ) {
+    self.flora_updater.update(world);
+  }
+}
+
+impl<const G: usize> Default for WorldUpdater<G> {
+  fn default() -> Self {
+    let flora_updater = FloraUpdater::default();
+    Self {
+      flora_updater,
+    }
+  }
 }

@@ -206,6 +206,6 @@ impl<const G: usize> World<G> {
 
   pub fn update(&mut self) {
     self.move_bugs();
-    self.grow_flora();
+    // self.grow_flora();
   }
 }
