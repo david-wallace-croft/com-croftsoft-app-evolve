@@ -25,7 +25,7 @@ use crate::constants::{
 };
 use crate::models::bug::Bug;
 use crate::models::bug::Species;
-use crate::models::world::structures::World;
+use crate::models::world::World;
 use crate::painters::background::BackgroundPainter;
 use crate::painters::bugs::BugsPainter;
 use crate::painters::flora::FloraPainter;
@@ -33,10 +33,13 @@ use rand::{rngs::ThreadRng, Rng};
 use wasm_bindgen::JsValue;
 use web_sys::{console, CanvasRenderingContext2d};
 
+use super::overlay::OverlayPainter;
+
 pub struct WorldPainter<'a, const G: usize> {
   pub background_painter: BackgroundPainter<'a>,
   pub bugs_painter: BugsPainter<'a, G>,
   pub flora_painter: FloraPainter<'a, G>,
+  pub overlay_painter: OverlayPainter<'a, G>,
 }
 
 impl<'a, const G: usize> WorldPainter<'a, G> {
@@ -51,10 +54,12 @@ impl<'a, const G: usize> WorldPainter<'a, G> {
     let scale_y = canvas_height / SPACE_HEIGHT as f64;
     let bugs_painter = BugsPainter::new(context, scale_x, scale_y);
     let flora_painter = FloraPainter::new(context, scale_x, scale_y);
+    let overlay_painter = OverlayPainter::new(context);
     Self {
       background_painter,
       bugs_painter,
       flora_painter,
+      overlay_painter,
     }
   }
 
@@ -65,5 +70,6 @@ impl<'a, const G: usize> WorldPainter<'a, G> {
     self.background_painter.paint();
     self.flora_painter.paint(world);
     self.bugs_painter.paint(world);
+    self.overlay_painter.paint(world);
   }
 }

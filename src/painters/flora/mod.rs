@@ -19,8 +19,9 @@
 // =============================================================================
 
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
+use crate::functions::{to_x_from_index, to_y_from_index};
 use crate::models::bug::Species;
-use crate::models::world::structures::World;
+use crate::models::world::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
@@ -60,8 +61,8 @@ impl<'a, const G: usize> FloraPainter<'a, G> {
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
       if world.flora_present[index] {
         // TODO: replace with PlotLib.xy()
-        let x: f64 = World::<G>::to_x_from_index(index) as f64;
-        let y: f64 = World::<G>::to_y_from_index(index) as f64;
+        let x: f64 = to_x_from_index(index) as f64;
+        let y: f64 = to_y_from_index(index) as f64;
         let corner_x = self.scale_x * (x + 0.5);
         let corner_y = self.scale_y * (y + 0.5);
         self.context.fill_rect(

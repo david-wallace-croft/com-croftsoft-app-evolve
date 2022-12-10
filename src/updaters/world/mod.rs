@@ -24,8 +24,9 @@ use crate::constants::{
   BUGS_MAX, EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1, INIT_GROWTH_RATE, SPACE_HEIGHT,
   SPACE_WIDTH,
 };
+use crate::functions::to_index_from_xy;
 use crate::models::bug::Bug;
-use crate::models::world::structures::World;
+use crate::models::world::World;
 use rand::{rngs::ThreadRng, Rng};
 
 pub struct WorldUpdater<const G: usize> {
@@ -38,8 +39,7 @@ impl<const G: usize> WorldUpdater<G> {
     &self,
     world: &mut World<G>,
   ) {
-    let position: usize =
-      World::<G>::to_index_from_xy(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
+    let position: usize = to_index_from_xy(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
     world.bugs.clear();
     for _i in 0..BUGS_MAX {
       let bug = Bug::new(position);

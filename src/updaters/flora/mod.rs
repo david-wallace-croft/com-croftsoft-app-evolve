@@ -21,7 +21,8 @@
 use crate::constants::{
   EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1, SPACE_HEIGHT, SPACE_WIDTH,
 };
-use crate::models::world::structures::World;
+use crate::functions::to_index_from_xy;
+use crate::models::world::World;
 use rand::{rngs::ThreadRng, Rng};
 
 pub struct FloraUpdater<const G: usize> {}
@@ -41,7 +42,7 @@ impl<const G: usize> FloraUpdater<G> {
     if world.eden_check_box {
       for x in EDEN_X0..=EDEN_X1 {
         for y in EDEN_Y0..=EDEN_Y1 {
-          let index: usize = World::<G>::to_index_from_xy(x, y);
+          let index: usize = to_index_from_xy(x, y);
           world.flora_present[index] = true;
         }
       }

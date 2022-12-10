@@ -22,8 +22,9 @@ use crate::constants::{
   BIRTH_ENERGY, BUGS_MAX, EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1, FLORA_ENERGY,
   GENES_MAX, MAX_ENERGY, MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
 };
+use crate::functions::{to_index_from_xy, to_x_from_index, to_y_from_index};
 use crate::models::bug::Bug;
-use crate::models::world::structures::World;
+use crate::models::world::World;
 use rand::{rngs::ThreadRng, Rng};
 
 pub struct BugsUpdater<const G: usize> {}
@@ -43,8 +44,8 @@ impl<const G: usize> BugsUpdater<G> {
       if bug.energy == 0 {
         continue;
       }
-      let mut x = World::<G>::to_x_from_index(bug.position);
-      let mut y = World::<G>::to_y_from_index(bug.position);
+      let mut x = to_x_from_index(bug.position);
+      let mut y = to_y_from_index(bug.position);
       if world.flora_present[bug.position] {
         bug.energy = bug.energy.saturating_add(FLORA_ENERGY);
         if bug.energy > MAX_ENERGY {
@@ -81,7 +82,7 @@ impl<const G: usize> BugsUpdater<G> {
           y = SPACE_HEIGHT - 1;
         }
       }
-      bug.position = World::<G>::to_index_from_xy(x, y);
+      bug.position = to_index_from_xy(x, y);
       bug.energy = bug.energy.saturating_sub(MOVE_COST);
     }
     let mut dead_bug_indices = Vec::<usize>::new();

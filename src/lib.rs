@@ -22,7 +22,7 @@
 #![allow(unused_imports)]
 
 use js_sys::Object;
-use models::world::structures::World;
+use models::world::World;
 use painters::world::WorldPainter;
 use updaters::world::WorldUpdater;
 use wasm_bindgen::prelude::*;
@@ -37,6 +37,7 @@ use web_sys::HtmlDivElement;
 use wee_alloc::WeeAlloc;
 
 mod constants;
+mod functions;
 mod models;
 mod painters;
 mod updaters;
