@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-07
+//! - Rust version: 2022-12-09
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -27,15 +27,33 @@ use web_sys::console;
 
 use crate::{
   constants::{
-    BABY_ENERGY, BIRTH_ENERGY, BUGS_MAX, EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1,
-    FLORA_ENERGY, GENES_MAX, INIT_GROWTH_RATE, MAX_ENERGY, MOVE_COST,
-    SPACE_HEIGHT, SPACE_WIDTH,
+    BABY_ENERGY, BIRTH_ENERGY, BIRTH_ENERGY_COST, BUGS_MAX, EDEN_X0, EDEN_X1,
+    EDEN_Y0, EDEN_Y1, FLORA_ENERGY, GENES_MAX, INIT_GROWTH_RATE, MAX_ENERGY,
+    MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
   },
   enums::Species,
   structures::{Bug, Evolve, View},
 };
 
 impl<const G: usize> Bug<G> {
+  pub fn give_birth(&mut self) -> Self {
+    self.energy -= BIRTH_ENERGY_COST;
+    let mut baby_bug = Bug::new(self.position);
+    for index in 0..GENES_MAX {
+      baby_bug.genes_x[index] = self.genes_x[index];
+      baby_bug.genes_y[index] = self.genes_y[index];
+    }
+    let mut thread_rng: ThreadRng = rand::thread_rng();
+    let mutant_gene_index: usize = thread_rng.gen_range(0..G);
+    if rand::random() {
+      baby_bug.genes_x[mutant_gene_index] = self.genes_x[mutant_gene_index];
+    } else {
+      baby_bug.genes_y[mutant_gene_index] = self.genes_y[mutant_gene_index];
+    }
+    baby_bug.update_species();
+    baby_bug
+  }
+
   pub fn update_species(&mut self) {
     // TODO: change color to classfication or species
     let mut x_count = 0;
@@ -61,24 +79,23 @@ impl<const G: usize> Bug<G> {
 impl<const G: usize> Evolve<G> {
   pub fn create_new_bug(
     &mut self,
-    x: usize,
-    y: usize,
+    position: usize,
   ) {
-    let bug = Bug::new(x, y);
+    let bug = Bug::new(position);
     self.bugs.push(bug);
     // let bug_str = format!("{:?}", bug);
     // console::log_1(&JsValue::from_str(&bug_str));
   }
 
+  // TODO: Is this method still needed?
   pub fn create_new_bug_if_dead(
     &mut self,
-    x: usize,
-    y: usize,
+    position: usize,
   ) {
     if self.bugs.len() >= BUGS_MAX {
       return;
     }
-    self.create_new_bug(x, y);
+    self.create_new_bug(position);
   }
 
   pub fn genes_average_string(&self) -> String {
@@ -120,14 +137,6 @@ impl<const G: usize> Evolve<G> {
     result
   }
 
-  pub fn give_birth(
-    &self,
-    parent_bug: &mut Bug<G>,
-  ) {
-    // TODO
-    todo!();
-  }
-
   pub fn grow_flora(&mut self) {
     let mut thread_rng: ThreadRng = rand::thread_rng();
     for i in 0..self.flora_growth_rate {
@@ -153,59 +162,74 @@ impl<const G: usize> Evolve<G> {
   }
 
   pub fn move_bugs(&mut self) {
-    self.time += 1;
+    self.time = self.time.saturating_add(1);
     if self.time >= GENES_MAX {
       self.time = 0;
     }
+    let mut new_bugs = Vec::<Bug<G>>::new();
+    let bugs_length = self.bugs.len();
     for bug in self.bugs.iter_mut() {
+      if bug.energy == 0 {
+        continue;
+      }
       let mut x = Evolve::<G>::to_x_from_index(bug.position);
       let mut y = Evolve::<G>::to_y_from_index(bug.position);
-      if bug.energy > 0 {
-        if self.flora_present[bug.position] {
-          bug.energy += FLORA_ENERGY;
-          if bug.energy > MAX_ENERGY {
-            bug.energy = MAX_ENERGY;
-          }
+      if self.flora_present[bug.position] {
+        bug.energy = bug.energy.saturating_add(FLORA_ENERGY);
+        if bug.energy > MAX_ENERGY {
+          bug.energy = MAX_ENERGY;
         }
-        // TODO: But need to go outside of iteration since it grows vector
-        // if bug.energy >= BIRTH_ENERGY {
-        //   self.give_birth(bug);
-        // }
-        if rand::random() {
-          if bug.genes_x[self.time] {
-            if x < SPACE_WIDTH - 1 {
-              x += 1;
-            } else {
-              x = 0;
-            }
-          } else if x > 0 {
-            x -= 1;
+      }
+      if bug.energy >= BIRTH_ENERGY && bugs_length + new_bugs.len() < BUGS_MAX {
+        let new_bug = bug.give_birth();
+        new_bugs.push(new_bug);
+      }
+      if rand::random() {
+        if bug.genes_x[self.time] {
+          if x < SPACE_WIDTH - 1 {
+            x += 1;
           } else {
-            x = SPACE_WIDTH - 1;
+            x = 0;
           }
+        } else if x > 0 {
+          x -= 1;
+        } else {
+          x = SPACE_WIDTH - 1;
         }
-        if rand::random() {
-          if bug.genes_y[self.time] {
-            if y < SPACE_HEIGHT - 1 {
-              y += 1;
-            } else {
-              y = 0;
-            }
-          } else if y > 0 {
-            y -= 1;
+      }
+      if rand::random() {
+        if bug.genes_y[self.time] {
+          if y < SPACE_HEIGHT - 1 {
+            y += 1;
           } else {
-            y = SPACE_HEIGHT - 1;
+            y = 0;
           }
+        } else if y > 0 {
+          y -= 1;
+        } else {
+          y = SPACE_HEIGHT - 1;
         }
-        bug.position = Evolve::<G>::to_index_from_xy(x, y);
-        bug.energy -= MOVE_COST;
+      }
+      bug.position = Evolve::<G>::to_index_from_xy(x, y);
+      bug.energy = bug.energy.saturating_sub(MOVE_COST);
+    }
+    let mut dead_bug_indices = Vec::<usize>::new();
+    for (index, bug) in self.bugs.iter_mut().enumerate() {
+      if bug.energy == 0 {
+        dead_bug_indices.push(index);
       }
     }
+    for dead_bug_index in dead_bug_indices {
+      self.bugs.remove(dead_bug_index);
+    }
+    self.bugs.append(&mut new_bugs);
   }
 
   pub fn reset(&mut self) {
+    let position: usize =
+      Evolve::<G>::to_index_from_xy(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
     for index in 0..BUGS_MAX {
-      self.create_new_bug(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
+      self.create_new_bug(position);
     }
     // for bug in self.bugs.borrow().iter() {
     //   let bug_str = format!("{:?}", bug);

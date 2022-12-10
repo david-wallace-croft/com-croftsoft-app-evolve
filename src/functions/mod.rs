@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-07
+//! - Rust version: 2022-12-09
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -34,10 +34,7 @@ use crate::{
 };
 
 impl<const G: usize> Bug<G> {
-  pub fn new(
-    x: usize,
-    y: usize,
-  ) -> Self {
+  pub fn new(position: usize) -> Self {
     let color = Species::Normal;
     let energy: usize = BABY_ENERGY;
     let mut genes_x: [bool; G] = [false; G];
@@ -46,7 +43,6 @@ impl<const G: usize> Bug<G> {
       genes_x[index] = rand::random();
       genes_y[index] = rand::random();
     }
-    let position: usize = Evolve::<G>::to_index_from_xy(x, y);
     let mut bug = Bug {
       species: color,
       energy,
@@ -64,8 +60,11 @@ impl<const G: usize> Evolve<G> {
     bugs_alive: usize,
     time: usize,
     genes_average_string: &str,
-  ) {
-    // TODO
+  ) -> String {
+    format!(
+      "Alive: {}  Time: {}  Average Movement Genes {}",
+      bugs_alive, time, genes_average_string
+    )
   }
 
   pub fn to_index_from_xy(
