@@ -18,23 +18,15 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::constants::{
-  BABY_ENERGY, BIRTH_ENERGY, BIRTH_ENERGY_COST, BUGS_MAX, EDEN_X0, EDEN_X1,
-  EDEN_Y0, EDEN_Y1, FLORA_ENERGY, GENES_MAX, INIT_GROWTH_RATE, MAX_ENERGY,
-  MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
-};
-use crate::models::bug::Bug;
-use crate::models::bug::Species;
+use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::models::world::World;
 use crate::painters::background::BackgroundPainter;
 use crate::painters::bugs::BugsPainter;
 use crate::painters::flora::FloraPainter;
 use js_sys::Object;
-use rand::{rngs::ThreadRng, Rng};
-use wasm_bindgen::{JsCast, JsValue};
+use wasm_bindgen::JsCast;
 use web_sys::{
-  console, window, CanvasRenderingContext2d, Document, Element,
-  HtmlCanvasElement,
+  window, CanvasRenderingContext2d, Document, Element, HtmlCanvasElement,
 };
 
 use super::overlay::OverlayPainter;
@@ -48,16 +40,16 @@ pub struct WorldPainter<const G: usize> {
 }
 
 impl<const G: usize> WorldPainter<G> {
-  pub fn new(
-    canvas_height: f64,
-    canvas_width: f64,
-  ) -> Self {
+  pub fn new(canvas_element_id: &str) -> Self {
     let document: Document = window().unwrap().document().unwrap();
-    let element: Element = document.get_element_by_id("canvas").unwrap();
+    let element: Element =
+      document.get_element_by_id(canvas_element_id).unwrap();
     let html_canvas_element: HtmlCanvasElement = element.dyn_into().unwrap();
     let object: Object =
       html_canvas_element.get_context("2d").unwrap().unwrap();
     let context: CanvasRenderingContext2d = object.dyn_into().unwrap();
+    let canvas_height: f64 = html_canvas_element.height() as f64;
+    let canvas_width: f64 = html_canvas_element.width() as f64;
     let background_painter =
       BackgroundPainter::new(canvas_height, canvas_width);
     let scale_x = canvas_width / SPACE_WIDTH as f64;
