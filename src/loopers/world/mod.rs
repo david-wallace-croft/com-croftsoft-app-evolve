@@ -38,7 +38,8 @@ impl<const G: usize> WorldLooper<G> {
     };
     let f: SharedLoopClosure = Rc::new(RefCell::new(None));
     let g = f.clone();
-    *g.borrow_mut() = Some(create_raf_closure(move |perf: f64| {
+    // TODO: _perf
+    *g.borrow_mut() = Some(create_raf_closure(move |_perf: f64| {
       world_looper.loop_once();
       let _result: Result<i32, anyhow::Error> =
         request_animation_frame(f.borrow().as_ref().unwrap());
