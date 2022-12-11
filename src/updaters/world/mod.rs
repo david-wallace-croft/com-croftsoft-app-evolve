@@ -20,14 +20,10 @@
 
 use super::bugs::BugsUpdater;
 use super::flora::FloraUpdater;
-use crate::constants::{
-  BUGS_MAX, EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1, INIT_GROWTH_RATE, SPACE_HEIGHT,
-  SPACE_WIDTH,
-};
+use crate::constants::{BUGS_MAX, INIT_GROWTH_RATE, SPACE_HEIGHT, SPACE_WIDTH};
 use crate::functions::to_index_from_xy;
 use crate::models::bug::Bug;
 use crate::models::world::World;
-use rand::{rngs::ThreadRng, Rng};
 
 pub struct WorldUpdater<const G: usize> {
   pub bugs_updater: BugsUpdater<G>,

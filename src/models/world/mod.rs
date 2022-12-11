@@ -20,7 +20,6 @@
 
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::models::bug::Bug;
-use crate::updaters::flora::FloraUpdater;
 
 pub struct World<const G: usize> {
   // TODO: animatedComponent

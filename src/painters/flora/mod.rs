@@ -20,7 +20,6 @@
 
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::functions::{to_x_from_index, to_y_from_index};
-use crate::models::bug::Species;
 use crate::models::world::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;

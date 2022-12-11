@@ -3,14 +3,9 @@ use crate::painters::world::WorldPainter;
 use crate::updaters::world::WorldUpdater;
 use anyhow::{anyhow, Result};
 use futures::Future;
-use std::{cell::RefCell, rc::Rc, sync::Mutex};
-use wasm_bindgen::{
-  closure::{WasmClosure, WasmClosureFnOnce},
-  prelude::Closure,
-  JsCast, JsValue,
-};
-use wasm_bindgen_futures::JsFuture;
-use web_sys::{CanvasRenderingContext2d, Window};
+use std::{cell::RefCell, rc::Rc};
+use wasm_bindgen::{closure::WasmClosure, prelude::Closure, JsCast};
+use web_sys::Window;
 
 pub struct WorldLooper<const G: usize> {
   pub world: World<G>,

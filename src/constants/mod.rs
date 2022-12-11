@@ -18,11 +18,11 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-pub static FONT_NAME: &str = "TimesRoman";
-pub static FRAME_ICON_FILENAME: &str = "/images/david.png";
-pub static SHUTDOWN_CONFIRMATION_PROMPT: &str = "Close CroftSoft Evolve?";
+// pub static FONT_NAME: &str = "TimesRoman";
+// pub static FRAME_ICON_FILENAME: &str = "/images/david.png";
+// pub static SHUTDOWN_CONFIRMATION_PROMPT: &str = "Close CroftSoft Evolve?";
 pub static TITLE: &str = "CroftSoft Evolve";
-pub static VERSION: &str = "0.1.0";
+// pub static VERSION: &str = "0.1.0";
 
 pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;
@@ -36,15 +36,15 @@ pub const EDEN_Y0: usize = (SPACE_WIDTH - EDEN_WIDTH) / 2;
 pub const EDEN_Y1: usize = EDEN_Y0 + EDEN_HEIGHT - 1;
 pub const FLORA_ENERGY: usize = 20;
 // TODO: FONT_STYLE bold
-pub const FRAME_RATE: f64 = 1.0;
+// pub const FRAME_RATE: f64 = 1.0;
 // TODO: FRAME_SIZE
 pub const GENES_MAX: usize = 8;
 pub const INIT_GROWTH_RATE: usize = 10;
 pub const MAX_ENERGY: usize = 60;
-pub const MAX_GROWTH_RATE: usize = SPACE_HEIGHT * SPACE_WIDTH;
-pub const MIN_GROWTH_RATE: usize = 0;
+// pub const MAX_GROWTH_RATE: usize = SPACE_HEIGHT * SPACE_WIDTH;
+// pub const MIN_GROWTH_RATE: usize = 0;
 pub const MOVE_COST: usize = 1;
 pub const SPACE_HEIGHT: usize = 100;
 pub const SPACE_WIDTH: usize = 100;
-pub const SPINNER_STEP_SIZE: usize = 1;
-pub const TEXT_MARGIN: usize = 10;
+// pub const SPINNER_STEP_SIZE: usize = 1;
+// pub const TEXT_MARGIN: usize = 10;

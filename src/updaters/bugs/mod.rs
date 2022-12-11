@@ -19,13 +19,12 @@
 // =============================================================================
 
 use crate::constants::{
-  BIRTH_ENERGY, BUGS_MAX, EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1, FLORA_ENERGY,
-  GENES_MAX, MAX_ENERGY, MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
+  BIRTH_ENERGY, BUGS_MAX, FLORA_ENERGY, GENES_MAX, MAX_ENERGY, MOVE_COST,
+  SPACE_HEIGHT, SPACE_WIDTH,
 };
 use crate::functions::{to_index_from_xy, to_x_from_index, to_y_from_index};
 use crate::models::bug::Bug;
 use crate::models::world::World;
-use rand::{rngs::ThreadRng, Rng};
 
 pub struct BugsUpdater<const G: usize> {}
 

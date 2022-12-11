@@ -18,10 +18,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::constants::{
-  BABY_ENERGY, BIRTH_ENERGY_COST, BUGS_MAX, GENES_MAX, SPACE_HEIGHT,
-  SPACE_WIDTH,
-};
+use crate::constants::{BABY_ENERGY, BIRTH_ENERGY_COST, GENES_MAX};
 
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
@@ -37,9 +34,9 @@ pub struct Bug<const G: usize> {
 
 #[derive(Debug)]
 pub enum Species {
-  Cruiser, // red
-  Normal,  // magenta
-  Twirler, // blue
+  Cruiser,
+  Normal,
+  Twirler,
 }
 
 impl<const G: usize> Bug<G> {
