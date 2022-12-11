@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-10
+//! - Rust version: 2022-12-11
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,11 +18,10 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-// pub static FONT_NAME: &str = "TimesRoman";
 // pub static FRAME_ICON_FILENAME: &str = "/images/david.png";
 // pub static SHUTDOWN_CONFIRMATION_PROMPT: &str = "Close CroftSoft Evolve?";
-pub static TITLE: &str = "CroftSoft Evolve";
-// pub static VERSION: &str = "0.1.0";
+pub static INFO: &str =
+  "CroftSoft Evolve v0.2.0 Copyright 1996-2022 CroftSoft Inc";
 
 pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;

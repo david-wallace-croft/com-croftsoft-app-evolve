@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-10
+//! - Rust version: 2022-12-11
 //! - Rust since: 2022-09-12
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,7 +18,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use constants::TITLE;
+use constants::INFO;
 use loopers::world::WorldLooper;
 use models::world::World;
 use painters::world::WorldPainter;
@@ -41,7 +41,7 @@ static ALLOC: WeeAlloc = WeeAlloc::INIT;
 #[wasm_bindgen(start)]
 pub fn main_js() -> Result<(), JsValue> {
   console_error_panic_hook::set_once();
-  console::log_1(&JsValue::from_str(TITLE));
+  console::log_1(&JsValue::from_str(INFO));
   WorldLooper::<8>::spawn_local(async move {
     let world_painter = WorldPainter::new("canvas");
     let mut world = World::<8>::default();
