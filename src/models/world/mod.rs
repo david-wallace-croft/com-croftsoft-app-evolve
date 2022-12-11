@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-10
+//! - Rust version: 2022-12-11
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,7 +18,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
+use crate::constants::{INIT_GROWTH_RATE, SPACE_HEIGHT, SPACE_WIDTH};
 use crate::models::bug::Bug;
 
 pub struct World<const G: usize> {
@@ -41,7 +41,7 @@ impl<const G: usize> Default for World<G> {
       bugs: Vec::<Bug<G>>::new(),
       bugs_alive: 0,
       eden_check_box: false,
-      flora_growth_rate: 0,
+      flora_growth_rate: INIT_GROWTH_RATE,
       flora_present: [false; SPACE_HEIGHT * SPACE_WIDTH],
       growth_rate_spinner_number_model: 0,
       time: 0,
