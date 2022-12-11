@@ -1,6 +1,8 @@
 # Evolve
 
 - Evolve the movement of critters through food distribution
+- You can see the Rust code compiled to WebAssembly and running in the browser
+  - https://www.gamespawn.com/arcade/evolve/
 
 ## Usage
 
