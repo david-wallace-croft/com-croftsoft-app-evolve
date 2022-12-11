@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-10
+//! - Rust version: 2022-12-11
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -32,8 +32,8 @@ impl<const G: usize> OverlayPainter<G> {
     &self,
     world: &World<G>,
   ) -> String {
-    let mut gene_x_string = String::from("X:  ");
-    let mut gene_y_string = String::from("Y:  ");
+    let mut gene_x_string = String::from("X:");
+    let mut gene_y_string = String::from("Y:");
     let mut bugs_alive: usize = 0;
     for bug in world.bugs.iter() {
       if bug.energy > 0 {
@@ -65,7 +65,7 @@ impl<const G: usize> OverlayPainter<G> {
       }
     }
     let mut result = String::from(&gene_x_string);
-    result.push_str("    ");
+    result.push(' ');
     result.push_str(&gene_y_string);
     result
   }
@@ -75,11 +75,17 @@ impl<const G: usize> OverlayPainter<G> {
     world: &World<G>,
   ) -> String {
     let genes_average_string = self.make_genes_average_string(world);
-    let bugs_alive = 0; // TODO
+    let bugs_alive = world.bugs.iter().fold(0, |count, bug| {
+      if bug.energy > 0 {
+        count + 1
+      } else {
+        count
+      }
+    });
     let time = world.time;
     format!(
-      "Alive: {}  Time: {}  Average Movement Genes {}",
-      bugs_alive, time, genes_average_string
+      "Average Movement Genes {} Time:{} Alive:{}",
+      genes_average_string, time, bugs_alive,
     )
   }
 
@@ -90,8 +96,8 @@ impl<const G: usize> OverlayPainter<G> {
   ) {
     let status_string = self.make_status_string(world);
     context.set_fill_style(&self.fill_style);
-    context.set_font("bold 18px serif");
-    context.fill_text(&status_string, 4.0, 18.0).unwrap();
+    context.set_font("bold 17px monospace");
+    context.fill_text(&status_string, 4.0, 17.0).unwrap();
   }
 }
 
