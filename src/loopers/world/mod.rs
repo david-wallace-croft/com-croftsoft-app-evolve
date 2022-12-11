@@ -8,6 +8,7 @@ use wasm_bindgen::{closure::WasmClosure, prelude::Closure, JsCast};
 use web_sys::Window;
 
 pub struct WorldLooper<const G: usize> {
+  pub last_update_time: f64,
   pub world: World<G>,
   pub world_painter: WorldPainter<G>,
   pub world_updater: WorldUpdater<G>,
@@ -31,16 +32,23 @@ impl<const G: usize> WorldLooper<G> {
     world_painter: WorldPainter<G>,
     world_updater: WorldUpdater<G>,
   ) -> Result<()> {
+    let last_update_time = window()?
+      .performance()
+      .ok_or_else(|| anyhow!("Performance object not found"))?
+      .now();
     let mut world_looper = WorldLooper {
+      last_update_time,
       world,
       world_painter,
       world_updater,
     };
     let f: SharedLoopClosure = Rc::new(RefCell::new(None));
     let g = f.clone();
-    // TODO: _perf
-    *g.borrow_mut() = Some(create_raf_closure(move |_perf: f64| {
-      world_looper.loop_once();
+    *g.borrow_mut() = Some(create_raf_closure(move |performance: f64| {
+      if performance - world_looper.last_update_time > 1_000.0 {
+        world_looper.last_update_time = performance;
+        world_looper.loop_once();
+      }
       let _result: Result<i32, anyhow::Error> =
         request_animation_frame(f.borrow().as_ref().unwrap());
     }));
