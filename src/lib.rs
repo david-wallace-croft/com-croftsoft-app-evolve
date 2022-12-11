@@ -56,7 +56,20 @@ pub fn main_js() -> Result<(), JsValue> {
   // hello_canvas(&document);
   hello_console();
   // hello_div(&document);
-  start(&document);
+  let element: Element = document.get_element_by_id("canvas").unwrap();
+  let html_canvas_element: HtmlCanvasElement = element.dyn_into().unwrap();
+  let canvas_height: f64 = html_canvas_element.height() as f64;
+  let canvas_width: f64 = html_canvas_element.width() as f64;
+  WorldLooper::<8>::spawn_local(async move {
+    let world_painter = WorldPainter::new(canvas_height, canvas_width);
+    let mut world = World::<8>::default();
+    let world_updater = WorldUpdater::<8>::default();
+    world_updater.reset(&mut world);
+    world_painter.paint(&world);
+    WorldLooper::<8>::start(world, world_painter, world_updater)
+      .await
+      .expect("loop start failed");
+  });
   Ok(())
 }
 
@@ -78,31 +91,3 @@ fn hello_console() {
 //   let html_div_element: HtmlDivElement = element.dyn_into().unwrap();
 //   html_div_element.insert_adjacent_text("afterbegin", "Hello, Div!").unwrap();
 // }
-
-fn start(document: &Document) {
-  let element: Element = document.get_element_by_id("canvas").unwrap();
-  let html_canvas_element: HtmlCanvasElement = element.dyn_into().unwrap();
-  let object: Object = html_canvas_element.get_context("2d").unwrap().unwrap();
-  let context: CanvasRenderingContext2d = object.dyn_into().unwrap();
-  let canvas_height: f64 = html_canvas_element.height() as f64;
-  let canvas_width: f64 = html_canvas_element.width() as f64;
-  let world_painter = WorldPainter::new(canvas_height, canvas_width, &context);
-  let mut world = World::<8>::default();
-  let world_updater = WorldUpdater::<8>::default();
-  world_updater.reset(&mut world);
-  world_painter.paint(&world);
-  let world_looper = WorldLooper {
-    world_painter,
-    world_updater,
-  };
-  world_looper.loop_once(&mut world);
-}
-
-// fn spawn_local<F>(future: F)
-// where
-//   F: Future<Output = ()> + 'static,
-// {
-//   wasm_bindgen_futures::spawn_local(future);
-// }
-
-// async fn start(

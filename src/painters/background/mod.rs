@@ -21,30 +21,30 @@
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
-pub struct BackgroundPainter<'a> {
+pub struct BackgroundPainter {
   pub canvas_height: f64,
   pub canvas_width: f64,
-  pub context: &'a CanvasRenderingContext2d,
   pub fill_style: JsValue,
 }
 
-impl<'a> BackgroundPainter<'a> {
+impl BackgroundPainter {
   pub fn new(
     canvas_height: f64,
     canvas_width: f64,
-    context: &'a CanvasRenderingContext2d,
   ) -> Self {
     let fill_style: JsValue = JsValue::from_str("black");
     Self {
       canvas_height,
       canvas_width,
-      context,
       fill_style,
     }
   }
 
-  pub fn paint(&self) {
-    self.context.set_fill_style(&self.fill_style);
-    self.context.fill_rect(0.0, 0.0, self.canvas_width, self.canvas_height);
+  pub fn paint(
+    &self,
+    context: &CanvasRenderingContext2d,
+  ) {
+    context.set_fill_style(&self.fill_style);
+    context.fill_rect(0.0, 0.0, self.canvas_width, self.canvas_height);
   }
 }

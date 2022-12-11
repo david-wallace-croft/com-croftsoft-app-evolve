@@ -23,12 +23,11 @@ use web_sys::CanvasRenderingContext2d;
 
 use crate::models::world::World;
 
-pub struct OverlayPainter<'a, const G: usize> {
-  pub context: &'a CanvasRenderingContext2d,
+pub struct OverlayPainter<const G: usize> {
   pub fill_style: JsValue,
 }
 
-impl<'a, const G: usize> OverlayPainter<'a, G> {
+impl<const G: usize> OverlayPainter<G> {
   fn make_genes_average_string(
     &self,
     world: &World<G>,
@@ -84,21 +83,23 @@ impl<'a, const G: usize> OverlayPainter<'a, G> {
     )
   }
 
-  pub fn new(context: &'a CanvasRenderingContext2d) -> Self {
-    let fill_style: JsValue = JsValue::from_str("white");
-    Self {
-      context,
-      fill_style,
-    }
-  }
-
   pub fn paint(
     &self,
+    context: &CanvasRenderingContext2d,
     world: &World<G>,
   ) {
     let status_string = self.make_status_string(world);
-    self.context.set_fill_style(&self.fill_style);
-    self.context.set_font("bold 18px serif");
-    self.context.fill_text(&status_string, 4.0, 18.0).unwrap();
+    context.set_fill_style(&self.fill_style);
+    context.set_font("bold 18px serif");
+    context.fill_text(&status_string, 4.0, 18.0).unwrap();
+  }
+}
+
+impl<const G: usize> Default for OverlayPainter<G> {
+  fn default() -> Self {
+    let fill_style: JsValue = JsValue::from_str("white");
+    Self {
+      fill_style,
+    }
   }
 }

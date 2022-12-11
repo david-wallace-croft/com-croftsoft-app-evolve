@@ -24,21 +24,19 @@ use crate::models::world::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
-pub struct BugsPainter<'a, const G: usize> {
+pub struct BugsPainter<const G: usize> {
   pub bug_color_cruiser: JsValue,
   pub bug_color_normal: JsValue,
   pub bug_color_twirler: JsValue,
   pub bug_height: f64,
   pub bug_width: f64,
-  pub context: &'a CanvasRenderingContext2d,
   pub fill_style: JsValue,
   pub scale_x: f64,
   pub scale_y: f64,
 }
 
-impl<'a, const G: usize> BugsPainter<'a, G> {
+impl<const G: usize> BugsPainter<G> {
   pub fn new(
-    context: &'a CanvasRenderingContext2d,
     scale_x: f64,
     scale_y: f64,
   ) -> Self {
@@ -54,7 +52,6 @@ impl<'a, const G: usize> BugsPainter<'a, G> {
       bug_color_twirler,
       bug_height,
       bug_width,
-      context,
       fill_style,
       scale_x,
       scale_y,
@@ -63,6 +60,7 @@ impl<'a, const G: usize> BugsPainter<'a, G> {
 
   pub fn paint(
     &self,
+    context: &CanvasRenderingContext2d,
     world: &World<G>,
   ) {
     for bug in world.bugs.iter() {
@@ -71,18 +69,13 @@ impl<'a, const G: usize> BugsPainter<'a, G> {
         Species::Normal => &self.bug_color_normal,
         Species::Twirler => &self.bug_color_twirler,
       };
-      self.context.set_fill_style(bug_color);
+      context.set_fill_style(bug_color);
       let index = bug.position;
       let x: f64 = to_x_from_index(index) as f64;
       let y: f64 = to_y_from_index(index) as f64;
       let corner_x = self.scale_x * (x + 0.5);
       let corner_y = self.scale_y * (y + 0.5);
-      self.context.fill_rect(
-        corner_x,
-        corner_y,
-        self.bug_width,
-        self.bug_height,
-      );
+      context.fill_rect(corner_x, corner_y, self.bug_width, self.bug_height);
     }
   }
 }

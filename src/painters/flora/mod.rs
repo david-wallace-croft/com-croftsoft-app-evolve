@@ -25,8 +25,7 @@ use crate::models::world::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
-pub struct FloraPainter<'a, const G: usize> {
-  pub context: &'a CanvasRenderingContext2d,
+pub struct FloraPainter<const G: usize> {
   pub fill_style: JsValue,
   pub flora_height: f64,
   pub flora_width: f64,
@@ -34,9 +33,8 @@ pub struct FloraPainter<'a, const G: usize> {
   pub scale_y: f64,
 }
 
-impl<'a, const G: usize> FloraPainter<'a, G> {
+impl<const G: usize> FloraPainter<G> {
   pub fn new(
-    context: &'a CanvasRenderingContext2d,
     scale_x: f64,
     scale_y: f64,
   ) -> Self {
@@ -44,7 +42,6 @@ impl<'a, const G: usize> FloraPainter<'a, G> {
     let flora_height = scale_y / 2.0;
     let flora_width = scale_x / 2.0;
     Self {
-      context,
       fill_style,
       flora_height,
       flora_width,
@@ -55,9 +52,10 @@ impl<'a, const G: usize> FloraPainter<'a, G> {
 
   pub fn paint(
     &self,
+    context: &CanvasRenderingContext2d,
     world: &World<G>,
   ) {
-    self.context.set_fill_style(&self.fill_style);
+    context.set_fill_style(&self.fill_style);
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
       if world.flora_present[index] {
         // TODO: replace with PlotLib.xy()
@@ -65,7 +63,7 @@ impl<'a, const G: usize> FloraPainter<'a, G> {
         let y: f64 = to_y_from_index(index) as f64;
         let corner_x = self.scale_x * (x + 0.5);
         let corner_y = self.scale_y * (y + 0.5);
-        self.context.fill_rect(
+        context.fill_rect(
           corner_x,
           corner_y,
           self.flora_width,
