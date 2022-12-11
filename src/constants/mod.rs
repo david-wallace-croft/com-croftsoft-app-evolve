@@ -21,7 +21,7 @@
 // pub static FRAME_ICON_FILENAME: &str = "/images/david.png";
 // pub static SHUTDOWN_CONFIRMATION_PROMPT: &str = "Close CroftSoft Evolve?";
 pub static INFO: &str =
-  "CroftSoft Evolve v0.2.0 Copyright 1996-2022 CroftSoft Inc";
+  "CroftSoft Evolve v0.3.0-SNAPSHOT Copyright 1996-2022 CroftSoft Inc";
 
 pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;
