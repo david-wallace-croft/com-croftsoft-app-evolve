@@ -43,9 +43,11 @@ impl<const G: usize> BugsUpdater<G> {
       if bug.energy == 0 {
         continue;
       }
-      let mut x = to_x_from_index(bug.position);
-      let mut y = to_y_from_index(bug.position);
-      if world.flora_present[bug.position] {
+      let bug_position: usize = bug.position;
+      let mut x = to_x_from_index(bug_position);
+      let mut y = to_y_from_index(bug_position);
+      if world.flora_present[bug_position] {
+        world.flora_present[bug_position] = false;
         bug.energy = bug.energy.saturating_add(FLORA_ENERGY);
         if bug.energy > MAX_ENERGY {
           bug.energy = MAX_ENERGY;
@@ -84,15 +86,7 @@ impl<const G: usize> BugsUpdater<G> {
       bug.position = to_index_from_xy(x, y);
       bug.energy = bug.energy.saturating_sub(MOVE_COST);
     }
-    let mut dead_bug_indices = Vec::<usize>::new();
-    for (index, bug) in world.bugs.iter_mut().enumerate() {
-      if bug.energy == 0 {
-        dead_bug_indices.push(index);
-      }
-    }
-    for dead_bug_index in dead_bug_indices {
-      world.bugs.remove(dead_bug_index);
-    }
+    world.bugs.retain(|bug| bug.energy > 0);
     world.bugs.append(&mut new_bugs);
   }
 }
