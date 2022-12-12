@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-10
+//! - Rust version: 2022-12-12
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -27,6 +27,7 @@ use js_sys::Object;
 use wasm_bindgen::JsCast;
 use web_sys::{
   window, CanvasRenderingContext2d, Document, Element, HtmlCanvasElement,
+  HtmlCollection,
 };
 
 use super::overlay::OverlayPainter;
@@ -42,6 +43,16 @@ pub struct WorldPainter<const G: usize> {
 impl<const G: usize> WorldPainter<G> {
   pub fn new(canvas_element_id: &str) -> Self {
     let document: Document = window().unwrap().document().unwrap();
+    let html_collection: HtmlCollection =
+      document.get_elements_by_tag_name("com-croftsoft-app-evolve");
+    let element_option = html_collection.item(0);
+    if let Some(element) = element_option {
+      let canvas_html = format!(
+        "<canvas id=\"{}\" height=\"600\" width=\"600\"></canvas>",
+        canvas_element_id
+      );
+      let _result = element.insert_adjacent_html("afterbegin", &canvas_html);
+    }
     let element: Element =
       document.get_element_by_id(canvas_element_id).unwrap();
     let html_canvas_element: HtmlCanvasElement = element.dyn_into().unwrap();

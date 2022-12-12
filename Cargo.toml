@@ -36,6 +36,7 @@ features = [
   "CanvasRenderingContext2d",
   "Document",
   "HtmlCanvasElement",
+  "HtmlCollection",
   "HtmlDivElement",
   "Performance",
   "Window",
