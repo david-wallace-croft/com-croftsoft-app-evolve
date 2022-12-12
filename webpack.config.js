@@ -14,14 +14,14 @@ module.exports = {
     static: false,
   },
   entry: {
-    index: './js/index.js'
+    index: './js/entry-index.js'
   },
   experiments: {
     asyncWebAssembly: true,
   },
   mode: 'production',
   output: {
-    filename: '[name].js',
+    filename: 'com-croftsoft-app-evolve.js',
     path: path.resolve(__dirname, 'dist')
   },
   plugins: [
