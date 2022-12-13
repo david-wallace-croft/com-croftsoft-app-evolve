@@ -47,11 +47,20 @@ impl<const G: usize> WorldPainter<G> {
       document.get_elements_by_tag_name("com-croftsoft-app-evolve");
     let element_option = html_collection.item(0);
     if let Some(element) = element_option {
-      let canvas_html = format!(
+      let canvas_html: String = format!(
         "<canvas id=\"{}\" height=\"600\" width=\"600\"></canvas>",
         canvas_element_id
       );
-      let _result = element.insert_adjacent_html("afterbegin", &canvas_html);
+      let button_html: String = format!(
+        "<br><button id=\"{}-button\">Garden of Eden</button>",
+        canvas_element_id
+      );
+      let html: String = [
+        canvas_html,
+        button_html,
+      ]
+      .join("\n");
+      let _result = element.insert_adjacent_html("afterbegin", &html);
     }
     let element: Element =
       document.get_element_by_id(canvas_element_id).unwrap();
