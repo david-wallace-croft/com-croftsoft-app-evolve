@@ -27,6 +27,7 @@ use wasm_bindgen::prelude::*;
 use web_sys::console;
 use wee_alloc::WeeAlloc;
 
+mod components;
 mod constants;
 mod functions;
 mod loopers;
