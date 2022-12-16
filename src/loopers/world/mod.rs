@@ -1,3 +1,4 @@
+use crate::components::blight::BlightComponent;
 use crate::models::world::World;
 use crate::painters::world::WorldPainter;
 use crate::updaters::world::WorldUpdater;
@@ -8,6 +9,7 @@ use wasm_bindgen::{closure::WasmClosure, prelude::Closure, JsCast};
 use web_sys::Window;
 
 pub struct WorldLooper<const G: usize> {
+  pub blight_component: BlightComponent<G>,
   pub last_update_time: f64,
   pub world: World<G>,
   pub world_painter: WorldPainter<G>,
@@ -16,6 +18,7 @@ pub struct WorldLooper<const G: usize> {
 
 impl<const G: usize> WorldLooper<G> {
   pub fn loop_once(&mut self) {
+    self.blight_component.update(&mut self.world);
     self.world_updater.update(&mut self.world);
     self.world_painter.paint(&self.world);
   }
@@ -32,11 +35,15 @@ impl<const G: usize> WorldLooper<G> {
     world_painter: WorldPainter<G>,
     world_updater: WorldUpdater<G>,
   ) -> Result<()> {
+    // TODO: move the HTML stuff to an AppComponent
+    let blight_component: BlightComponent<G> =
+      BlightComponent::<G>::initialize().unwrap();
     let last_update_time = window()?
       .performance()
       .ok_or_else(|| anyhow!("Performance object not found"))?
       .now();
     let mut world_looper = WorldLooper {
+      blight_component,
       last_update_time,
       world,
       world_painter,

@@ -47,17 +47,17 @@ impl<const G: usize> WorldPainter<G> {
     let html_collection: HtmlCollection =
       document.get_elements_by_tag_name("com-croftsoft-app-evolve");
     let element_option = html_collection.item(0);
-    let blight_id: &str = &[
-      String::from(canvas_element_id),
-      String::from("blight"),
-    ]
-    .join("-");
+    // let blight_id: &str = &[
+    //   String::from(canvas_element_id),
+    //   String::from("blight"),
+    // ]
+    // .join("-");
     if let Some(element) = element_option {
       let canvas_html: String = format!(
         "<canvas id=\"{}\" height=\"600\" width=\"600\"></canvas>",
         canvas_element_id
       );
-      let button_html: String = BlightComponent::make_html(blight_id);
+      let button_html: String = BlightComponent::<G>::make_html();
       let html: String = [
         canvas_html,
         String::from("<br>"),
@@ -66,9 +66,6 @@ impl<const G: usize> WorldPainter<G> {
       .join("\n");
       let _result = element.insert_adjacent_html("afterbegin", &html);
     }
-    // TODO: move the HTML stuff to an AppComponent
-    let blight_component: BlightComponent =
-      BlightComponent::initialize(blight_id).unwrap();
     let element: Element =
       document.get_element_by_id(canvas_element_id).unwrap();
     let html_canvas_element: HtmlCanvasElement = element.dyn_into().unwrap();
