@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-15
+//! - Rust version: 2022-12-16
 //! - Rust since: 2022-12-15
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -19,6 +19,7 @@
 // =============================================================================
 
 use crate::components::blight::BlightComponent;
+use crate::components::eden::EdenComponent;
 use crate::models::world::World;
 use crate::painters::world::WorldPainter;
 use crate::updaters::world::WorldUpdater;
@@ -30,6 +31,7 @@ use web_sys::Window;
 
 pub struct WorldLooper<const G: usize> {
   pub blight_component: BlightComponent<G>,
+  pub eden_component: EdenComponent<G>,
   pub last_update_time: f64,
   pub world: World<G>,
   pub world_painter: WorldPainter<G>,
@@ -39,6 +41,7 @@ pub struct WorldLooper<const G: usize> {
 impl<const G: usize> WorldLooper<G> {
   pub fn loop_once(&mut self) {
     self.blight_component.update(&mut self.world);
+    self.eden_component.update(&mut self.world);
     self.world_updater.update(&mut self.world);
     self.world_painter.paint(&self.world);
   }
@@ -58,12 +61,15 @@ impl<const G: usize> WorldLooper<G> {
     // TODO: move the HTML stuff to an AppComponent
     let blight_component: BlightComponent<G> =
       BlightComponent::<G>::initialize().unwrap();
+    let eden_component: EdenComponent<G> =
+      EdenComponent::<G>::initialize().unwrap();
     let last_update_time = window()?
       .performance()
       .ok_or_else(|| anyhow!("Performance object not found"))?
       .now();
     let mut world_looper = WorldLooper {
       blight_component,
+      eden_component,
       last_update_time,
       world,
       world_painter,

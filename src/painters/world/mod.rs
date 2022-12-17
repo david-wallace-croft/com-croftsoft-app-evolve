@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-15
+//! - Rust version: 2022-12-16
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -19,6 +19,7 @@
 // =============================================================================
 
 use crate::components::blight::BlightComponent;
+use crate::components::eden::EdenComponent;
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::models::world::World;
 use crate::painters::background::BackgroundPainter;
@@ -57,11 +58,13 @@ impl<const G: usize> WorldPainter<G> {
         "<canvas id=\"{}\" height=\"600\" width=\"600\"></canvas>",
         canvas_element_id
       );
-      let button_html: String = BlightComponent::<G>::make_html();
+      let blight_html: String = BlightComponent::<G>::make_html();
+      let eden_html: String = EdenComponent::<G>::make_html();
       let html: String = [
         canvas_html,
         String::from("<br>"),
-        button_html,
+        blight_html,
+        eden_html,
       ]
       .join("\n");
       let _result = element.insert_adjacent_html("afterbegin", &html);
