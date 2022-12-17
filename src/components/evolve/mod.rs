@@ -20,6 +20,7 @@
 
 use super::blight::BlightComponent;
 use super::eden::EdenComponent;
+use super::reset::ResetComponent;
 
 pub struct EvolveComponent<const G: usize>;
 
@@ -36,11 +37,13 @@ impl<const G: usize> EvolveComponent<G> {
     );
     let blight_html: String = BlightComponent::<G>::make_html();
     let eden_html: String = EdenComponent::<G>::make_html();
+    let reset_html: String = ResetComponent::<G>::make_html();
     [
       canvas_html,
       String::from("<br>"),
       blight_html,
       eden_html,
+      reset_html,
     ]
     .join("\n")
   }

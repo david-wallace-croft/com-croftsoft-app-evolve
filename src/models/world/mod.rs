@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-11
+//! - Rust version: 2022-12-17
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -22,16 +22,15 @@ use crate::constants::{INIT_GROWTH_RATE, SPACE_HEIGHT, SPACE_WIDTH};
 use crate::models::bug::Bug;
 
 pub struct World<const G: usize> {
-  // TODO: animatedComponent
   pub bugs: Vec<Bug<G>>,
   pub bugs_alive: usize,
-  // TODO: droughtButton
-  pub eden_check_box: bool,
-  // TODO: random
+  pub enabled_eden: bool,
   pub flora_growth_rate: usize,
   pub flora_present: [bool; SPACE_HEIGHT * SPACE_WIDTH],
   pub growth_rate_spinner_number_model: usize,
-  // TODO: resetButton
+  pub requested_blight: bool,
+  pub requested_eden: bool,
+  pub requested_reset: bool,
   pub time: usize,
 }
 
@@ -40,10 +39,13 @@ impl<const G: usize> Default for World<G> {
     World {
       bugs: Vec::<Bug<G>>::new(),
       bugs_alive: 0,
-      eden_check_box: false,
+      enabled_eden: false,
       flora_growth_rate: INIT_GROWTH_RATE,
       flora_present: [false; SPACE_HEIGHT * SPACE_WIDTH],
       growth_rate_spinner_number_model: 0,
+      requested_blight: false,
+      requested_eden: false,
+      requested_reset: false,
       time: 0,
     }
   }

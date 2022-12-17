@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-10
+//! - Rust version: 2022-12-17
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -46,7 +46,7 @@ impl<const G: usize> WorldUpdater<G> {
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
       world.flora_present[index] = true;
     }
-    world.eden_check_box = true; // TODO: event?
+    world.enabled_eden = true;
     world.growth_rate_spinner_number_model = INIT_GROWTH_RATE; // TODO: event?
   }
 
@@ -54,8 +54,13 @@ impl<const G: usize> WorldUpdater<G> {
     &self,
     world: &mut World<G>,
   ) {
-    self.flora_updater.update(world);
-    self.bugs_updater.update(world);
+    if world.requested_reset {
+      world.requested_reset = false;
+      self.reset(world);
+    } else {
+      self.flora_updater.update(world);
+      self.bugs_updater.update(world);
+    }
   }
 }
 

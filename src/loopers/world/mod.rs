@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-16
+//! - Rust version: 2022-12-17
 //! - Rust since: 2022-12-15
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -20,6 +20,7 @@
 
 use crate::components::blight::BlightComponent;
 use crate::components::eden::EdenComponent;
+use crate::components::reset::ResetComponent;
 use crate::models::world::World;
 use crate::painters::world::WorldPainter;
 use crate::updaters::world::WorldUpdater;
@@ -32,6 +33,7 @@ use web_sys::Window;
 pub struct WorldLooper<const G: usize> {
   pub blight_component: BlightComponent<G>,
   pub eden_component: EdenComponent<G>,
+  pub reset_component: ResetComponent<G>,
   pub last_update_time: f64,
   pub world: World<G>,
   pub world_painter: WorldPainter<G>,
@@ -42,6 +44,7 @@ impl<const G: usize> WorldLooper<G> {
   pub fn loop_once(&mut self) {
     self.blight_component.update(&mut self.world);
     self.eden_component.update(&mut self.world);
+    self.reset_component.update(&mut self.world);
     self.world_updater.update(&mut self.world);
     self.world_painter.paint(&self.world);
   }
@@ -63,6 +66,8 @@ impl<const G: usize> WorldLooper<G> {
       BlightComponent::<G>::initialize().unwrap();
     let eden_component: EdenComponent<G> =
       EdenComponent::<G>::initialize().unwrap();
+    let reset_component: ResetComponent<G> =
+      ResetComponent::<G>::initialize().unwrap();
     let last_update_time = window()?
       .performance()
       .ok_or_else(|| anyhow!("Performance object not found"))?
@@ -70,6 +75,7 @@ impl<const G: usize> WorldLooper<G> {
     let mut world_looper = WorldLooper {
       blight_component,
       eden_component,
+      reset_component,
       last_update_time,
       world,
       world_painter,
