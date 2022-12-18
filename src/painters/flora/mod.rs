@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-10
+//! - Rust version: 2022-12-18
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -19,7 +19,7 @@
 // =============================================================================
 
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
-use crate::functions::{to_x_from_index, to_y_from_index};
+use crate::functions::location::{to_x_from_index, to_y_from_index};
 use crate::models::world::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;

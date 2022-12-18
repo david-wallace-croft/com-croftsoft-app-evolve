@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-17
+//! - Rust version: 2022-12-18
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -21,7 +21,7 @@
 use super::bugs::BugsUpdater;
 use super::flora::FloraUpdater;
 use crate::constants::{BUGS_MAX, INIT_GROWTH_RATE, SPACE_HEIGHT, SPACE_WIDTH};
-use crate::functions::to_index_from_xy;
+use crate::functions::location::to_index_from_xy;
 use crate::models::bug::Bug;
 use crate::models::world::World;
 

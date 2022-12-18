@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-17
+//! - Rust version: 2022-12-18
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,67 +18,47 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use crate::functions::web_sys::add_click_handler_by_id;
 use crate::models::world::World;
-use futures::channel::mpsc::unbounded;
 use futures::channel::mpsc::UnboundedReceiver;
-use wasm_bindgen::closure::WasmClosure;
-use wasm_bindgen::prelude::Closure;
-use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
-use web_sys::console;
-use web_sys::{window, Document, Element, HtmlElement};
 
 pub struct ResetComponent<const G: usize> {
-  pub unbounded_receiver: UnboundedReceiver<()>,
+  pub id: String,
+  pub unbounded_receiver: Option<UnboundedReceiver<()>>,
 }
 
 impl<const G: usize> ResetComponent<G> {
-  fn add_click_handler(elem: HtmlElement) -> UnboundedReceiver<()> {
-    let (mut click_sender, click_receiver) = unbounded();
-    let on_click = ResetComponent::<G>::closure_wrap(Box::new(move || {
-      let _result: Result<(), futures::channel::mpsc::SendError> =
-        click_sender.start_send(());
-    })
-      as Box<dyn FnMut()>);
-    elem.set_onclick(Some(on_click.as_ref().unchecked_ref()));
-    on_click.forget();
-    click_receiver
+  pub fn init(&mut self) {
+    self.unbounded_receiver = add_click_handler_by_id(&self.id);
   }
 
-  fn closure_wrap<T: WasmClosure + ?Sized>(data: Box<T>) -> Closure<T> {
-    Closure::wrap(data)
-  }
-
-  pub fn initialize() -> Option<Self> {
-    let document: Document = window().unwrap().document().unwrap();
-    let element_option: Option<Element> = document.get_element_by_id("reset");
-    if let Some(element) = element_option {
-      let html_element: HtmlElement = element.dyn_into().unwrap();
-      let unbounded_receiver: UnboundedReceiver<()> =
-        ResetComponent::<G>::add_click_handler(html_element);
-      return Some(Self {
-        unbounded_receiver,
-      });
+  pub fn new(id: &str) -> Self {
+    Self {
+      id: String::from(id),
+      unbounded_receiver: None,
     }
-    None
   }
 
-  pub fn make_html() -> String {
-    String::from("<button id=\"reset\">Reset</button>")
+  pub fn make_html(&self) -> String {
+    format!("<button id=\"{}\">Reset</button>", self.id)
   }
 
   pub fn pressed(&mut self) -> bool {
-    matches!(self.unbounded_receiver.try_next(), Ok(Some(())))
+    if self.unbounded_receiver.is_none() {
+      return false;
+    }
+    matches!(
+      self.unbounded_receiver.as_mut().unwrap().try_next(),
+      Ok(Some(()))
+    )
   }
 
   pub fn update(
     &mut self,
     world: &mut World<G>,
   ) {
-    if !self.pressed() {
-      return;
+    if self.pressed() {
+      world.requested_reset = true;
     }
-    console::log_1(&JsValue::from_str("reset button pressed"));
-    world.requested_reset = true;
   }
 }

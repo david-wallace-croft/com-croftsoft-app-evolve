@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-11
+//! - Rust version: 2022-12-18
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -22,7 +22,9 @@ use crate::constants::{
   BIRTH_ENERGY, BUGS_MAX, FLORA_ENERGY, GENES_MAX, MAX_ENERGY, MOVE_COST,
   SPACE_HEIGHT, SPACE_WIDTH,
 };
-use crate::functions::{to_index_from_xy, to_x_from_index, to_y_from_index};
+use crate::functions::location::{
+  to_index_from_xy, to_x_from_index, to_y_from_index,
+};
 use crate::models::bug::Bug;
 use crate::models::world::World;
 

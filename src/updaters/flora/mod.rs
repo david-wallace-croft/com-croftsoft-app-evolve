@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-17
+//! - Rust version: 2022-12-18
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -21,7 +21,7 @@
 use crate::constants::{
   EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1, SPACE_HEIGHT, SPACE_WIDTH,
 };
-use crate::functions::to_index_from_xy;
+use crate::functions::location::to_index_from_xy;
 use crate::models::world::World;
 use rand::{rngs::ThreadRng, Rng};
 
@@ -32,11 +32,18 @@ impl<const G: usize> FloraUpdater<G> {
     &self,
     world: &mut World<G>,
   ) {
-    let mut thread_rng: ThreadRng = rand::thread_rng();
-    for _i in 0..world.flora_growth_rate {
-      // Randomly position food flora
-      let index: usize = thread_rng.gen_range(0..SPACE_HEIGHT * SPACE_WIDTH);
-      world.flora_present[index] = true;
+    if world.requested_blight {
+      world.requested_blight = false;
+      for i in 0..SPACE_HEIGHT * SPACE_WIDTH {
+        world.flora_present[i] = false;
+      }
+    } else {
+      let mut thread_rng: ThreadRng = rand::thread_rng();
+      for _i in 0..world.flora_growth_rate {
+        // Randomly position food flora
+        let index: usize = thread_rng.gen_range(0..SPACE_HEIGHT * SPACE_WIDTH);
+        world.flora_present[index] = true;
+      }
     }
     if world.requested_eden {
       world.requested_eden = false;

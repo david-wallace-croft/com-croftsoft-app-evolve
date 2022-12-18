@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-15
+//! - Rust version: 2022-12-18
 //! - Rust since: 2022-12-14
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,71 +18,49 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::constants::SPACE_HEIGHT;
-use crate::constants::SPACE_WIDTH;
+use crate::functions::web_sys::add_click_handler_by_id;
 use crate::models::world::World;
-use futures::channel::mpsc::unbounded;
 use futures::channel::mpsc::UnboundedReceiver;
-use wasm_bindgen::closure::WasmClosure;
-use wasm_bindgen::prelude::Closure;
-use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
-use web_sys::console;
-use web_sys::{window, Document, Element, HtmlElement};
 
 pub struct BlightComponent<const G: usize> {
-  pub unbounded_receiver: UnboundedReceiver<()>,
+  pub id: String,
+  pub unbounded_receiver: Option<UnboundedReceiver<()>>,
 }
 
 impl<const G: usize> BlightComponent<G> {
-  fn add_click_handler(elem: HtmlElement) -> UnboundedReceiver<()> {
-    let (mut click_sender, click_receiver) = unbounded();
-    let on_click = BlightComponent::<G>::closure_wrap(Box::new(move || {
-      let _result: Result<(), futures::channel::mpsc::SendError> =
-        click_sender.start_send(());
-    })
-      as Box<dyn FnMut()>);
-    elem.set_onclick(Some(on_click.as_ref().unchecked_ref()));
-    on_click.forget();
-    click_receiver
+  pub fn init(&mut self) {
+    self.unbounded_receiver = add_click_handler_by_id(&self.id);
   }
 
-  fn closure_wrap<T: WasmClosure + ?Sized>(data: Box<T>) -> Closure<T> {
-    Closure::wrap(data)
-  }
-
-  pub fn initialize() -> Option<Self> {
-    let document: Document = window().unwrap().document().unwrap();
-    let element_option: Option<Element> = document.get_element_by_id("blight");
-    if let Some(element) = element_option {
-      let html_element: HtmlElement = element.dyn_into().unwrap();
-      let unbounded_receiver: UnboundedReceiver<()> =
-        BlightComponent::<G>::add_click_handler(html_element);
-      return Some(Self {
-        unbounded_receiver,
-      });
+  pub fn new(id: &str) -> Self {
+    Self {
+      id: String::from(id),
+      unbounded_receiver: None,
     }
-    None
   }
 
-  pub fn make_html() -> String {
-    String::from("<button id=\"blight\">Blight</button>")
-  }
-
-  pub fn pressed(&mut self) -> bool {
-    matches!(self.unbounded_receiver.try_next(), Ok(Some(())))
+  pub fn make_html(&self) -> String {
+    format!("<button id=\"{}\">Blight</button>", self.id)
   }
 
   pub fn update(
     &mut self,
     world: &mut World<G>,
   ) {
-    if !self.pressed() {
-      return;
+    if self.clicked() {
+      world.requested_blight = true;
     }
-    console::log_1(&JsValue::from_str("blight button pressed"));
-    for i in 0..SPACE_HEIGHT * SPACE_WIDTH {
-      world.flora_present[i] = false;
+  }
+
+  // private methods
+
+  fn clicked(&mut self) -> bool {
+    if self.unbounded_receiver.is_none() {
+      return false;
     }
+    matches!(
+      self.unbounded_receiver.as_mut().unwrap().try_next(),
+      Ok(Some(()))
+    )
   }
 }
