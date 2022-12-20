@@ -20,43 +20,42 @@
 
 use crate::components::evolve::EvolveComponent;
 use crate::constants::FRAME_PERIOD_MILLIS;
-use crate::functions::web_sys::{get_window, request_animation_frame};
-use anyhow::{anyhow, Result};
-use std::{cell::RefCell, rc::Rc};
-use wasm_bindgen::prelude::Closure;
 
-type LoopClosure = Closure<dyn FnMut(f64)>;
-
+// TODO: rename this to EvolveLooper
 pub struct WorldLooper<const G: usize> {
-  pub evolve_component: EvolveComponent<G>,
-  pub last_update_time: f64,
+  // TODO: Make EvolveComponent implement a Looper trait then use directly
+  evolve_component: EvolveComponent<G>,
+  // TODO: move this into evolve component if the user can adjust the frame rate
+  frame_period_millis: f64,
 }
 
 impl<const G: usize> WorldLooper<G> {
-  pub async fn start() -> Result<()> {
-    let mut evolve_component = EvolveComponent::<G>::new("evolve");
-    evolve_component.init();
-    let last_update_time = get_window()?
-      .performance()
-      .ok_or_else(|| anyhow!("Performance object not found"))?
-      .now();
-    let mut world_looper = WorldLooper {
-      evolve_component,
-      last_update_time,
-    };
-    let f: Rc<RefCell<Option<LoopClosure>>> = Rc::new(RefCell::new(None));
-    let g = f.clone();
-    *g.borrow_mut() = Some(Closure::wrap(Box::new(move |performance: f64| {
-      if performance - world_looper.last_update_time > FRAME_PERIOD_MILLIS {
-        world_looper.last_update_time = performance;
-        world_looper.evolve_component.update();
-      }
-      let _result: Result<i32, anyhow::Error> =
-        request_animation_frame(f.borrow().as_ref().unwrap());
-    })));
-    request_animation_frame(
-      g.borrow().as_ref().ok_or_else(|| anyhow!("loop failed"))?,
-    )?;
-    Ok(())
+  // TODO: maybe rename this to get_millis_until_next_update()
+  // TODO: maybe rename this to get_next_update_time()
+  // TODO: or maybe this is not needed at all if it decides when to update
+  pub fn get_frame_period_millis(&self) -> f64 {
+    self.frame_period_millis
+  }
+
+  pub fn init(&mut self) {
+    self.evolve_component.init();
+  }
+
+  // TODO: maybe rename this to update()
+  // TODO: maybe return a boolean if it should be updated again
+  pub fn loop_once(&mut self) {
+    self.evolve_component.update();
+  }
+
+  // TODO: add a new() that takes an initial configuration for values
+  // such as frame rate and other parameters
+}
+
+impl<const G: usize> Default for WorldLooper<G> {
+  fn default() -> Self {
+    Self {
+      evolve_component: EvolveComponent::<G>::new("evolve"),
+      frame_period_millis: FRAME_PERIOD_MILLIS,
+    }
   }
 }

@@ -45,6 +45,7 @@ impl<const G: usize> EvolveComponent<G> {
     let element_option = html_collection.item(0);
     let element = element_option.unwrap();
     let evolve_html: String = self.make_html();
+    // TODO: remove existing child nodes
     let _result = element.insert_adjacent_html("afterbegin", &evolve_html);
     self.blight_component.init();
     self.canvas_component.init();

@@ -19,7 +19,7 @@
 // =============================================================================
 
 use constants::INFO;
-use functions::web_sys::log;
+use functions::web_sys::{log, spawn_local_loop};
 use loopers::world::WorldLooper;
 use wasm_bindgen::prelude::*;
 use wee_alloc::WeeAlloc;
@@ -40,8 +40,8 @@ static ALLOC: WeeAlloc = WeeAlloc::INIT;
 pub fn main_js() -> Result<(), JsValue> {
   console_error_panic_hook::set_once();
   log(INFO);
-  wasm_bindgen_futures::spawn_local(async move {
-    WorldLooper::<8>::start().await.expect("loop start failed");
-  });
+  let mut world_looper = WorldLooper::<8>::default();
+  world_looper.init();
+  spawn_local_loop(world_looper);
   Ok(())
 }

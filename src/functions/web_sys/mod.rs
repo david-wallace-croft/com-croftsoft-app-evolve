@@ -11,11 +11,15 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use crate::loopers::world::WorldLooper;
 use anyhow::{anyhow, Result};
 use futures::channel::mpsc::{unbounded, UnboundedReceiver};
+use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::prelude::Closure;
 use wasm_bindgen::{JsCast, JsValue};
 use web_sys::{console, window, Document, Element, HtmlElement, Window};
+
+type LoopClosure = Closure<dyn FnMut(f64)>;
 
 pub fn add_click_handler(elem: HtmlElement) -> UnboundedReceiver<()> {
   let (mut click_sender, click_receiver) = unbounded();
@@ -54,4 +58,35 @@ pub fn request_animation_frame(
   get_window()?
     .request_animation_frame(callback.as_ref().unchecked_ref())
     .map_err(|err| anyhow!("Cannot request animation frame {:#?}", err))
+}
+
+// TODO: change this to an Updater / Looper trait
+pub fn spawn_local_loop<const G: usize>(world_looper: WorldLooper<G>) {
+  wasm_bindgen_futures::spawn_local(async move {
+    start_looping(world_looper).await.expect("loop start failed");
+  });
+}
+
+pub async fn start_looping<const G: usize>(
+  mut world_looper: WorldLooper<G>
+) -> Result<()> {
+  let mut last_update_time = get_window()?
+    .performance()
+    .ok_or_else(|| anyhow!("Performance object not found"))?
+    .now();
+  let f: Rc<RefCell<Option<LoopClosure>>> = Rc::new(RefCell::new(None));
+  let g = f.clone();
+  *g.borrow_mut() = Some(Closure::wrap(Box::new(move |performance: f64| {
+    let frame_period_millis: f64 = world_looper.get_frame_period_millis();
+    if performance - last_update_time > frame_period_millis {
+      last_update_time = performance;
+      world_looper.loop_once();
+    }
+    let _result: Result<i32, anyhow::Error> =
+      request_animation_frame(f.borrow().as_ref().unwrap());
+  })));
+  request_animation_frame(
+    g.borrow().as_ref().ok_or_else(|| anyhow!("loop failed"))?,
+  )?;
+  Ok(())
 }
