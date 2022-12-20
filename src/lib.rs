@@ -18,9 +18,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use components::evolve::EvolveComponent;
 use constants::INFO;
-use functions::wasm_bindgen::spawn_local;
 use functions::web_sys::log;
 use loopers::world::WorldLooper;
 use wasm_bindgen::prelude::*;
@@ -42,10 +40,8 @@ static ALLOC: WeeAlloc = WeeAlloc::INIT;
 pub fn main_js() -> Result<(), JsValue> {
   console_error_panic_hook::set_once();
   log(INFO);
-  spawn_local(async move {
-    let mut evolve_component = EvolveComponent::<8>::new("evolve");
-    evolve_component.init();
-    WorldLooper::<8>::start(evolve_component).await.expect("loop start failed");
+  wasm_bindgen_futures::spawn_local(async move {
+    WorldLooper::<8>::start().await.expect("loop start failed");
   });
   Ok(())
 }

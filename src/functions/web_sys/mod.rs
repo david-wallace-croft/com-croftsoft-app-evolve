@@ -11,15 +11,15 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use super::wasm_bindgen::{closure_wrap, LoopClosure};
 use anyhow::{anyhow, Result};
 use futures::channel::mpsc::{unbounded, UnboundedReceiver};
+use wasm_bindgen::prelude::Closure;
 use wasm_bindgen::{JsCast, JsValue};
 use web_sys::{console, window, Document, Element, HtmlElement, Window};
 
 pub fn add_click_handler(elem: HtmlElement) -> UnboundedReceiver<()> {
   let (mut click_sender, click_receiver) = unbounded();
-  let on_click = closure_wrap(Box::new(move || {
+  let on_click = Closure::wrap(Box::new(move || {
     let _result: Result<(), futures::channel::mpsc::SendError> =
       click_sender.start_send(());
   }) as Box<dyn FnMut()>);
@@ -48,7 +48,9 @@ pub fn log(message: &str) {
   console::log_1(&JsValue::from_str(message));
 }
 
-pub fn request_animation_frame(callback: &LoopClosure) -> Result<i32> {
+pub fn request_animation_frame(
+  callback: &Closure<dyn FnMut(f64)>
+) -> Result<i32> {
   get_window()?
     .request_animation_frame(callback.as_ref().unchecked_ref())
     .map_err(|err| anyhow!("Cannot request animation frame {:#?}", err))

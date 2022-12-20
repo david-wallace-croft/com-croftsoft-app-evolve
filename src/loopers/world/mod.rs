@@ -20,10 +20,12 @@
 
 use crate::components::evolve::EvolveComponent;
 use crate::constants::FRAME_PERIOD_MILLIS;
-use crate::functions::wasm_bindgen::{create_raf_closure, SharedLoopClosure};
 use crate::functions::web_sys::{get_window, request_animation_frame};
 use anyhow::{anyhow, Result};
 use std::{cell::RefCell, rc::Rc};
+use wasm_bindgen::prelude::Closure;
+
+type LoopClosure = Closure<dyn FnMut(f64)>;
 
 pub struct WorldLooper<const G: usize> {
   pub evolve_component: EvolveComponent<G>,
@@ -31,11 +33,9 @@ pub struct WorldLooper<const G: usize> {
 }
 
 impl<const G: usize> WorldLooper<G> {
-  pub fn loop_once(&mut self) {
-    self.evolve_component.update();
-  }
-
-  pub async fn start(evolve_component: EvolveComponent<G>) -> Result<()> {
+  pub async fn start() -> Result<()> {
+    let mut evolve_component = EvolveComponent::<G>::new("evolve");
+    evolve_component.init();
     let last_update_time = get_window()?
       .performance()
       .ok_or_else(|| anyhow!("Performance object not found"))?
@@ -44,16 +44,16 @@ impl<const G: usize> WorldLooper<G> {
       evolve_component,
       last_update_time,
     };
-    let f: SharedLoopClosure = Rc::new(RefCell::new(None));
+    let f: Rc<RefCell<Option<LoopClosure>>> = Rc::new(RefCell::new(None));
     let g = f.clone();
-    *g.borrow_mut() = Some(create_raf_closure(move |performance: f64| {
+    *g.borrow_mut() = Some(Closure::wrap(Box::new(move |performance: f64| {
       if performance - world_looper.last_update_time > FRAME_PERIOD_MILLIS {
         world_looper.last_update_time = performance;
-        world_looper.loop_once();
+        world_looper.evolve_component.update();
       }
       let _result: Result<i32, anyhow::Error> =
         request_animation_frame(f.borrow().as_ref().unwrap());
-    }));
+    })));
     request_animation_frame(
       g.borrow().as_ref().ok_or_else(|| anyhow!("loop failed"))?,
     )?;
