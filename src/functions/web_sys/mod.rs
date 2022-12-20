@@ -85,6 +85,8 @@ pub async fn start_looping<const G: usize>(
     let _result: Result<i32, anyhow::Error> =
       request_animation_frame(f.borrow().as_ref().unwrap());
   })));
+  // TODO: Do we even need a looper? Might be able to loop just by
+  // requesting animation frames.
   request_animation_frame(
     g.borrow().as_ref().ok_or_else(|| anyhow!("loop failed"))?,
   )?;
