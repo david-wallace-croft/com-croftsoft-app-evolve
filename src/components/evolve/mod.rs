@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-18
+//! - Rust version: 2022-12-19
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,14 +18,14 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use web_sys::{Document, HtmlCollection};
-
 use super::blight::BlightComponent;
 use super::canvas::CanvasComponent;
 use super::eden::EdenComponent;
 use super::reset::ResetComponent;
-use crate::loopers::world::window;
+use crate::functions::web_sys::get_window;
 use crate::models::world::World;
+use crate::updaters::world::WorldUpdater;
+use web_sys::{Document, HtmlCollection};
 
 pub struct EvolveComponent<const G: usize> {
   blight_component: BlightComponent<G>,
@@ -33,11 +33,13 @@ pub struct EvolveComponent<const G: usize> {
   eden_component: EdenComponent<G>,
   id: String,
   reset_component: ResetComponent<G>,
+  world: World<G>,
+  world_updater: WorldUpdater<G>,
 }
 
 impl<const G: usize> EvolveComponent<G> {
   pub fn init(&mut self) {
-    let document: Document = window().unwrap().document().unwrap();
+    let document: Document = get_window().unwrap().document().unwrap();
     let html_collection: HtmlCollection =
       document.get_elements_by_tag_name("com-croftsoft-app-evolve");
     let element_option = html_collection.item(0);
@@ -45,6 +47,7 @@ impl<const G: usize> EvolveComponent<G> {
     let evolve_html: String = self.make_html();
     let _result = element.insert_adjacent_html("afterbegin", &evolve_html);
     self.blight_component.init();
+    self.canvas_component.init();
     self.eden_component.init();
     self.reset_component.init();
   }
@@ -73,15 +76,16 @@ impl<const G: usize> EvolveComponent<G> {
       eden_component: EdenComponent::<G>::new("eden"),
       id: String::from(id),
       reset_component: ResetComponent::<G>::new("reset"),
+      world: World::<G>::default(),
+      world_updater: WorldUpdater::default(),
     }
   }
 
-  pub fn update(
-    &mut self,
-    world: &mut World<G>,
-  ) {
-    self.blight_component.update(world);
-    self.eden_component.update(world);
-    self.reset_component.update(world);
+  pub fn update(&mut self) {
+    self.blight_component.update(&mut self.world);
+    self.eden_component.update(&mut self.world);
+    self.reset_component.update(&mut self.world);
+    self.world_updater.update(&mut self.world);
+    self.canvas_component.paint(&self.world);
   }
 }

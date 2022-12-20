@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-11
+//! - Rust version: 2022-12-19
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -35,7 +35,8 @@ pub const EDEN_Y0: usize = (SPACE_WIDTH - EDEN_WIDTH) / 2;
 pub const EDEN_Y1: usize = EDEN_Y0 + EDEN_HEIGHT - 1;
 pub const FLORA_ENERGY: usize = 20;
 // TODO: FONT_STYLE bold
-// pub const FRAME_RATE: f64 = 1.0;
+pub const FRAME_PERIOD_MILLIS: f64 = 1_000.0 / FRAMES_PER_SECOND;
+pub const FRAMES_PER_SECOND: f64 = 1.0;
 // TODO: FRAME_SIZE
 pub const GENES_MAX: usize = 8;
 pub const INIT_GROWTH_RATE: usize = 10;

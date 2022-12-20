@@ -4,17 +4,18 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-18
+//! - Rust version: 2022-12-19
 //! - Rust since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use super::wasm_bindgen::closure_wrap;
+use super::wasm_bindgen::{closure_wrap, LoopClosure};
+use anyhow::{anyhow, Result};
 use futures::channel::mpsc::{unbounded, UnboundedReceiver};
 use wasm_bindgen::{JsCast, JsValue};
-use web_sys::{console, window, Document, Element, HtmlElement};
+use web_sys::{console, window, Document, Element, HtmlElement, Window};
 
 pub fn add_click_handler(elem: HtmlElement) -> UnboundedReceiver<()> {
   let (mut click_sender, click_receiver) = unbounded();
@@ -39,6 +40,16 @@ pub fn get_html_element_by_id(id: &str) -> HtmlElement {
   element.dyn_into().unwrap()
 }
 
+pub fn get_window() -> Result<Window> {
+  web_sys::window().ok_or_else(|| anyhow!("No Window Found"))
+}
+
 pub fn log(message: &str) {
   console::log_1(&JsValue::from_str(message));
+}
+
+pub fn request_animation_frame(callback: &LoopClosure) -> Result<i32> {
+  get_window()?
+    .request_animation_frame(callback.as_ref().unchecked_ref())
+    .map_err(|err| anyhow!("Cannot request animation frame {:#?}", err))
 }

@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-17
+//! - Rust version: 2022-12-19
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -45,7 +45,7 @@ impl<const G: usize> Default for World<G> {
       growth_rate_spinner_number_model: 0,
       requested_blight: false,
       requested_eden: false,
-      requested_reset: false,
+      requested_reset: true,
       time: 0,
     }
   }
