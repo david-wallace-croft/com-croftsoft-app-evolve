@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-19
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -17,6 +17,8 @@
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
+
+use crate::components::evolve::EvolveComponentInitialConfiguration;
 
 // pub static FRAME_ICON_FILENAME: &str = "/images/david.png";
 // pub static SHUTDOWN_CONFIRMATION_PROMPT: &str = "Close CroftSoft Evolve?";
@@ -35,7 +37,7 @@ pub const EDEN_Y0: usize = (SPACE_WIDTH - EDEN_WIDTH) / 2;
 pub const EDEN_Y1: usize = EDEN_Y0 + EDEN_HEIGHT - 1;
 pub const FLORA_ENERGY: usize = 20;
 // TODO: FONT_STYLE bold
-pub const FRAME_PERIOD_MILLIS: f64 = 1_000.0 / FRAMES_PER_SECOND;
+pub const FRAME_PERIOD_MILLIS_MINIMUM: f64 = 10.0;
 pub const FRAMES_PER_SECOND: f64 = 1.0;
 // TODO: FRAME_SIZE
 pub const GENES_MAX: usize = 8;
@@ -48,3 +50,8 @@ pub const SPACE_HEIGHT: usize = 100;
 pub const SPACE_WIDTH: usize = 100;
 // pub const SPINNER_STEP_SIZE: usize = 1;
 // pub const TEXT_MARGIN: usize = 10;
+
+pub const INITIAL_CONFIGURATION: EvolveComponentInitialConfiguration =
+  EvolveComponentInitialConfiguration {
+    frame_period_millis: 1_000.0 / FRAMES_PER_SECOND,
+  };

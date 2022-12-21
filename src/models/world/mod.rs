@@ -28,9 +28,11 @@ pub struct World {
   pub flora_growth_rate: usize,
   pub flora_present: [bool; SPACE_HEIGHT * SPACE_WIDTH],
   pub growth_rate_spinner_number_model: usize,
+  // TODO: move requested flags out of World model
   pub requested_blight: bool,
   pub requested_eden: bool,
   pub requested_reset: bool,
+  pub requested_speed: bool,
   pub time: usize,
 }
 
@@ -46,6 +48,7 @@ impl Default for World {
       requested_blight: false,
       requested_eden: false,
       requested_reset: true,
+      requested_speed: false,
       time: 0,
     }
   }

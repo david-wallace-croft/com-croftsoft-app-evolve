@@ -18,8 +18,8 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use components::evolve::{EvolveComponent, EvolveComponentConfiguration};
-use constants::{FRAME_PERIOD_MILLIS, INFO};
+use components::evolve::EvolveComponent;
+use constants::INFO;
 use functions::web_sys::log;
 use wasm_bindgen::prelude::*;
 use wee_alloc::WeeAlloc;
@@ -39,10 +39,7 @@ static ALLOC: WeeAlloc = WeeAlloc::INIT;
 pub fn main_js() -> Result<(), JsValue> {
   console_error_panic_hook::set_once();
   log(INFO);
-  let config = EvolveComponentConfiguration {
-    frame_period_millis: FRAME_PERIOD_MILLIS,
-  };
-  let mut evolve_component = EvolveComponent::new(config);
+  let mut evolve_component = EvolveComponent::default();
   evolve_component.init();
   evolve_component.start();
   Ok(())
