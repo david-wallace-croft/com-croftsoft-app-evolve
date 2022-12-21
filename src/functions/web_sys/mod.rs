@@ -11,7 +11,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::loopers::world::WorldLooper;
+use crate::components::evolve::EvolveComponent;
 use anyhow::{anyhow, Result};
 use futures::channel::mpsc::{unbounded, UnboundedReceiver};
 use std::{cell::RefCell, rc::Rc};
@@ -61,25 +61,19 @@ pub fn request_animation_frame(
 }
 
 // TODO: change this to an Updater / Looper trait
-pub fn spawn_local_loop(world_looper: WorldLooper) {
+pub fn spawn_local_loop(evolve_component: EvolveComponent) {
   wasm_bindgen_futures::spawn_local(async move {
-    start_looping(world_looper).await.expect("loop start failed");
+    start_looping(evolve_component).await.expect("loop start failed");
   });
 }
 
-pub async fn start_looping(mut world_looper: WorldLooper) -> Result<()> {
-  let mut last_update_time = get_window()?
-    .performance()
-    .ok_or_else(|| anyhow!("Performance object not found"))?
-    .now();
+pub async fn start_looping(
+  mut evolve_component: EvolveComponent
+) -> Result<()> {
   let f: Rc<RefCell<Option<LoopClosure>>> = Rc::new(RefCell::new(None));
   let g = f.clone();
-  *g.borrow_mut() = Some(Closure::wrap(Box::new(move |performance: f64| {
-    let frame_period_millis: f64 = world_looper.get_frame_period_millis();
-    if performance - last_update_time > frame_period_millis {
-      last_update_time = performance;
-      world_looper.loop_once();
-    }
+  *g.borrow_mut() = Some(Closure::wrap(Box::new(move |update_time: f64| {
+    evolve_component.update(update_time);
     let _result: Result<i32, anyhow::Error> =
       request_animation_frame(f.borrow().as_ref().unwrap());
   })));

@@ -18,16 +18,15 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use components::evolve::EvolveComponent;
 use constants::INFO;
-use functions::web_sys::{log, spawn_local_loop};
-use loopers::world::WorldLooper;
+use functions::web_sys::log;
 use wasm_bindgen::prelude::*;
 use wee_alloc::WeeAlloc;
 
 mod components;
 mod constants;
 mod functions;
-mod loopers;
 mod models;
 mod painters;
 mod updaters;
@@ -40,8 +39,8 @@ static ALLOC: WeeAlloc = WeeAlloc::INIT;
 pub fn main_js() -> Result<(), JsValue> {
   console_error_panic_hook::set_once();
   log(INFO);
-  let mut world_looper = WorldLooper::default();
-  world_looper.init();
-  spawn_local_loop(world_looper);
+  let mut evolve_component = EvolveComponent::new("evolve");
+  evolve_component.init();
+  evolve_component.start();
   Ok(())
 }

@@ -22,7 +22,8 @@ use super::blight::BlightComponent;
 use super::canvas::CanvasComponent;
 use super::eden::EdenComponent;
 use super::reset::ResetComponent;
-use crate::functions::web_sys::get_window;
+use crate::constants::FRAME_PERIOD_MILLIS;
+use crate::functions::web_sys::{get_window, spawn_local_loop};
 use crate::models::world::World;
 use crate::updaters::world::WorldUpdater;
 use web_sys::{Document, HtmlCollection};
@@ -32,6 +33,7 @@ pub struct EvolveComponent {
   canvas_component: CanvasComponent,
   eden_component: EdenComponent,
   id: String,
+  next_update_time: f64,
   reset_component: ResetComponent,
   world: World,
   world_updater: WorldUpdater,
@@ -76,13 +78,25 @@ impl EvolveComponent {
       canvas_component: CanvasComponent::new("canvas"),
       eden_component: EdenComponent::new("eden"),
       id: String::from(id),
+      next_update_time: 0.0,
       reset_component: ResetComponent::new("reset"),
       world: World::default(),
       world_updater: WorldUpdater::default(),
     }
   }
 
-  pub fn update(&mut self) {
+  pub fn start(self) {
+    spawn_local_loop(self);
+  }
+
+  pub fn update(
+    &mut self,
+    update_time: f64,
+  ) {
+    if update_time < self.next_update_time {
+      return;
+    }
+    self.next_update_time = update_time + FRAME_PERIOD_MILLIS;
     self.blight_component.update(&mut self.world);
     self.eden_component.update(&mut self.world);
     self.reset_component.update(&mut self.world);
