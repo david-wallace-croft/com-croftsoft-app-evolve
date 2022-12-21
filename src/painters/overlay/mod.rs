@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-11
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -21,16 +21,17 @@
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
+use crate::constants::GENES_MAX;
 use crate::models::world::World;
 
-pub struct OverlayPainter<const G: usize> {
+pub struct OverlayPainter {
   pub fill_style: JsValue,
 }
 
-impl<const G: usize> OverlayPainter<G> {
+impl OverlayPainter {
   fn make_genes_average_string(
     &self,
-    world: &World<G>,
+    world: &World,
   ) -> String {
     let mut gene_x_string = String::from("X:");
     let mut gene_y_string = String::from("Y:");
@@ -40,7 +41,7 @@ impl<const G: usize> OverlayPainter<G> {
         bugs_alive += 1;
       }
     }
-    for i in 0..G {
+    for i in 0..GENES_MAX {
       let mut x_sum: usize = 0;
       let mut y_sum: usize = 0;
       for bug in world.bugs.iter() {
@@ -72,7 +73,7 @@ impl<const G: usize> OverlayPainter<G> {
 
   fn make_status_string(
     &self,
-    world: &World<G>,
+    world: &World,
   ) -> String {
     let genes_average_string = self.make_genes_average_string(world);
     let bugs_alive = world.bugs.iter().fold(0, |count, bug| {
@@ -92,7 +93,7 @@ impl<const G: usize> OverlayPainter<G> {
   pub fn paint(
     &self,
     context: &CanvasRenderingContext2d,
-    world: &World<G>,
+    world: &World,
   ) {
     let status_string = self.make_status_string(world);
     context.set_fill_style(&self.fill_style);
@@ -101,7 +102,7 @@ impl<const G: usize> OverlayPainter<G> {
   }
 }
 
-impl<const G: usize> Default for OverlayPainter<G> {
+impl Default for OverlayPainter {
   fn default() -> Self {
     let fill_style: JsValue = JsValue::from_str("white");
     Self {

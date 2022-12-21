@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-18
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -25,12 +25,13 @@ use crate::functions::location::to_index_from_xy;
 use crate::models::world::World;
 use rand::{rngs::ThreadRng, Rng};
 
-pub struct FloraUpdater<const G: usize> {}
+#[derive(Default)]
+pub struct FloraUpdater {}
 
-impl<const G: usize> FloraUpdater<G> {
+impl FloraUpdater {
   pub fn update(
     &self,
-    world: &mut World<G>,
+    world: &mut World,
   ) {
     if world.requested_blight {
       world.requested_blight = false;
@@ -58,11 +59,5 @@ impl<const G: usize> FloraUpdater<G> {
         }
       }
     }
-  }
-}
-
-impl<const G: usize> Default for FloraUpdater<G> {
-  fn default() -> Self {
-    Self {}
   }
 }

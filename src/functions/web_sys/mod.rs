@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-19
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -61,15 +61,13 @@ pub fn request_animation_frame(
 }
 
 // TODO: change this to an Updater / Looper trait
-pub fn spawn_local_loop<const G: usize>(world_looper: WorldLooper<G>) {
+pub fn spawn_local_loop(world_looper: WorldLooper) {
   wasm_bindgen_futures::spawn_local(async move {
     start_looping(world_looper).await.expect("loop start failed");
   });
 }
 
-pub async fn start_looping<const G: usize>(
-  mut world_looper: WorldLooper<G>
-) -> Result<()> {
+pub async fn start_looping(mut world_looper: WorldLooper) -> Result<()> {
   let mut last_update_time = get_window()?
     .performance()
     .ok_or_else(|| anyhow!("Performance object not found"))?

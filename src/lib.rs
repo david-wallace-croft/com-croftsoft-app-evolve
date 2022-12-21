@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-19
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-09-12
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -40,7 +40,7 @@ static ALLOC: WeeAlloc = WeeAlloc::INIT;
 pub fn main_js() -> Result<(), JsValue> {
   console_error_panic_hook::set_once();
   log(INFO);
-  let mut world_looper = WorldLooper::<8>::default();
+  let mut world_looper = WorldLooper::default();
   world_looper.init();
   spawn_local_loop(world_looper);
   Ok(())

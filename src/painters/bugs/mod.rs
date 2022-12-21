@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-18
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -24,7 +24,7 @@ use crate::models::world::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
-pub struct BugsPainter<const G: usize> {
+pub struct BugsPainter {
   pub bug_color_cruiser: JsValue,
   pub bug_color_normal: JsValue,
   pub bug_color_twirler: JsValue,
@@ -35,7 +35,7 @@ pub struct BugsPainter<const G: usize> {
   pub scale_y: f64,
 }
 
-impl<const G: usize> BugsPainter<G> {
+impl BugsPainter {
   pub fn new(
     scale_x: f64,
     scale_y: f64,
@@ -61,7 +61,7 @@ impl<const G: usize> BugsPainter<G> {
   pub fn paint(
     &self,
     context: &CanvasRenderingContext2d,
-    world: &World<G>,
+    world: &World,
   ) {
     for bug in world.bugs.iter() {
       let bug_color = match bug.species {

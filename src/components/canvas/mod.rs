@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-19
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -14,12 +14,12 @@
 use crate::models::world::World;
 use crate::painters::world::WorldPainter;
 
-pub struct CanvasComponent<const G: usize> {
+pub struct CanvasComponent {
   pub id: String,
-  pub world_painter_option: Option<WorldPainter<G>>,
+  pub world_painter_option: Option<WorldPainter>,
 }
 
-impl<const G: usize> CanvasComponent<G> {
+impl CanvasComponent {
   pub fn init(&mut self) {
     self.world_painter_option = Some(WorldPainter::new("canvas"));
   }
@@ -40,7 +40,7 @@ impl<const G: usize> CanvasComponent<G> {
 
   pub fn paint(
     &self,
-    world: &World<G>,
+    world: &World,
   ) {
     if let Some(world_painter) = &self.world_painter_option {
       world_painter.paint(world);

@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-19
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-12-15
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -22,14 +22,13 @@ use crate::components::evolve::EvolveComponent;
 use crate::constants::FRAME_PERIOD_MILLIS;
 
 // TODO: rename this to EvolveLooper
-pub struct WorldLooper<const G: usize> {
+pub struct WorldLooper {
   // TODO: Make EvolveComponent implement a Looper trait then use directly
-  evolve_component: EvolveComponent<G>,
-  // TODO: move this into evolve component if the user can adjust the frame rate
+  evolve_component: EvolveComponent, // TODO: move this into evolve component if the user can adjust the frame rate
   frame_period_millis: f64,
 }
 
-impl<const G: usize> WorldLooper<G> {
+impl WorldLooper {
   // TODO: maybe rename this to get_millis_until_next_update()
   // TODO: maybe rename this to get_next_update_time()
   // TODO: or maybe this is not needed at all if it decides when to update
@@ -51,10 +50,10 @@ impl<const G: usize> WorldLooper<G> {
   // such as frame rate and other parameters
 }
 
-impl<const G: usize> Default for WorldLooper<G> {
+impl Default for WorldLooper {
   fn default() -> Self {
     Self {
-      evolve_component: EvolveComponent::<G>::new("evolve"),
+      evolve_component: EvolveComponent::new("evolve"),
       frame_period_millis: FRAME_PERIOD_MILLIS,
     }
   }

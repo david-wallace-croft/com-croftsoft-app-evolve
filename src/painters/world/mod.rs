@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-18
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -31,15 +31,15 @@ use web_sys::{
 
 use super::overlay::OverlayPainter;
 
-pub struct WorldPainter<const G: usize> {
+pub struct WorldPainter {
   pub background_painter: BackgroundPainter,
-  pub bugs_painter: BugsPainter<G>,
+  pub bugs_painter: BugsPainter,
   pub context: CanvasRenderingContext2d,
-  pub flora_painter: FloraPainter<G>,
-  pub overlay_painter: OverlayPainter<G>,
+  pub flora_painter: FloraPainter,
+  pub overlay_painter: OverlayPainter,
 }
 
-impl<const G: usize> WorldPainter<G> {
+impl WorldPainter {
   pub fn new(canvas_element_id: &str) -> Self {
     let document: Document = window().unwrap().document().unwrap();
     let element: Element =
@@ -68,7 +68,7 @@ impl<const G: usize> WorldPainter<G> {
 
   pub fn paint(
     &self,
-    world: &World<G>,
+    world: &World,
   ) {
     self.background_painter.paint(&self.context);
     self.flora_painter.paint(&self.context, world);

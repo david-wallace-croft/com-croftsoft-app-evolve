@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-18
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -28,18 +28,19 @@ use crate::functions::location::{
 use crate::models::bug::Bug;
 use crate::models::world::World;
 
-pub struct BugsUpdater<const G: usize> {}
+#[derive(Default)]
+pub struct BugsUpdater {}
 
-impl<const G: usize> BugsUpdater<G> {
+impl BugsUpdater {
   pub fn update(
     &self,
-    world: &mut World<G>,
+    world: &mut World,
   ) {
     world.time = world.time.saturating_add(1);
     if world.time >= GENES_MAX {
       world.time = 0;
     }
-    let mut new_bugs = Vec::<Bug<G>>::new();
+    let mut new_bugs = Vec::<Bug>::new();
     let bugs_length = world.bugs.len();
     for bug in world.bugs.iter_mut() {
       if bug.energy == 0 {
@@ -90,11 +91,5 @@ impl<const G: usize> BugsUpdater<G> {
     }
     world.bugs.retain(|bug| bug.energy > 0);
     world.bugs.append(&mut new_bugs);
-  }
-}
-
-impl<const G: usize> Default for BugsUpdater<G> {
-  fn default() -> Self {
-    Self {}
   }
 }

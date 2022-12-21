@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-18
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -22,12 +22,12 @@ use crate::functions::web_sys::add_click_handler_by_id;
 use crate::models::world::World;
 use futures::channel::mpsc::UnboundedReceiver;
 
-pub struct ResetComponent<const G: usize> {
+pub struct ResetComponent {
   pub id: String,
   pub unbounded_receiver: Option<UnboundedReceiver<()>>,
 }
 
-impl<const G: usize> ResetComponent<G> {
+impl ResetComponent {
   pub fn init(&mut self) {
     self.unbounded_receiver = add_click_handler_by_id(&self.id);
   }
@@ -55,7 +55,7 @@ impl<const G: usize> ResetComponent<G> {
 
   pub fn update(
     &mut self,
-    world: &mut World<G>,
+    world: &mut World,
   ) {
     if self.pressed() {
       world.requested_reset = true;

@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-18
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -25,15 +25,15 @@ use crate::functions::location::to_index_from_xy;
 use crate::models::bug::Bug;
 use crate::models::world::World;
 
-pub struct WorldUpdater<const G: usize> {
-  pub bugs_updater: BugsUpdater<G>,
-  pub flora_updater: FloraUpdater<G>,
+pub struct WorldUpdater {
+  pub bugs_updater: BugsUpdater,
+  pub flora_updater: FloraUpdater,
 }
 
-impl<const G: usize> WorldUpdater<G> {
+impl WorldUpdater {
   pub fn reset(
     &self,
-    world: &mut World<G>,
+    world: &mut World,
   ) {
     let position: usize = to_index_from_xy(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
     world.bugs.clear();
@@ -52,7 +52,7 @@ impl<const G: usize> WorldUpdater<G> {
 
   pub fn update(
     &self,
-    world: &mut World<G>,
+    world: &mut World,
   ) {
     if world.requested_reset {
       world.requested_reset = false;
@@ -64,7 +64,7 @@ impl<const G: usize> WorldUpdater<G> {
   }
 }
 
-impl<const G: usize> Default for WorldUpdater<G> {
+impl Default for WorldUpdater {
   fn default() -> Self {
     let bugs_updater = BugsUpdater::default();
     let flora_updater = FloraUpdater::default();

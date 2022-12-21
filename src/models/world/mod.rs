@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-19
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -21,8 +21,8 @@
 use crate::constants::{INIT_GROWTH_RATE, SPACE_HEIGHT, SPACE_WIDTH};
 use crate::models::bug::Bug;
 
-pub struct World<const G: usize> {
-  pub bugs: Vec<Bug<G>>,
+pub struct World {
+  pub bugs: Vec<Bug>,
   pub bugs_alive: usize,
   pub enabled_eden: bool,
   pub flora_growth_rate: usize,
@@ -34,10 +34,10 @@ pub struct World<const G: usize> {
   pub time: usize,
 }
 
-impl<const G: usize> Default for World<G> {
+impl Default for World {
   fn default() -> Self {
     World {
-      bugs: Vec::<Bug<G>>::new(),
+      bugs: Vec::<Bug>::new(),
       bugs_alive: 0,
       enabled_eden: false,
       flora_growth_rate: INIT_GROWTH_RATE,

@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-19
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -27,17 +27,17 @@ use crate::models::world::World;
 use crate::updaters::world::WorldUpdater;
 use web_sys::{Document, HtmlCollection};
 
-pub struct EvolveComponent<const G: usize> {
-  blight_component: BlightComponent<G>,
-  canvas_component: CanvasComponent<G>,
-  eden_component: EdenComponent<G>,
+pub struct EvolveComponent {
+  blight_component: BlightComponent,
+  canvas_component: CanvasComponent,
+  eden_component: EdenComponent,
   id: String,
-  reset_component: ResetComponent<G>,
-  world: World<G>,
-  world_updater: WorldUpdater<G>,
+  reset_component: ResetComponent,
+  world: World,
+  world_updater: WorldUpdater,
 }
 
-impl<const G: usize> EvolveComponent<G> {
+impl EvolveComponent {
   pub fn init(&mut self) {
     let document: Document = get_window().unwrap().document().unwrap();
     let html_collection: HtmlCollection =
@@ -72,12 +72,12 @@ impl<const G: usize> EvolveComponent<G> {
 
   pub fn new(id: &str) -> Self {
     Self {
-      blight_component: BlightComponent::<G>::new("blight"),
-      canvas_component: CanvasComponent::<G>::new("canvas"),
-      eden_component: EdenComponent::<G>::new("eden"),
+      blight_component: BlightComponent::new("blight"),
+      canvas_component: CanvasComponent::new("canvas"),
+      eden_component: EdenComponent::new("eden"),
       id: String::from(id),
-      reset_component: ResetComponent::<G>::new("reset"),
-      world: World::<G>::default(),
+      reset_component: ResetComponent::new("reset"),
+      world: World::default(),
       world_updater: WorldUpdater::default(),
     }
   }

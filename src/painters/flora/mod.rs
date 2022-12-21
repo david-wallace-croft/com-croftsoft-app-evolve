@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-18
+//! - Rust version: 2022-12-20
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -24,7 +24,7 @@ use crate::models::world::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
-pub struct FloraPainter<const G: usize> {
+pub struct FloraPainter {
   pub fill_style: JsValue,
   pub flora_height: f64,
   pub flora_width: f64,
@@ -32,7 +32,7 @@ pub struct FloraPainter<const G: usize> {
   pub scale_y: f64,
 }
 
-impl<const G: usize> FloraPainter<G> {
+impl FloraPainter {
   pub fn new(
     scale_x: f64,
     scale_y: f64,
@@ -52,7 +52,7 @@ impl<const G: usize> FloraPainter<G> {
   pub fn paint(
     &self,
     context: &CanvasRenderingContext2d,
-    world: &World<G>,
+    world: &World,
   ) {
     context.set_fill_style(&self.fill_style);
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
