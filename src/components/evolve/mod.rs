@@ -22,17 +22,20 @@ use super::blight::BlightComponent;
 use super::canvas::CanvasComponent;
 use super::eden::EdenComponent;
 use super::reset::ResetComponent;
-use crate::constants::FRAME_PERIOD_MILLIS;
 use crate::functions::web_sys::{get_window, spawn_local_loop};
 use crate::models::world::World;
 use crate::updaters::world::WorldUpdater;
 use web_sys::{Document, HtmlCollection};
 
+pub struct EvolveComponentConfiguration {
+  pub frame_period_millis: f64,
+}
+
 pub struct EvolveComponent {
   blight_component: BlightComponent,
   canvas_component: CanvasComponent,
   eden_component: EdenComponent,
-  id: String,
+  frame_period_millis: f64,
   next_update_time: f64,
   reset_component: ResetComponent,
   world: World,
@@ -61,7 +64,7 @@ impl EvolveComponent {
     let eden_html: String = self.eden_component.make_html();
     let reset_html: String = self.reset_component.make_html();
     [
-      format!("<div id={}>", self.id),
+      String::from("<div id=\"evolve\">"),
       canvas_html,
       String::from("<br>"),
       blight_html,
@@ -72,12 +75,15 @@ impl EvolveComponent {
     .join("\n")
   }
 
-  pub fn new(id: &str) -> Self {
+  pub fn new(config: EvolveComponentConfiguration) -> Self {
+    let EvolveComponentConfiguration {
+      frame_period_millis,
+    } = config;
     Self {
       blight_component: BlightComponent::new("blight"),
       canvas_component: CanvasComponent::new("canvas"),
       eden_component: EdenComponent::new("eden"),
-      id: String::from(id),
+      frame_period_millis,
       next_update_time: 0.0,
       reset_component: ResetComponent::new("reset"),
       world: World::default(),
@@ -96,7 +102,7 @@ impl EvolveComponent {
     if update_time < self.next_update_time {
       return;
     }
-    self.next_update_time = update_time + FRAME_PERIOD_MILLIS;
+    self.next_update_time = update_time + self.frame_period_millis;
     self.blight_component.update(&mut self.world);
     self.eden_component.update(&mut self.world);
     self.reset_component.update(&mut self.world);
