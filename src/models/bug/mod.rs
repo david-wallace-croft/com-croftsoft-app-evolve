@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
+//! - Rust version: 2022-12-21
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -48,13 +48,16 @@ impl Bug {
       baby_bug.genes_y[index] = self.genes_y[index];
     }
     let mut thread_rng: ThreadRng = rand::thread_rng();
-    let mutant_gene_index: usize = thread_rng.gen_range(0..GENES_MAX);
-    if rand::random() {
-      baby_bug.genes_x[mutant_gene_index] = self.genes_x[mutant_gene_index];
-    } else {
-      baby_bug.genes_y[mutant_gene_index] = self.genes_y[mutant_gene_index];
+    let roll: usize = thread_rng.gen_range(0..10);
+    if roll == 0 {
+      let mutant_gene_index: usize = thread_rng.gen_range(0..GENES_MAX);
+      if rand::random() {
+        baby_bug.genes_x[mutant_gene_index] = !self.genes_x[mutant_gene_index];
+      } else {
+        baby_bug.genes_y[mutant_gene_index] = !self.genes_y[mutant_gene_index];
+      }
     }
-    baby_bug.update_species();
+    baby_bug.classify_species();
     baby_bug
   }
 
@@ -74,31 +77,33 @@ impl Bug {
       genes_y,
       position,
     };
-    bug.update_species();
+    bug.classify_species();
     bug
   }
 
-  pub fn update_species(&mut self) {
-    let mut x_count = 0;
-    let mut y_count = 0;
+  pub fn classify_species(&mut self) {
+    let mut x_sum: isize = 0;
+    let mut y_sum: isize = 0;
     for i in 0..GENES_MAX {
       if self.genes_x[i] {
-        x_count += 1;
+        x_sum += 1;
+      } else {
+        x_sum -= 1;
       }
       if self.genes_y[i] {
-        y_count += 1;
+        y_sum += 1;
+      } else {
+        y_sum -= 1;
       }
     }
-    let mut species = Species::Normal;
-    if x_count == GENES_MAX / 2 && y_count == GENES_MAX / 2 {
-      species = Species::Twirler;
-    } else if x_count == 0
-      || x_count == GENES_MAX
-      || y_count == 0
-      || y_count == GENES_MAX
-    {
-      species = Species::Cruiser;
+    let unscaled_speed: f64 =
+      ((x_sum as f64).powi(2) + (y_sum as f64).powi(2)).sqrt();
+    let scaling_factor: f64 = (2.0 * ((GENES_MAX as f64).powi(2))).sqrt();
+    let speed: f64 = unscaled_speed / scaling_factor;
+    if speed >= 0.70 {
+      self.species = Species::Cruiser;
+    } else if speed <= 0.30 {
+      self.species = Species::Twirler;
     }
-    self.species = species;
   }
 }
