@@ -36,7 +36,7 @@ pub struct Bug {
 pub enum Species {
   Cruiser,
   Normal,
-  Twirler,
+  Twirlie,
 }
 
 impl Bug {
@@ -103,7 +103,7 @@ impl Bug {
     if speed >= 0.70 {
       self.species = Species::Cruiser;
     } else if speed <= 0.30 {
-      self.species = Species::Twirler;
+      self.species = Species::Twirlie;
     }
   }
 }

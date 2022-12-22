@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
+//! - Rust version: 2022-12-21
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -67,7 +67,7 @@ impl BugsPainter {
       let bug_color = match bug.species {
         Species::Cruiser => &self.bug_color_cruiser,
         Species::Normal => &self.bug_color_normal,
-        Species::Twirler => &self.bug_color_twirler,
+        Species::Twirlie => &self.bug_color_twirler,
       };
       context.set_fill_style(bug_color);
       let index = bug.position;
