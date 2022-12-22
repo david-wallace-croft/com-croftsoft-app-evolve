@@ -22,38 +22,125 @@ Evolve \ Arcade \ GameSpawn
 </div>
 <div>
 <h1>
-How to Play
+Description
 </h1>
 <ul>
 <li>
-Under development
+The green dots are food.  The blue, magenta, and red dots are critters.
 </li>
 <li>
-No input is enabled right now
+Each critter has a set of "X" genes and a set of "Y" genes.
+These genes determine the probability that the critter will move in a given
+direction at each time step.
+"X" genes determine left-right movement and "Y" genes determine up-down.
+At time zero, the first gene in a set is used; at time one, the second;
+at time two, the third; and so on until the time resets back to zero.
+Which gene set is used, "X" or "Y", at any time step is randomly determined.
+</li>
+<li>
+The critters eat the food. When a critter eats enough food, it reproduces.
+Its child is exactly like it except that there is a small chance that its
+genetic movement pattern will be slightly different as a mutation might occur in
+one of the genes.
+</li>
+<li>
+The "Garden of Eden" is an area where the food is continuously replenished.
+Critters that wander in there tend to spawn descendants which evolve into blue
+"twirlies". Twirlies like to run in circles so that they can keep coming
+back to the food in the Garden of Eden.
+</li>
+<li>
+Critters outside of the Garden of Eden tend to evolve into red "cruisers".
+Cruisers tend to more or less move in straight lines sucking up food and
+clearing a path behind them. Since food is not automatically replenished in
+areas outside the Garden of Eden, twirlies outside the Garden tend to die out
+after they have eaten all the food in their area.
+</li>
+<li>
+A blight will immediately destroy all of the food outside of the Garden of Eden.
+Any twirlies in the Garden at the time of a blight are likely to survive but
+cruisers will pass right through the Garden into the blighted areas with no food
+and die.
+</li>
+<li>
+Using the buttons below the display, try manipulating the food distribution so
+that you can see the critters as a whole evolve from cruisers to twirlies and
+back again.
+You can also reset the simulation and change the simulation speed.
 </li>
 </ul>
 <h1>
-Open Source Code
+Metdata
 </h1>
 <ul>
 <li>
-Source code repository:<br>
+Author:
+<a
+  href="https://www.croftsoft.com/people/david/"
+  target="_blank">
+David Wallace Croft</a>
+</li>
+<li>
+Copyright: &copy; 2022
+<a
+  href="https://www.croftsoft.com/"
+  target="_blank">
+CroftSoft Inc</a>
+</li>
+<li>
+Open Source License:
+<a
+  href="https://github.com/david-wallace-croft/com-croftsoft-app-evolve/blob/main/LICENSE.txt"
+  target="_blank">
+MIT</a>
+</li>
+<li>
+Source Code Repository:
 <a
   href="https://github.com/david-wallace-croft/com-croftsoft-app-evolve"
   target="_blank">
 https://github.com/david-wallace-croft/com-croftsoft-app-evolve</a>
 </li>
 </ul>
-<h2>
+<h1>
 History
-</h2>
+</h1>
 <ul>
 <li>
-Converted to Rust and WebAssembly from Java:<br>
+I wrote this program based on a similar program described in an issue of
+Scientific American magazine from 1990 or earlier.
+The first version I wrote was in Turbo Pascal sometime in 1989 or 1990 for a
+biology class at the United States Air Force Academy (USAFA).
+</li>
+<li>
+The second version was in QBasic between 1993 and 1995 which served to keep me
+entertained while I awaited results in a neurobiology lab at the California
+Institute of Technology (Caltech).
+</li>
+<li>
+I wrote the third version in 1996 as a Java applet.
+I revised it sometime between 2002 and 2004 so that it could be deployed as part
+of the
+<a
+  href="https://www.croftsoft.com/library/software/collection/"
+  target="_blank">
+CroftSoft Collection</a>.
+In 2006, I fixed a bug in the code and the
 <a
   href="https://www.croftsoft.com/library/software/evolve/"
   target="_blank">
-https://www.croftsoft.com/library/software/evolve/</a>
+webpage documentation</a>.
+</li>
+<li>
+In 2022, I converted the Java code to the Rust programming language.
+Since Java applets are no longer supported in Web browsers, I compiled the Rust
+code to WebAssembly (Wasm) to get it to run in a webpage.
+See my
+<a
+  href="https://www.croftsoft.com/people/david/research/rust-wasm/"
+  target="_blank">
+Rust and WebAssembly</a>
+research page for links to tutorials that I wrote on how to do this.
 </li>
 </ul>
 </div>
