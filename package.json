@@ -1,6 +1,6 @@
 {
   "name": "com-croftsoft-app-evolve",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": "David Wallace Croft <david@croftsoft.com>",
   "description": "Evolve critter movements via food distribution",
   "scripts": {
