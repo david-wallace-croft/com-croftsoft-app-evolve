@@ -22,7 +22,8 @@ use crate::components::evolve::EvolveComponentInitialConfiguration;
 
 // pub static FRAME_ICON_FILENAME: &str = "/images/david.png";
 // pub static SHUTDOWN_CONFIRMATION_PROMPT: &str = "Close CroftSoft Evolve?";
-pub static INFO: &str = "CroftSoft Evolve v0.4.1 Copyright 2022 CroftSoft Inc";
+pub static INFO: &str =
+  "CroftSoft Evolve v0.4.2-SNAPSHOT Copyright 2022 CroftSoft Inc";
 
 pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;
