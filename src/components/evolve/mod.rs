@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
+//! - Rust version: 2022-12-23
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -61,6 +61,12 @@ impl EvolveComponent {
     self.eden_component.init();
     self.reset_component.init();
     self.speed_component.init();
+  }
+
+  pub fn launch() {
+    let mut evolve_component = EvolveComponent::default();
+    evolve_component.init();
+    evolve_component.start();
   }
 
   pub fn make_html(&self) -> String {
