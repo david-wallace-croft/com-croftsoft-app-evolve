@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
+//! - Rust version: 2022-12-24
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -46,18 +46,37 @@ impl FloraUpdater {
         world.flora_present[index] = true;
       }
     }
+    self.update_garden(world);
+  }
+
+  // private methods
+
+  fn set_garden_values(
+    &self,
+    world: &mut World,
+    value: bool,
+  ) {
+    for x in EDEN_X0..=EDEN_X1 {
+      for y in EDEN_Y0..=EDEN_Y1 {
+        let index: usize = to_index_from_xy(x, y);
+        world.flora_present[index] = value;
+      }
+    }
+  }
+
+  fn update_garden(
+    &self,
+    world: &mut World,
+  ) {
     if world.requested_eden {
       world.requested_eden = false;
       world.enabled_eden = !world.enabled_eden;
-    }
-    // Replenishing the Garden of Eden
-    if world.enabled_eden {
-      for x in EDEN_X0..=EDEN_X1 {
-        for y in EDEN_Y0..=EDEN_Y1 {
-          let index: usize = to_index_from_xy(x, y);
-          world.flora_present[index] = true;
-        }
+      if !world.enabled_eden {
+        self.set_garden_values(world, false);
       }
+    }
+    if world.enabled_eden {
+      self.set_garden_values(world, true);
     }
   }
 }

@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2022-12-23
+//! - Version: 2022-12-24
 //! - Since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -12,6 +12,7 @@
 // =============================================================================
 
 // TODO: spin this off into its own crate and then pull it in as a dependency
+// TODO: see https://github.com/rustwasm/gloo
 
 use anyhow::{anyhow, Result};
 use futures::channel::mpsc::{unbounded, UnboundedReceiver};
@@ -28,6 +29,23 @@ pub trait LoopUpdater {
     &mut self,
     update_time: f64,
   );
+}
+
+pub fn add_change_handler(elem: HtmlElement) -> UnboundedReceiver<()> {
+  let (mut change_sender, change_receiver) = unbounded();
+  let on_change = Closure::wrap(Box::new(move || {
+    let _result: Result<(), futures::channel::mpsc::SendError> =
+      change_sender.start_send(());
+  }) as Box<dyn FnMut()>);
+  elem.set_onchange(Some(on_change.as_ref().unchecked_ref()));
+  on_change.forget();
+  change_receiver
+}
+
+pub fn add_change_handler_by_id(id: &str) -> Option<UnboundedReceiver<()>> {
+  let html_element = get_html_element_by_id(id);
+  // TODO: return None if fails
+  Some(add_change_handler(html_element))
 }
 
 pub fn add_click_handler(elem: HtmlElement) -> UnboundedReceiver<()> {
