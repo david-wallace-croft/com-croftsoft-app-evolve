@@ -24,7 +24,7 @@ use super::eden::EdenComponent;
 use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
 use crate::constants::{FRAME_PERIOD_MILLIS_MINIMUM, INITIAL_CONFIGURATION};
-use crate::functions::web_sys::{get_window, spawn_local_loop};
+use crate::functions::web_sys::{get_window, spawn_local_loop, LoopUpdater};
 use crate::models::world::World;
 use crate::updaters::world::WorldUpdater;
 use web_sys::{Document, HtmlCollection};
@@ -66,7 +66,7 @@ impl EvolveComponent {
   pub fn launch() {
     let mut evolve_component = EvolveComponent::default();
     evolve_component.init();
-    evolve_component.start();
+    spawn_local_loop(evolve_component);
   }
 
   pub fn make_html(&self) -> String {
@@ -108,27 +108,6 @@ impl EvolveComponent {
     }
   }
 
-  pub fn start(self) {
-    spawn_local_loop(self);
-  }
-
-  pub fn update(
-    &mut self,
-    update_time: f64,
-  ) {
-    if update_time < self.next_update_time {
-      return;
-    }
-    self.blight_component.update(&mut self.world);
-    self.eden_component.update(&mut self.world);
-    self.reset_component.update(&mut self.world);
-    self.speed_component.update(&mut self.world);
-    self.world_updater.update(&mut self.world);
-    self.canvas_component.paint(&self.world);
-    self.update_speed();
-    self.next_update_time = update_time + self.frame_period_millis;
-  }
-
   fn update_speed(&mut self) {
     if !self.world.requested_speed {
       return;
@@ -145,5 +124,24 @@ impl EvolveComponent {
 impl Default for EvolveComponent {
   fn default() -> Self {
     EvolveComponent::new(INITIAL_CONFIGURATION)
+  }
+}
+
+impl LoopUpdater for EvolveComponent {
+  fn update(
+    &mut self,
+    update_time: f64,
+  ) {
+    if update_time < self.next_update_time {
+      return;
+    }
+    self.blight_component.update(&mut self.world);
+    self.eden_component.update(&mut self.world);
+    self.reset_component.update(&mut self.world);
+    self.speed_component.update(&mut self.world);
+    self.world_updater.update(&mut self.world);
+    self.canvas_component.paint(&self.world);
+    self.update_speed();
+    self.next_update_time = update_time + self.frame_period_millis;
   }
 }

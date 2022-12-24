@@ -2,16 +2,17 @@
 //! - web-sys functions for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
-//! - Rust since: 2022-12-18
+//! - Version: 2022-12-23
+//! - Since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::components::evolve::EvolveComponent;
+// TODO: spin this off into its own crate and then pull it in as a dependency
+
 use anyhow::{anyhow, Result};
 use futures::channel::mpsc::{unbounded, UnboundedReceiver};
 use std::{cell::RefCell, rc::Rc};
@@ -20,6 +21,14 @@ use wasm_bindgen::{JsCast, JsValue};
 use web_sys::{console, window, Document, Element, HtmlElement, Window};
 
 type LoopClosure = Closure<dyn FnMut(f64)>;
+
+// TODO: Move this to another crate and pull it back in as a dependency
+pub trait LoopUpdater {
+  fn update(
+    &mut self,
+    update_time: f64,
+  );
+}
 
 pub fn add_click_handler(elem: HtmlElement) -> UnboundedReceiver<()> {
   let (mut click_sender, click_receiver) = unbounded();
@@ -60,25 +69,22 @@ pub fn request_animation_frame(
     .map_err(|err| anyhow!("Cannot request animation frame {:#?}", err))
 }
 
-// TODO: change this to an Updater / Looper trait
-pub fn spawn_local_loop(evolve_component: EvolveComponent) {
+pub fn spawn_local_loop<L: LoopUpdater + 'static>(loop_updater: L) {
   wasm_bindgen_futures::spawn_local(async move {
-    start_looping(evolve_component).await.expect("loop start failed");
+    start_looping(loop_updater).await.expect("loop start failed");
   });
 }
 
-pub async fn start_looping(
-  mut evolve_component: EvolveComponent
+pub async fn start_looping<L: LoopUpdater + 'static>(
+  mut loop_updater: L
 ) -> Result<()> {
   let f: Rc<RefCell<Option<LoopClosure>>> = Rc::new(RefCell::new(None));
   let g = f.clone();
   *g.borrow_mut() = Some(Closure::wrap(Box::new(move |update_time: f64| {
-    evolve_component.update(update_time);
+    loop_updater.update(update_time);
     let _result: Result<i32, anyhow::Error> =
       request_animation_frame(f.borrow().as_ref().unwrap());
   })));
-  // TODO: Do we even need a looper? Might be able to loop just by
-  // requesting animation frames.
   request_animation_frame(
     g.borrow().as_ref().ok_or_else(|| anyhow!("loop failed"))?,
   )?;
