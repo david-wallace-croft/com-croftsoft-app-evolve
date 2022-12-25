@@ -23,11 +23,9 @@ use crate::models::bug::Bug;
 
 pub struct World {
   pub bugs: Vec<Bug>,
-  pub bugs_alive: usize,
   pub enabled_eden: bool,
   pub flora_growth_rate: usize,
   pub flora_present: [bool; SPACE_HEIGHT * SPACE_WIDTH],
-  pub growth_rate_spinner_number_model: usize,
   // TODO: move requested flags out of World model
   pub requested_blight: bool,
   pub requested_eden: Option<bool>,
@@ -41,11 +39,9 @@ impl Default for World {
   fn default() -> Self {
     World {
       bugs: Vec::<Bug>::new(),
-      bugs_alive: 0,
-      enabled_eden: false,
+      enabled_eden: true,
       flora_growth_rate: FLORA_GROWTH_RATE_INIT,
       flora_present: [false; SPACE_HEIGHT * SPACE_WIDTH],
-      growth_rate_spinner_number_model: 0,
       requested_blight: false,
       requested_eden: None,
       requested_flora: None,
