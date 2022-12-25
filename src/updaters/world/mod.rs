@@ -20,7 +20,9 @@
 
 use super::bugs::BugsUpdater;
 use super::flora::FloraUpdater;
-use crate::constants::{BUGS_MAX, INIT_GROWTH_RATE, SPACE_HEIGHT, SPACE_WIDTH};
+use crate::constants::{
+  BUGS_MAX, FLORA_GROWTH_RATE_INIT, SPACE_HEIGHT, SPACE_WIDTH,
+};
 use crate::functions::location::to_index_from_xy;
 use crate::models::bug::Bug;
 use crate::models::world::World;
@@ -47,7 +49,7 @@ impl WorldUpdater {
       world.flora_present[index] = true;
     }
     world.enabled_eden = true;
-    world.growth_rate_spinner_number_model = INIT_GROWTH_RATE; // TODO: event?
+    world.growth_rate_spinner_number_model = FLORA_GROWTH_RATE_INIT; // TODO: event?
   }
 
   pub fn update(

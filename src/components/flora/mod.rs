@@ -1,50 +1,44 @@
 // =============================================================================
-//! - Component for the Garden of Eden button
+//! - Component for the Flora growth rate input
 //!
 //! # Metadata
-//! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Rust version: 2022-12-25
-//! - Rust since: 2022-12-16
-//! - Java version: 2008-04-19
-//! - Java since: 1996-09-01
+//! - Rust since: 2022-12-25
 //!
-//! # History
-//! - Adapted from the Java package com.croftsoft.apps.evolve
-//!   - In the Java-based [`CroftSoft Apps Library`]
-//!
-//! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use crate::constants::{FLORA_GROWTH_RATE_INIT, FLORA_GROWTH_RATE_MAX};
 use crate::functions::web_sys::add_change_handler_by_id;
 use crate::models::world::World;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
 use wasm_bindgen::JsCast;
 use web_sys::{Event, EventTarget, HtmlInputElement};
 
-pub struct EdenComponent {
+pub struct FloraComponent {
   pub id: String,
-  pub event_unbounded_receiver_option: Option<UnboundedReceiver<Event>>,
+  pub unbounded_receiver_option: Option<UnboundedReceiver<Event>>,
 }
 
-impl EdenComponent {
+impl FloraComponent {
   pub fn init(&mut self) {
-    self.event_unbounded_receiver_option = add_change_handler_by_id(&self.id);
+    self.unbounded_receiver_option = add_change_handler_by_id(&self.id);
   }
 
   pub fn new(id: &str) -> Self {
     Self {
       id: String::from(id),
-      event_unbounded_receiver_option: None,
+      unbounded_receiver_option: None,
     }
   }
 
   pub fn make_html(&self) -> String {
     format!(
-      "Garden of Eden <input id=\"{}\" type=\"checkbox\" checked>",
-      self.id
+      "Food growth rate <input id=\"{}\" max=\"{}\" type=\"range\" value\"{}\">",
+      self.id, FLORA_GROWTH_RATE_MAX, FLORA_GROWTH_RATE_INIT,
     )
   }
 
@@ -59,7 +53,9 @@ impl EdenComponent {
         let result: Result<HtmlInputElement, EventTarget> =
           event_target.dyn_into::<HtmlInputElement>();
         let html_input_element: HtmlInputElement = result.unwrap();
-        world.requested_eden = Some(html_input_element.checked());
+        let value: String = html_input_element.value();
+        let v: Result<usize, _> = value.parse();
+        world.requested_flora = Some(v.unwrap());
       }
     }
   }
@@ -68,7 +64,7 @@ impl EdenComponent {
 
   fn changed(&mut self) -> Option<Event> {
     let unbounded_receiver: &mut UnboundedReceiver<Event> =
-      self.event_unbounded_receiver_option.as_mut()?;
+      self.unbounded_receiver_option.as_mut()?;
     let result: Result<Option<Event>, TryRecvError> =
       unbounded_receiver.try_next();
     if let Ok(event_option) = result {

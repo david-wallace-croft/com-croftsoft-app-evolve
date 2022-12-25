@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
+//! - Rust version: 2022-12-25
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,7 +18,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::constants::{INIT_GROWTH_RATE, SPACE_HEIGHT, SPACE_WIDTH};
+use crate::constants::{FLORA_GROWTH_RATE_INIT, SPACE_HEIGHT, SPACE_WIDTH};
 use crate::models::bug::Bug;
 
 pub struct World {
@@ -30,7 +30,8 @@ pub struct World {
   pub growth_rate_spinner_number_model: usize,
   // TODO: move requested flags out of World model
   pub requested_blight: bool,
-  pub requested_eden: bool,
+  pub requested_eden: Option<bool>,
+  pub requested_flora: Option<usize>,
   pub requested_reset: bool,
   pub requested_speed: bool,
   pub time: usize,
@@ -42,11 +43,12 @@ impl Default for World {
       bugs: Vec::<Bug>::new(),
       bugs_alive: 0,
       enabled_eden: false,
-      flora_growth_rate: INIT_GROWTH_RATE,
+      flora_growth_rate: FLORA_GROWTH_RATE_INIT,
       flora_present: [false; SPACE_HEIGHT * SPACE_WIDTH],
       growth_rate_spinner_number_model: 0,
       requested_blight: false,
-      requested_eden: false,
+      requested_eden: None,
+      requested_flora: None,
       requested_reset: true,
       requested_speed: false,
       time: 0,

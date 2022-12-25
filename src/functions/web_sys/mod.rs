@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2022-12-24
+//! - Version: 2022-12-25
 //! - Since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -16,10 +16,11 @@
 
 use anyhow::{anyhow, Result};
 use futures::channel::mpsc::{unbounded, UnboundedReceiver};
+use js_sys::Function;
 use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::prelude::Closure;
 use wasm_bindgen::{JsCast, JsValue};
-use web_sys::{console, window, Document, Element, HtmlElement, Window};
+use web_sys::{console, window, Document, Element, Event, HtmlElement, Window};
 
 type LoopClosure = Closure<dyn FnMut(f64)>;
 
@@ -31,18 +32,24 @@ pub trait LoopUpdater {
   );
 }
 
-pub fn add_change_handler(elem: HtmlElement) -> UnboundedReceiver<()> {
+pub fn add_change_handler(elem: HtmlElement) -> UnboundedReceiver<Event> {
   let (mut change_sender, change_receiver) = unbounded();
-  let on_change = Closure::wrap(Box::new(move || {
+  let event_closure = move |event: Event| {
     let _result: Result<(), futures::channel::mpsc::SendError> =
-      change_sender.start_send(());
-  }) as Box<dyn FnMut()>);
-  elem.set_onchange(Some(on_change.as_ref().unchecked_ref()));
-  on_change.forget();
+      change_sender.start_send(event);
+  };
+  let event_closure_box: Box<dyn FnMut(Event)> = Box::new(event_closure);
+  let on_change_closure: Closure<dyn FnMut(Event)> =
+    Closure::wrap(event_closure_box);
+  let closure_as_js_value_ref: &JsValue = on_change_closure.as_ref();
+  let js_function_ref: &Function = closure_as_js_value_ref.unchecked_ref();
+  let js_function_ref_option: Option<&Function> = Some(js_function_ref);
+  elem.set_onchange(js_function_ref_option);
+  on_change_closure.forget();
   change_receiver
 }
 
-pub fn add_change_handler_by_id(id: &str) -> Option<UnboundedReceiver<()>> {
+pub fn add_change_handler_by_id(id: &str) -> Option<UnboundedReceiver<Event>> {
   let html_element = get_html_element_by_id(id);
   // TODO: return None if fails
   Some(add_change_handler(html_element))

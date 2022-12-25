@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-23
+//! - Rust version: 2022-12-25
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -21,6 +21,7 @@
 use super::blight::BlightComponent;
 use super::canvas::CanvasComponent;
 use super::eden::EdenComponent;
+use super::flora::FloraComponent;
 use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
 use crate::constants::{FRAME_PERIOD_MILLIS_MINIMUM, INITIAL_CONFIGURATION};
@@ -37,6 +38,7 @@ pub struct EvolveComponent {
   blight_component: BlightComponent,
   canvas_component: CanvasComponent,
   eden_component: EdenComponent,
+  flora_component: FloraComponent,
   frame_period_millis: f64,
   initial_configuration: EvolveComponentInitialConfiguration,
   next_update_time: f64,
@@ -59,6 +61,7 @@ impl EvolveComponent {
     self.blight_component.init();
     self.canvas_component.init();
     self.eden_component.init();
+    self.flora_component.init();
     self.reset_component.init();
     self.speed_component.init();
   }
@@ -73,6 +76,7 @@ impl EvolveComponent {
     let blight_html: String = self.blight_component.make_html();
     let canvas_html: String = self.canvas_component.make_html();
     let eden_html: String = self.eden_component.make_html();
+    let flora_html: String = self.flora_component.make_html();
     let reset_html: String = self.reset_component.make_html();
     let speed_html: String = self.speed_component.make_html();
     [
@@ -81,6 +85,7 @@ impl EvolveComponent {
       String::from("<br>"),
       blight_html,
       eden_html,
+      flora_html,
       reset_html,
       speed_html,
       String::from("</div>"),
@@ -99,6 +104,7 @@ impl EvolveComponent {
       canvas_component: CanvasComponent::new("canvas"),
       initial_configuration,
       eden_component: EdenComponent::new("eden"),
+      flora_component: FloraComponent::new("flora"),
       frame_period_millis,
       next_update_time: 0.0,
       reset_component: ResetComponent::new("reset"),
@@ -137,6 +143,7 @@ impl LoopUpdater for EvolveComponent {
     }
     self.blight_component.update(&mut self.world);
     self.eden_component.update(&mut self.world);
+    self.flora_component.update(&mut self.world);
     self.reset_component.update(&mut self.world);
     self.speed_component.update(&mut self.world);
     self.world_updater.update(&mut self.world);

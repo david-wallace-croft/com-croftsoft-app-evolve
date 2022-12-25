@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-22
+//! - Rust version: 2022-12-25
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -23,7 +23,7 @@ use crate::components::evolve::EvolveComponentInitialConfiguration;
 // pub static FRAME_ICON_FILENAME: &str = "/images/david.png";
 // pub static SHUTDOWN_CONFIRMATION_PROMPT: &str = "Close CroftSoft Evolve?";
 pub static INFO: &str =
-  "CroftSoft Evolve v0.4.2-SNAPSHOT Copyright 2022 CroftSoft Inc";
+  "CroftSoft Evolve v0.5.0-SNAPSHOT Copyright 2022 CroftSoft Inc";
 
 pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;
@@ -41,7 +41,8 @@ pub const FRAME_PERIOD_MILLIS_MINIMUM: f64 = 10.0;
 pub const FRAMES_PER_SECOND: f64 = 1.0;
 // TODO: FRAME_SIZE
 pub const GENES_MAX: usize = 8;
-pub const INIT_GROWTH_RATE: usize = 10;
+pub const FLORA_GROWTH_RATE_INIT: usize = 10;
+pub const FLORA_GROWTH_RATE_MAX: usize = 20;
 pub const MAX_ENERGY: usize = 60;
 // pub const MAX_GROWTH_RATE: usize = SPACE_HEIGHT * SPACE_WIDTH;
 // pub const MIN_GROWTH_RATE: usize = 0;
