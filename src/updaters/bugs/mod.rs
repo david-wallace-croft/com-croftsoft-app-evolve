@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
+//! - Rust version: 2022-12-26
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -42,6 +42,13 @@ impl BugsUpdater {
     }
     let mut new_bugs = Vec::<Bug>::new();
     let bugs_length = world.bugs.len();
+    if let Some(index) = world.requested_bug {
+      world.requested_bug = None;
+      if bugs_length < BUGS_MAX {
+        let new_bug = Bug::new(index);
+        new_bugs.push(new_bug);
+      }
+    }
     for bug in world.bugs.iter_mut() {
       if bug.energy == 0 {
         continue;

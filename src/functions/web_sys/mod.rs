@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2022-12-25
+//! - Version: 2022-12-26
 //! - Since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -20,7 +20,10 @@ use js_sys::Function;
 use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::prelude::Closure;
 use wasm_bindgen::{JsCast, JsValue};
-use web_sys::{console, window, Document, Element, Event, HtmlElement, Window};
+use web_sys::{
+  console, window, Document, Element, Event, HtmlCanvasElement, HtmlElement,
+  MouseEvent, Window,
+};
 
 type LoopClosure = Closure<dyn FnMut(f64)>;
 
@@ -70,6 +73,46 @@ pub fn add_click_handler_by_id(id: &str) -> Option<UnboundedReceiver<()>> {
   let html_element = get_html_element_by_id(id);
   // TODO: return None if fails
   Some(add_click_handler(html_element))
+}
+
+pub fn add_mouse_down_handler(
+  elem: HtmlElement
+) -> UnboundedReceiver<MouseEvent> {
+  let (mut mouse_down_sender, mouse_down_receiver) = unbounded();
+  let mouse_event_closure = move |mouse_event: MouseEvent| {
+    let _result: Result<(), futures::channel::mpsc::SendError> =
+      mouse_down_sender.start_send(mouse_event);
+  };
+  let mouse_event_closure_box: Box<dyn FnMut(MouseEvent)> =
+    Box::new(mouse_event_closure);
+  let on_mouse_down_closure: Closure<dyn FnMut(MouseEvent)> =
+    Closure::wrap(mouse_event_closure_box);
+  let closure_as_js_value_ref: &JsValue = on_mouse_down_closure.as_ref();
+  let js_function_ref: &Function = closure_as_js_value_ref.unchecked_ref();
+  let js_function_ref_option: Option<&Function> = Some(js_function_ref);
+  elem.set_onmousedown(js_function_ref_option);
+  on_mouse_down_closure.forget();
+  mouse_down_receiver
+}
+
+pub fn add_mouse_down_handler_by_id(
+  id: &str
+) -> Option<UnboundedReceiver<MouseEvent>> {
+  let html_element = get_html_element_by_id(id);
+  // TODO: return None if fails
+  Some(add_mouse_down_handler(html_element))
+}
+
+pub fn get_html_canvas_element_height_width_by_id(
+  canvas_element_id: &str
+) -> (u32, u32) {
+  let document: Document = window().unwrap().document().unwrap();
+  let element: Element = document.get_element_by_id(canvas_element_id).unwrap();
+  let html_canvas_element: HtmlCanvasElement = element.dyn_into().unwrap();
+  let canvas_height = html_canvas_element.height();
+  let canvas_width = html_canvas_element.width();
+  // TODO: have this return a Dimension or Rectangle struct
+  (canvas_height, canvas_width)
 }
 
 pub fn get_html_element_by_id(id: &str) -> HtmlElement {

@@ -1,6 +1,6 @@
 [package]
 name = "com-crofsoft-app-evolve"
-version = "0.5.1-SNAPSHOT"
+version = "0.6.0"
 authors = ["David Wallace Croft <david@croftsoft.com>"]
 # https://crates.io/categories
 categories = ["games"]
@@ -40,6 +40,7 @@ features = [
   "HtmlCollection",
   "HtmlDivElement",
   "HtmlInputElement",
+  "MouseEvent",
   "Performance",
   "Window",
   "console",

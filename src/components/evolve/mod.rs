@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-25
+//! - Rust version: 2022-12-26
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -142,6 +142,7 @@ impl LoopUpdater for EvolveComponent {
       return;
     }
     self.blight_component.update(&mut self.world);
+    self.canvas_component.update(&mut self.world);
     self.eden_component.update(&mut self.world);
     self.flora_component.update(&mut self.world);
     self.reset_component.update(&mut self.world);
