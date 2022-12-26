@@ -1,6 +1,6 @@
 [package]
 name = "com-crofsoft-app-evolve"
-version = "0.6.0"
+version = "0.6.1-SNAPSHOT"
 authors = ["David Wallace Croft <david@croftsoft.com>"]
 # https://crates.io/categories
 categories = ["games"]
