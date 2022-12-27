@@ -20,7 +20,8 @@
 
 use crate::components::evolve::EvolveComponentInitialConfiguration;
 
-pub static INFO: &str = "CroftSoft Evolve v0.7.0 Copyright 2022 CroftSoft Inc";
+pub static INFO: &str =
+  "CroftSoft Evolve v0.7.1-SNAPSHOT Copyright 2022 CroftSoft Inc";
 
 pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;
