@@ -26,22 +26,36 @@ Description
 </h1>
 <ul>
 <li>
-The green dots are food.  The blue, magenta, and red dots are critters.
+The display area shows a map of the simulated world with wrap-around edges.
+The green dots are food.
+The blue, magenta, and red dots are critters.
 </li>
 <li>
 Each critter has a set of "X" genes and a set of "Y" genes.
-These genes determine the probability that the critter will move in a given
-direction at each time step.
+These genes determine the direction of movement at each time step.
 "X" genes determine left-right movement and "Y" genes determine up-down.
 At time zero, the first gene in a set is used; at time one, the second;
 at time two, the third; and so on until the time resets back to zero.
-Which gene set is used, "X" or "Y", at any time step is randomly determined.
 </li>
 <li>
-The critters eat the food. When a critter eats enough food, it reproduces.
+There is a fifty-percent chance that a critter will move in a direction
+determined by its "X" or "Y" gene at a given time step.
+So one-fourth of the time it will move in both the "X" and the "Y" direction,
+one-fourth in just the "X" direction,
+one-fourth in just the "Y" direction,
+and one-fourth of the time it will not move at all.
+</li>
+<li>
+At every time step, a critter consumes energy whether its move or not.
+If a critter runs out of energy, it dies.  If a critter moves to a green
+food dot, it eats the food and gains energy.
+</li>
+<li>
+When a critter eats enough food, it reproduces.
 Its child is exactly like it except that there is a small chance that its
 genetic movement pattern will be slightly different as a mutation might occur in
-one of the genes.
+one of the genes.  When a mutation does occur, the mutant gene is determined
+randomly.
 </li>
 <li>
 The "Garden of Eden" is an area where the food is continuously replenished.
