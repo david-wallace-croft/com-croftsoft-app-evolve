@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-25
+//! - Rust version: 2022-12-28
 //! - Rust since: 2022-12-16
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -24,12 +24,12 @@ use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
 use wasm_bindgen::JsCast;
 use web_sys::{Event, EventTarget, HtmlInputElement};
 
-pub struct EdenComponent {
+pub struct GardenComponent {
   pub id: String,
   pub event_unbounded_receiver_option: Option<UnboundedReceiver<Event>>,
 }
 
-impl EdenComponent {
+impl GardenComponent {
   pub fn init(&mut self) {
     self.event_unbounded_receiver_option = add_change_handler_by_id(&self.id);
   }
@@ -59,7 +59,7 @@ impl EdenComponent {
         let result: Result<HtmlInputElement, EventTarget> =
           event_target.dyn_into::<HtmlInputElement>();
         let html_input_element: HtmlInputElement = result.unwrap();
-        world.requested_eden = Some(html_input_element.checked());
+        world.requested_garden = Some(html_input_element.checked());
       }
     }
   }

@@ -20,8 +20,8 @@
 
 use super::blight::BlightComponent;
 use super::canvas::CanvasComponent;
-use super::eden::EdenComponent;
 use super::flora::FloraComponent;
+use super::garden::GardenComponent;
 use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
 use crate::constants::{FRAME_PERIOD_MILLIS_MINIMUM, INITIAL_CONFIGURATION};
@@ -37,9 +37,9 @@ pub struct EvolveComponentInitialConfiguration {
 pub struct EvolveComponent {
   blight_component: BlightComponent,
   canvas_component: CanvasComponent,
-  eden_component: EdenComponent,
   flora_component: FloraComponent,
   frame_period_millis: f64,
+  garden_component: GardenComponent,
   initial_configuration: EvolveComponentInitialConfiguration,
   next_update_time: f64,
   reset_component: ResetComponent,
@@ -60,8 +60,8 @@ impl EvolveComponent {
     let _result = element.insert_adjacent_html("afterbegin", &evolve_html);
     self.blight_component.init();
     self.canvas_component.init();
-    self.eden_component.init();
     self.flora_component.init();
+    self.garden_component.init();
     self.reset_component.init();
     self.speed_component.init();
   }
@@ -75,8 +75,8 @@ impl EvolveComponent {
   pub fn make_html(&self) -> String {
     let blight_html: String = self.blight_component.make_html();
     let canvas_html: String = self.canvas_component.make_html();
-    let eden_html: String = self.eden_component.make_html();
     let flora_html: String = self.flora_component.make_html();
+    let garden_html: String = self.garden_component.make_html();
     let reset_html: String = self.reset_component.make_html();
     let speed_html: String = self.speed_component.make_html();
     [
@@ -84,8 +84,8 @@ impl EvolveComponent {
       canvas_html,
       String::from("<br>"),
       blight_html,
-      eden_html,
       flora_html,
+      garden_html,
       reset_html,
       speed_html,
       String::from("</div>"),
@@ -103,8 +103,8 @@ impl EvolveComponent {
       blight_component: BlightComponent::new("blight"),
       canvas_component: CanvasComponent::new("canvas"),
       initial_configuration,
-      eden_component: EdenComponent::new("eden"),
       flora_component: FloraComponent::new("flora"),
+      garden_component: GardenComponent::new("garden"),
       frame_period_millis,
       next_update_time: 0.0,
       reset_component: ResetComponent::new("reset"),
@@ -143,8 +143,8 @@ impl LoopUpdater for EvolveComponent {
     }
     self.blight_component.update(&mut self.world);
     self.canvas_component.update(&mut self.world);
-    self.eden_component.update(&mut self.world);
     self.flora_component.update(&mut self.world);
+    self.garden_component.update(&mut self.world);
     self.reset_component.update(&mut self.world);
     self.speed_component.update(&mut self.world);
     self.world_updater.update(&mut self.world);

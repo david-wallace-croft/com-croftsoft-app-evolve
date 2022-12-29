@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-25
+//! - Rust version: 2022-12-28
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -75,14 +75,14 @@ impl FloraUpdater {
     &self,
     world: &mut World,
   ) {
-    if let Some(enabled_eden) = world.requested_eden {
-      world.requested_eden = None;
-      world.enabled_eden = enabled_eden;
-      if !world.enabled_eden {
+    if let Some(enabled_garden) = world.requested_garden {
+      world.requested_garden = None;
+      world.enabled_garden = enabled_garden;
+      if !world.enabled_garden {
         self.set_garden_values(world, false);
       }
     }
-    if world.enabled_eden {
+    if world.enabled_garden {
       self.set_garden_values(world, true);
     }
   }
