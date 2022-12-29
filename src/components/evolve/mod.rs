@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-26
+//! - Rust version: 2022-12-28
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -114,7 +114,7 @@ impl EvolveComponent {
     }
   }
 
-  fn update_speed(&mut self) {
+  fn update_frame_rate(&mut self) {
     if !self.world.requested_speed {
       return;
     }
@@ -149,7 +149,7 @@ impl LoopUpdater for EvolveComponent {
     self.speed_component.update(&mut self.world);
     self.world_updater.update(&mut self.world);
     self.canvas_component.paint(&self.world);
-    self.update_speed();
+    self.update_frame_rate();
     self.next_update_time = update_time + self.frame_period_millis;
   }
 }
