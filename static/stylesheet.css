@@ -65,7 +65,7 @@ ul li {
   margin-top: 0.5rem;
 }
 
-@media (min-width: calc(600px + 40rem)) {
+@media (min-width: calc(600px + 42rem)) {
 
   .frame {
     grid-template-columns: auto 36rem;
@@ -86,7 +86,7 @@ ul li {
   }
 }
 
-@media (min-width: calc(600px + 78rem)) {
+@media (min-width: calc(600px + 79rem)) {
 
   .frame {
     grid-template-columns: 36rem calc(600px + 2rem) 36rem;

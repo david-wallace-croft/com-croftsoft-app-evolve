@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-26
+//! - Rust version: 2022-12-29
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -20,8 +20,7 @@
 
 use crate::components::evolve::EvolveComponentInitialConfiguration;
 
-pub static INFO: &str =
-  "CroftSoft Evolve v0.7.1-SNAPSHOT Copyright 2022 CroftSoft Inc";
+pub static INFO: &str = "CroftSoft Evolve v0.8.0 Copyright 2022 CroftSoft Inc";
 
 pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;
