@@ -84,8 +84,9 @@ impl CanvasComponent {
       let x: i32 = ((client_x - dom_rect.left()) * scale_x) as i32;
       let y: i32 = ((client_y - dom_rect.top()) * scale_y) as i32;
       let index = self.to_world_index_from_canvas_xy(x, y);
-      log(&format!("x {} y {} index {}", x, y, index));
-      input.bug = Some(index);
+      // log(&format!("x {} y {} index {}", x, y, index));
+      input.bug = true;
+      input.bug_position_index = index;
     }
   }
 

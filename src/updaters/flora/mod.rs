@@ -36,10 +36,12 @@ impl FloraUpdater {
     input: &mut Input,
     world: &mut World,
   ) {
-    if let Some(flora_growth_rate) = input.flora {
-      input.flora = None;
-      if flora_growth_rate <= FLORA_GROWTH_RATE_MAX {
-        world.flora_growth_rate = flora_growth_rate;
+    if input.flora {
+      input.flora = false;
+      if input.flora_growth_rate <= FLORA_GROWTH_RATE_MAX {
+        world.flora_growth_rate = input.flora_growth_rate;
+      } else {
+        world.flora_growth_rate = FLORA_GROWTH_RATE_MAX;
       }
     }
     if input.blight {
@@ -78,9 +80,10 @@ impl FloraUpdater {
     input: &mut Input,
     world: &mut World,
   ) {
-    if let Some(enabled_garden) = input.garden {
-      input.garden = None;
-      world.enabled_garden = enabled_garden;
+    if input.garden_off || input.garden_on {
+      world.enabled_garden = input.garden_on;
+      input.garden_off = false;
+      input.garden_on = false;
       if !world.enabled_garden {
         self.set_garden_values(world, false);
       }

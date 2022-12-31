@@ -44,10 +44,10 @@ impl BugsUpdater {
     }
     let mut new_bugs = Vec::<Bug>::new();
     let bugs_length = world.bugs.len();
-    if let Some(index) = input.bug {
-      input.bug = None;
+    if input.bug {
+      input.bug = false;
       if bugs_length < BUGS_MAX {
-        let new_bug = Bug::new(index);
+        let new_bug = Bug::new(input.bug_position_index);
         new_bugs.push(new_bug);
       }
     }

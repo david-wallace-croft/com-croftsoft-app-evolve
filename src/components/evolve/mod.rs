@@ -66,6 +66,7 @@ impl EvolveComponent {
     self.garden_component.init();
     self.reset_component.init();
     self.speed_component.init();
+    self.input.reset = true;
   }
 
   pub fn launch() {
