@@ -48,7 +48,7 @@ impl BlightComponent {
     input: &mut Input,
   ) {
     if self.clicked() {
-      input.blight = true;
+      input.request_blight();
     }
   }
 

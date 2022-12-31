@@ -52,7 +52,7 @@ impl SpeedComponent {
     input: &mut Input,
   ) {
     if self.pressed() {
-      input.speed = true;
+      input.request_speed();
     }
   }
 }

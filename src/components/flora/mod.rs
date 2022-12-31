@@ -55,8 +55,7 @@ impl FloraComponent {
         let html_input_element: HtmlInputElement = result.unwrap();
         let value: String = html_input_element.value();
         let v: Result<usize, _> = value.parse();
-        input.flora = true;
-        input.flora_growth_rate = v.unwrap();
+        input.request_flora(v.unwrap());
       }
     }
   }

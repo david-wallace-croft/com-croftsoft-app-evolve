@@ -14,7 +14,7 @@
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::functions::location::to_index_from_xy;
 use crate::functions::web_sys::{
-  add_mouse_down_handler_by_id, get_html_canvas_element_by_id, log,
+  add_mouse_down_handler_by_id, get_html_canvas_element_by_id,
 };
 use crate::models::input::Input;
 use crate::models::world::World;
@@ -84,9 +84,7 @@ impl CanvasComponent {
       let x: i32 = ((client_x - dom_rect.left()) * scale_x) as i32;
       let y: i32 = ((client_y - dom_rect.top()) * scale_y) as i32;
       let index = self.to_world_index_from_canvas_xy(x, y);
-      // log(&format!("x {} y {} index {}", x, y, index));
-      input.bug = true;
-      input.bug_position_index = index;
+      input.request_bug(index);
     }
   }
 

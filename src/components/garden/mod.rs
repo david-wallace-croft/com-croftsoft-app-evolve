@@ -60,9 +60,9 @@ impl GardenComponent {
           event_target.dyn_into::<HtmlInputElement>();
         let html_input_element: HtmlInputElement = result.unwrap();
         if html_input_element.checked() {
-          input.garden_on = true;
+          input.request_garden_on();
         } else {
-          input.garden_off = true;
+          input.request_garden_off();
         }
       }
     }

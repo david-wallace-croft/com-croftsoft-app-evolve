@@ -66,7 +66,7 @@ impl EvolveComponent {
     self.garden_component.init();
     self.reset_component.init();
     self.speed_component.init();
-    self.input.reset = true;
+    self.input.request_reset();
   }
 
   pub fn launch() {
@@ -119,10 +119,9 @@ impl EvolveComponent {
   }
 
   fn update_frame_rate(&mut self) {
-    if !self.input.speed {
+    if !self.input.get_speed() {
       return;
     }
-    self.input.speed = false;
     if self.frame_period_millis == FRAME_PERIOD_MILLIS_MINIMUM {
       self.frame_period_millis = self.initial_configuration.frame_period_millis;
     } else {
@@ -151,9 +150,10 @@ impl LoopUpdater for EvolveComponent {
     self.garden_component.update(&mut self.input);
     self.reset_component.update(&mut self.input);
     self.speed_component.update(&mut self.input);
-    self.world_updater.update(&mut self.input, &mut self.world);
+    self.world_updater.update(&self.input, &mut self.world);
     self.canvas_component.paint(&self.world);
     self.update_frame_rate();
     self.next_update_time = update_time + self.frame_period_millis;
+    self.input.clear();
   }
 }

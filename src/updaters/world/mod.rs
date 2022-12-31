@@ -51,11 +51,10 @@ impl WorldUpdater {
 
   pub fn update(
     &self,
-    input: &mut Input,
+    input: &Input,
     world: &mut World,
   ) {
-    if input.reset {
-      input.reset = false;
+    if input.get_reset() {
       self.reset(world);
     } else {
       self.flora_updater.update(input, world);

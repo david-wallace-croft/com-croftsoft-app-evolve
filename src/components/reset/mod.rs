@@ -58,7 +58,7 @@ impl ResetComponent {
     input: &mut Input,
   ) {
     if self.pressed() {
-      input.reset = true;
+      input.request_reset();
     }
   }
 }

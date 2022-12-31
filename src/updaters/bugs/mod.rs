@@ -35,7 +35,7 @@ pub struct BugsUpdater {}
 impl BugsUpdater {
   pub fn update(
     &self,
-    input: &mut Input,
+    input: &Input,
     world: &mut World,
   ) {
     world.time = world.time.saturating_add(1);
@@ -44,12 +44,9 @@ impl BugsUpdater {
     }
     let mut new_bugs = Vec::<Bug>::new();
     let bugs_length = world.bugs.len();
-    if input.bug {
-      input.bug = false;
-      if bugs_length < BUGS_MAX {
-        let new_bug = Bug::new(input.bug_position_index);
-        new_bugs.push(new_bug);
-      }
+    if bugs_length < BUGS_MAX && input.get_bug() {
+      let new_bug = Bug::new(input.get_bug_position_index());
+      new_bugs.push(new_bug);
     }
     for bug in world.bugs.iter_mut() {
       if bug.energy == 0 {
