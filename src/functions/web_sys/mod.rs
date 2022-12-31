@@ -103,16 +103,12 @@ pub fn add_mouse_down_handler_by_id(
   Some(add_mouse_down_handler(html_element))
 }
 
-pub fn get_html_canvas_element_height_width_by_id(
+pub fn get_html_canvas_element_by_id(
   canvas_element_id: &str
-) -> (u32, u32) {
+) -> HtmlCanvasElement {
   let document: Document = window().unwrap().document().unwrap();
   let element: Element = document.get_element_by_id(canvas_element_id).unwrap();
-  let html_canvas_element: HtmlCanvasElement = element.dyn_into().unwrap();
-  let canvas_height = html_canvas_element.height();
-  let canvas_width = html_canvas_element.width();
-  // TODO: have this return a Dimension or Rectangle struct
-  (canvas_height, canvas_width)
+  element.dyn_into().unwrap()
 }
 
 pub fn get_html_element_by_id(id: &str) -> HtmlElement {

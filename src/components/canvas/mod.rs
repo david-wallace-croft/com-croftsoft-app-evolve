@@ -14,12 +14,12 @@
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::functions::location::to_index_from_xy;
 use crate::functions::web_sys::{
-  add_mouse_down_handler_by_id, get_html_canvas_element_height_width_by_id,
+  add_mouse_down_handler_by_id, get_html_canvas_element_by_id, log,
 };
 use crate::models::world::World;
 use crate::painters::world::WorldPainter;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
-use web_sys::MouseEvent;
+use web_sys::{DomRect, HtmlCanvasElement, MouseEvent};
 
 pub struct CanvasComponent {
   pub id: String,
@@ -29,8 +29,10 @@ pub struct CanvasComponent {
 
 impl CanvasComponent {
   pub fn get_scale_xy(canvas_element_id: &str) -> (f64, f64) {
-    let (canvas_height, canvas_width) =
-      get_html_canvas_element_height_width_by_id(canvas_element_id);
+    let html_canvas_element: HtmlCanvasElement =
+      get_html_canvas_element_by_id(canvas_element_id);
+    let canvas_height = html_canvas_element.height();
+    let canvas_width = html_canvas_element.width();
     let scale_x = canvas_width as f64 / SPACE_WIDTH as f64;
     let scale_y = canvas_height as f64 / SPACE_HEIGHT as f64;
     (scale_x, scale_y)
@@ -71,9 +73,17 @@ impl CanvasComponent {
   ) {
     let mouse_event_option = self.poll_mouse_event();
     if let Some(mouse_event) = mouse_event_option {
-      let x: i32 = mouse_event.x();
-      let y: i32 = mouse_event.y();
+      let client_x: f64 = mouse_event.client_x() as f64;
+      let client_y: f64 = mouse_event.client_y() as f64;
+      let html_canvas_element: HtmlCanvasElement =
+        get_html_canvas_element_by_id(&self.id);
+      let dom_rect: DomRect = html_canvas_element.get_bounding_client_rect();
+      let scale_x = html_canvas_element.width() as f64 / dom_rect.width();
+      let scale_y = html_canvas_element.height() as f64 / dom_rect.height();
+      let x: i32 = ((client_x - dom_rect.left()) * scale_x) as i32;
+      let y: i32 = ((client_y - dom_rect.top()) * scale_y) as i32;
       let index = self.to_world_index_from_canvas_xy(x, y);
+      log(&format!("x {} y {} index {}", x, y, index));
       world.requested_bug = Some(index);
     }
   }
@@ -97,10 +107,16 @@ impl CanvasComponent {
     canvas_y: i32,
   ) -> usize {
     let (scale_x, scale_y) = CanvasComponent::get_scale_xy(&self.id);
-    let scaled_canvas_x: f64 = canvas_x as f64 / scale_x;
-    let scaled_canvas_y: f64 = canvas_y as f64 / scale_y;
-    let mut world_x = (scaled_canvas_x as usize).saturating_sub(1);
-    let mut world_y = (scaled_canvas_y as usize).saturating_sub(1);
+    let mut scaled_canvas_x: f64 = canvas_x as f64 / scale_x;
+    let mut scaled_canvas_y: f64 = canvas_y as f64 / scale_y;
+    if scaled_canvas_x < 0. {
+      scaled_canvas_x = 0.;
+    }
+    if scaled_canvas_y < 0. {
+      scaled_canvas_y = 0.;
+    }
+    let mut world_x = scaled_canvas_x as usize;
+    let mut world_y = scaled_canvas_y as usize;
     if world_x >= SPACE_WIDTH {
       world_x = SPACE_WIDTH - 1;
     }
