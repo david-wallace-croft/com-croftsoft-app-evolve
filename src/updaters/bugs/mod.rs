@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-26
+//! - Rust version: 2022-12-31
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -26,6 +26,7 @@ use crate::functions::location::{
   to_index_from_xy, to_x_from_index, to_y_from_index,
 };
 use crate::models::bug::Bug;
+use crate::models::input::Input;
 use crate::models::world::World;
 
 #[derive(Default)]
@@ -34,6 +35,7 @@ pub struct BugsUpdater {}
 impl BugsUpdater {
   pub fn update(
     &self,
+    input: &mut Input,
     world: &mut World,
   ) {
     world.time = world.time.saturating_add(1);
@@ -42,8 +44,8 @@ impl BugsUpdater {
     }
     let mut new_bugs = Vec::<Bug>::new();
     let bugs_length = world.bugs.len();
-    if let Some(index) = world.requested_bug {
-      world.requested_bug = None;
+    if let Some(index) = input.bug {
+      input.bug = None;
       if bugs_length < BUGS_MAX {
         let new_bug = Bug::new(index);
         new_bugs.push(new_bug);

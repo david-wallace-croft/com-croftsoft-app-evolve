@@ -4,8 +4,8 @@
 //! # Metadata
 //! - Copyright: &copy; 2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
-//! - Rust since: 2022-12-20
+//! - Version: 2022-12-31
+//! - Since: 2022-12-20
 //!
 //! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -13,7 +13,7 @@
 // =============================================================================
 
 use crate::functions::web_sys::add_click_handler_by_id;
-use crate::models::world::World;
+use crate::models::input::Input;
 use futures::channel::mpsc::UnboundedReceiver;
 
 pub struct SpeedComponent {
@@ -49,10 +49,10 @@ impl SpeedComponent {
 
   pub fn update(
     &mut self,
-    world: &mut World,
+    input: &mut Input,
   ) {
     if self.pressed() {
-      world.requested_speed = true;
+      input.speed = true;
     }
   }
 }

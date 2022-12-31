@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
+//! - Rust version: 2022-12-31
 //! - Rust since: 2022-12-14
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -19,7 +19,7 @@
 // =============================================================================
 
 use crate::functions::web_sys::add_click_handler_by_id;
-use crate::models::world::World;
+use crate::models::input::Input;
 use futures::channel::mpsc::UnboundedReceiver;
 
 pub struct BlightComponent {
@@ -45,10 +45,10 @@ impl BlightComponent {
 
   pub fn update(
     &mut self,
-    world: &mut World,
+    input: &mut Input,
   ) {
     if self.clicked() {
-      world.requested_blight = true;
+      input.blight = true;
     }
   }
 

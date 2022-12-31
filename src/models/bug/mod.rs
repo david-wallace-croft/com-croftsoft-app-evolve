@@ -1,10 +1,10 @@
 // =============================================================================
-//! - Bug model
+//! - Bug model for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-21
+//! - Rust version: 2022-12-31
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01

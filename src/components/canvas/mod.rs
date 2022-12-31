@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-26
+//! - Rust version: 2022-12-31
 //! - Rust since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -16,6 +16,7 @@ use crate::functions::location::to_index_from_xy;
 use crate::functions::web_sys::{
   add_mouse_down_handler_by_id, get_html_canvas_element_by_id, log,
 };
+use crate::models::input::Input;
 use crate::models::world::World;
 use crate::painters::world::WorldPainter;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
@@ -69,7 +70,7 @@ impl CanvasComponent {
 
   pub fn update(
     &mut self,
-    world: &mut World,
+    input: &mut Input,
   ) {
     let mouse_event_option = self.poll_mouse_event();
     if let Some(mouse_event) = mouse_event_option {
@@ -84,7 +85,7 @@ impl CanvasComponent {
       let y: i32 = ((client_y - dom_rect.top()) * scale_y) as i32;
       let index = self.to_world_index_from_canvas_xy(x, y);
       log(&format!("x {} y {} index {}", x, y, index));
-      world.requested_bug = Some(index);
+      input.bug = Some(index);
     }
   }
 

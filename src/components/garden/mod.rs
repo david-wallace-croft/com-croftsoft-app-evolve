@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-28
+//! - Rust version: 2022-12-31
 //! - Rust since: 2022-12-16
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -19,7 +19,7 @@
 // =============================================================================
 
 use crate::functions::web_sys::add_change_handler_by_id;
-use crate::models::world::World;
+use crate::models::input::Input;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
 use wasm_bindgen::JsCast;
 use web_sys::{Event, EventTarget, HtmlInputElement};
@@ -50,7 +50,7 @@ impl GardenComponent {
 
   pub fn update(
     &mut self,
-    world: &mut World,
+    input: &mut Input,
   ) {
     let event_option = self.changed();
     if let Some(event) = event_option {
@@ -59,7 +59,7 @@ impl GardenComponent {
         let result: Result<HtmlInputElement, EventTarget> =
           event_target.dyn_into::<HtmlInputElement>();
         let html_input_element: HtmlInputElement = result.unwrap();
-        world.requested_garden = Some(html_input_element.checked());
+        input.garden = Some(html_input_element.checked());
       }
     }
   }

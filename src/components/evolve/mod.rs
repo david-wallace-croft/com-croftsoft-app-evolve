@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-28
+//! - Rust version: 2022-12-31
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -26,6 +26,7 @@ use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
 use crate::constants::{FRAME_PERIOD_MILLIS_MINIMUM, INITIAL_CONFIGURATION};
 use crate::functions::web_sys::{get_window, spawn_local_loop, LoopUpdater};
+use crate::models::input::Input;
 use crate::models::world::World;
 use crate::updaters::world::WorldUpdater;
 use web_sys::{Document, HtmlCollection};
@@ -41,6 +42,7 @@ pub struct EvolveComponent {
   frame_period_millis: f64,
   garden_component: GardenComponent,
   initial_configuration: EvolveComponentInitialConfiguration,
+  input: Input,
   next_update_time: f64,
   reset_component: ResetComponent,
   speed_component: SpeedComponent,
@@ -103,6 +105,7 @@ impl EvolveComponent {
       blight_component: BlightComponent::new("blight"),
       canvas_component: CanvasComponent::new("canvas"),
       initial_configuration,
+      input: Input::default(),
       flora_component: FloraComponent::new("flora"),
       garden_component: GardenComponent::new("garden"),
       frame_period_millis,
@@ -115,10 +118,10 @@ impl EvolveComponent {
   }
 
   fn update_frame_rate(&mut self) {
-    if !self.world.requested_speed {
+    if !self.input.speed {
       return;
     }
-    self.world.requested_speed = false;
+    self.input.speed = false;
     if self.frame_period_millis == FRAME_PERIOD_MILLIS_MINIMUM {
       self.frame_period_millis = self.initial_configuration.frame_period_millis;
     } else {
@@ -141,13 +144,13 @@ impl LoopUpdater for EvolveComponent {
     if update_time < self.next_update_time {
       return;
     }
-    self.blight_component.update(&mut self.world);
-    self.canvas_component.update(&mut self.world);
-    self.flora_component.update(&mut self.world);
-    self.garden_component.update(&mut self.world);
-    self.reset_component.update(&mut self.world);
-    self.speed_component.update(&mut self.world);
-    self.world_updater.update(&mut self.world);
+    self.blight_component.update(&mut self.input);
+    self.canvas_component.update(&mut self.input);
+    self.flora_component.update(&mut self.input);
+    self.garden_component.update(&mut self.input);
+    self.reset_component.update(&mut self.input);
+    self.speed_component.update(&mut self.input);
+    self.world_updater.update(&mut self.input, &mut self.world);
     self.canvas_component.paint(&self.world);
     self.update_frame_rate();
     self.next_update_time = update_time + self.frame_period_millis;

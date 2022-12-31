@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
+//! - Rust version: 2022-12-31
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -23,6 +23,7 @@ use super::flora::FloraUpdater;
 use crate::constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH};
 use crate::functions::location::to_index_from_xy;
 use crate::models::bug::Bug;
+use crate::models::input::Input;
 use crate::models::world::World;
 
 pub struct WorldUpdater {
@@ -50,14 +51,15 @@ impl WorldUpdater {
 
   pub fn update(
     &self,
+    input: &mut Input,
     world: &mut World,
   ) {
-    if world.requested_reset {
-      world.requested_reset = false;
+    if input.reset {
+      input.reset = false;
       self.reset(world);
     } else {
-      self.flora_updater.update(world);
-      self.bugs_updater.update(world);
+      self.flora_updater.update(input, world);
+      self.bugs_updater.update(input, world);
     }
   }
 }

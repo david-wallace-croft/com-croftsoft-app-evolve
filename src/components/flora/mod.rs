@@ -4,8 +4,8 @@
 //! # Metadata
 //! - Copyright: &copy; 2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-25
-//! - Rust since: 2022-12-25
+//! - Version: 2022-12-31
+//! - Since: 2022-12-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -13,7 +13,7 @@
 
 use crate::constants::{FLORA_GROWTH_RATE_INIT, FLORA_GROWTH_RATE_MAX};
 use crate::functions::web_sys::add_change_handler_by_id;
-use crate::models::world::World;
+use crate::models::input::Input;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
 use wasm_bindgen::JsCast;
 use web_sys::{Event, EventTarget, HtmlInputElement};
@@ -44,7 +44,7 @@ impl FloraComponent {
 
   pub fn update(
     &mut self,
-    world: &mut World,
+    input: &mut Input,
   ) {
     let event_option = self.changed();
     if let Some(event) = event_option {
@@ -55,7 +55,7 @@ impl FloraComponent {
         let html_input_element: HtmlInputElement = result.unwrap();
         let value: String = html_input_element.value();
         let v: Result<usize, _> = value.parse();
-        world.requested_flora = Some(v.unwrap());
+        input.flora = Some(v.unwrap());
       }
     }
   }

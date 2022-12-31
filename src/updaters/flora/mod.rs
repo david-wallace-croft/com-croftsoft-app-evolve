@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-28
+//! - Rust version: 2022-12-31
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -23,6 +23,7 @@ use crate::constants::{
   SPACE_WIDTH,
 };
 use crate::functions::location::to_index_from_xy;
+use crate::models::input::Input;
 use crate::models::world::World;
 use rand::{rngs::ThreadRng, Rng};
 
@@ -32,16 +33,17 @@ pub struct FloraUpdater {}
 impl FloraUpdater {
   pub fn update(
     &self,
+    input: &mut Input,
     world: &mut World,
   ) {
-    if let Some(flora_growth_rate) = world.requested_flora {
-      world.requested_flora = None;
+    if let Some(flora_growth_rate) = input.flora {
+      input.flora = None;
       if flora_growth_rate <= FLORA_GROWTH_RATE_MAX {
         world.flora_growth_rate = flora_growth_rate;
       }
     }
-    if world.requested_blight {
-      world.requested_blight = false;
+    if input.blight {
+      input.blight = false;
       for i in 0..SPACE_HEIGHT * SPACE_WIDTH {
         world.flora_present[i] = false;
       }
@@ -53,7 +55,7 @@ impl FloraUpdater {
         world.flora_present[index] = true;
       }
     }
-    self.update_garden(world);
+    self.update_garden(input, world);
   }
 
   // private methods
@@ -73,10 +75,11 @@ impl FloraUpdater {
 
   fn update_garden(
     &self,
+    input: &mut Input,
     world: &mut World,
   ) {
-    if let Some(enabled_garden) = world.requested_garden {
-      world.requested_garden = None;
+    if let Some(enabled_garden) = input.garden {
+      input.garden = None;
       world.enabled_garden = enabled_garden;
       if !world.enabled_garden {
         self.set_garden_values(world, false);
