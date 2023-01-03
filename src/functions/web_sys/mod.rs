@@ -21,8 +21,8 @@ use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::prelude::Closure;
 use wasm_bindgen::{JsCast, JsValue};
 use web_sys::{
-  console, window, Document, Element, Event, HtmlCanvasElement, HtmlElement,
-  MouseEvent, Window,
+  console, window, Document, DomRect, Element, Event, HtmlCanvasElement,
+  HtmlElement, MouseEvent, Window,
 };
 
 type LoopClosure = Closure<dyn FnMut(f64)>;
@@ -101,6 +101,22 @@ pub fn add_mouse_down_handler_by_id(
   let html_element = get_html_element_by_id(id);
   // TODO: return None if fails
   Some(add_mouse_down_handler(html_element))
+}
+
+pub fn get_canvas_xy(
+  html_canvas_element_id: &str,
+  mouse_event: MouseEvent,
+) -> (u32, u32) {
+  let client_x: f64 = mouse_event.client_x() as f64;
+  let client_y: f64 = mouse_event.client_y() as f64;
+  let html_canvas_element: HtmlCanvasElement =
+    get_html_canvas_element_by_id(html_canvas_element_id);
+  let dom_rect: DomRect = html_canvas_element.get_bounding_client_rect();
+  let scale_x = html_canvas_element.width() as f64 / dom_rect.width();
+  let scale_y = html_canvas_element.height() as f64 / dom_rect.height();
+  let x: u32 = ((client_x - dom_rect.left()) * scale_x) as u32;
+  let y: u32 = ((client_y - dom_rect.top()) * scale_y) as u32;
+  (x, y)
 }
 
 pub fn get_html_canvas_element_by_id(
