@@ -74,8 +74,8 @@ impl CanvasComponent {
   ) {
     let mouse_event_option = self.poll_mouse_event();
     if let Some(mouse_event) = mouse_event_option {
-      let (x, y) = get_canvas_xy(&self.id, mouse_event);
-      let index = self.to_world_index_from_canvas_xy(x, y);
+      let (canvas_x, canvas_y) = get_canvas_xy(&mouse_event);
+      let index = self.to_world_index_from_canvas_xy(canvas_x, canvas_y);
       input.request_bug(index);
     }
   }
@@ -95,8 +95,8 @@ impl CanvasComponent {
 
   fn to_world_index_from_canvas_xy(
     &self,
-    canvas_x: u32,
-    canvas_y: u32,
+    canvas_x: usize,
+    canvas_y: usize,
   ) -> usize {
     let (scale_x, scale_y) = CanvasComponent::get_scale_xy(&self.id);
     let scaled_canvas_x: f64 = canvas_x as f64 / scale_x;

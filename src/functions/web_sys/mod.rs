@@ -21,8 +21,8 @@ use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::prelude::Closure;
 use wasm_bindgen::{JsCast, JsValue};
 use web_sys::{
-  console, window, Document, DomRect, Element, Event, HtmlCanvasElement,
-  HtmlElement, MouseEvent, Window,
+  console, window, Document, DomRect, Element, Event, EventTarget,
+  HtmlCanvasElement, HtmlElement, MouseEvent, Window,
 };
 
 type LoopClosure = Closure<dyn FnMut(f64)>;
@@ -103,20 +103,17 @@ pub fn add_mouse_down_handler_by_id(
   Some(add_mouse_down_handler(html_element))
 }
 
-pub fn get_canvas_xy(
-  html_canvas_element_id: &str,
-  mouse_event: MouseEvent,
-) -> (u32, u32) {
+pub fn get_canvas_xy(mouse_event: &MouseEvent) -> (usize, usize) {
   let client_x: f64 = mouse_event.client_x() as f64;
   let client_y: f64 = mouse_event.client_y() as f64;
-  let html_canvas_element: HtmlCanvasElement =
-    get_html_canvas_element_by_id(html_canvas_element_id);
+  let event_target: EventTarget = mouse_event.target().unwrap();
+  let html_canvas_element: HtmlCanvasElement = event_target.dyn_into().unwrap();
   let dom_rect: DomRect = html_canvas_element.get_bounding_client_rect();
   let scale_x = html_canvas_element.width() as f64 / dom_rect.width();
   let scale_y = html_canvas_element.height() as f64 / dom_rect.height();
-  let x: u32 = ((client_x - dom_rect.left()) * scale_x) as u32;
-  let y: u32 = ((client_y - dom_rect.top()) * scale_y) as u32;
-  (x, y)
+  let canvas_x: usize = ((client_x - dom_rect.left()) * scale_x) as usize;
+  let canvas_y: usize = ((client_y - dom_rect.top()) * scale_y) as usize;
+  (canvas_x, canvas_y)
 }
 
 pub fn get_html_canvas_element_by_id(
