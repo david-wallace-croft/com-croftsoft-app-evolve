@@ -2,9 +2,9 @@
 //! - web-sys functions for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2022-12-26
+//! - Version: 2023-01-02
 //! - Since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/

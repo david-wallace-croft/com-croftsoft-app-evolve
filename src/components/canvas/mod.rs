@@ -2,9 +2,9 @@
 //! - Component for the HTML Canvas
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-31
+//! - Rust version: 2023-01-02
 //! - Rust since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
