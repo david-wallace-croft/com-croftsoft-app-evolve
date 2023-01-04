@@ -2,9 +2,9 @@
 //! - Component for the Flora growth rate input
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2022-12-31
+//! - Version: 2023-01-03
 //! - Since: 2022-12-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -13,7 +13,7 @@
 
 use crate::constants::{FLORA_GROWTH_RATE_INIT, FLORA_GROWTH_RATE_MAX};
 use crate::functions::web_sys::add_change_handler_by_id;
-use crate::models::input::Input;
+use crate::traits::InputWriter;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
 use wasm_bindgen::JsCast;
 use web_sys::{Event, EventTarget, HtmlInputElement};
@@ -42,9 +42,9 @@ impl FloraComponent {
     )
   }
 
-  pub fn update(
+  pub fn update<I: InputWriter>(
     &mut self,
-    input: &mut Input,
+    input: &mut I,
   ) {
     let event_option = self.changed();
     if let Some(event) = event_option {

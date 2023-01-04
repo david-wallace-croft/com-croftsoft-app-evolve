@@ -2,9 +2,9 @@
 //! - CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-23
+//! - Rust version: 2023-01-03
 //! - Rust since: 2022-09-12
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -29,6 +29,7 @@ mod constants;
 mod functions;
 mod models;
 mod painters;
+mod traits;
 mod updaters;
 
 #[cfg(feature = "wee_alloc")]

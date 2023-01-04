@@ -2,9 +2,9 @@
 //! - Component for the speed button
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2022-12-31
+//! - Version: 2023-01-03
 //! - Since: 2022-12-20
 //!
 //! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
@@ -13,7 +13,7 @@
 // =============================================================================
 
 use crate::functions::web_sys::add_click_handler_by_id;
-use crate::models::input::Input;
+use crate::traits::InputWriter;
 use futures::channel::mpsc::UnboundedReceiver;
 
 pub struct SpeedComponent {
@@ -47,9 +47,9 @@ impl SpeedComponent {
     )
   }
 
-  pub fn update(
+  pub fn update<I: InputWriter>(
     &mut self,
-    input: &mut Input,
+    input: &mut I,
   ) {
     if self.pressed() {
       input.request_speed();

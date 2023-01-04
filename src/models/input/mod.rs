@@ -2,14 +2,16 @@
 //! - Input model for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2022-12-31
+//! - Version: 2023-01-03
 //! - Since: 2022-12-31
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
+
+use crate::traits::{InputReader, InputWriter};
 
 // TODO: split into read-only and write-only parts
 #[derive(Debug, Default)]
@@ -38,48 +40,52 @@ impl Input {
     self.reset = false;
     self.speed = false;
   }
+}
 
-  pub fn get_blight(&self) -> bool {
+impl InputReader for Input {
+  fn get_blight(&self) -> bool {
     self.blight
   }
 
-  pub fn get_bug(&self) -> bool {
+  fn get_bug(&self) -> bool {
     self.bug
   }
 
-  pub fn get_bug_position_index(&self) -> usize {
+  fn get_bug_position_index(&self) -> usize {
     self.bug_position_index
   }
 
-  pub fn get_flora(&self) -> bool {
+  fn get_flora(&self) -> bool {
     self.flora
   }
 
-  pub fn get_flora_growth_rate(&self) -> usize {
+  fn get_flora_growth_rate(&self) -> usize {
     self.flora_growth_rate
   }
 
-  pub fn get_garden_off(&self) -> bool {
+  fn get_garden_off(&self) -> bool {
     self.garden_off
   }
 
-  pub fn get_garden_on(&self) -> bool {
+  fn get_garden_on(&self) -> bool {
     self.garden_on
   }
 
-  pub fn get_reset(&self) -> bool {
+  fn get_reset(&self) -> bool {
     self.reset
   }
 
-  pub fn get_speed(&self) -> bool {
+  fn get_speed(&self) -> bool {
     self.speed
   }
+}
 
-  pub fn request_blight(&mut self) {
+impl InputWriter for Input {
+  fn request_blight(&mut self) {
     self.blight = true;
   }
 
-  pub fn request_bug(
+  fn request_bug(
     &mut self,
     position_index: usize,
   ) {
@@ -87,7 +93,7 @@ impl Input {
     self.bug_position_index = position_index;
   }
 
-  pub fn request_flora(
+  fn request_flora(
     &mut self,
     flora_growth_rate: usize,
   ) {
@@ -95,19 +101,19 @@ impl Input {
     self.flora_growth_rate = flora_growth_rate;
   }
 
-  pub fn request_garden_off(&mut self) {
+  fn request_garden_off(&mut self) {
     self.garden_off = true;
   }
 
-  pub fn request_garden_on(&mut self) {
+  fn request_garden_on(&mut self) {
     self.garden_on = true;
   }
 
-  pub fn request_reset(&mut self) {
+  fn request_reset(&mut self) {
     self.reset = true;
   }
 
-  pub fn request_speed(&mut self) {
+  fn request_speed(&mut self) {
     self.speed = true;
   }
 }

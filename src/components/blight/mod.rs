@@ -2,9 +2,9 @@
 //! - Component for the blight button
 //!
 //! # Metadata
-//! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-31
+//! - Rust version: 2023-01-03
 //! - Rust since: 2022-12-14
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -19,7 +19,7 @@
 // =============================================================================
 
 use crate::functions::web_sys::add_click_handler_by_id;
-use crate::models::input::Input;
+use crate::traits::InputWriter;
 use futures::channel::mpsc::UnboundedReceiver;
 
 pub struct BlightComponent {
@@ -43,9 +43,9 @@ impl BlightComponent {
     format!("<button id=\"{}\">Blight</button>", self.id)
   }
 
-  pub fn update(
+  pub fn update<I: InputWriter>(
     &mut self,
-    input: &mut Input,
+    input: &mut I,
   ) {
     if self.clicked() {
       input.request_blight();

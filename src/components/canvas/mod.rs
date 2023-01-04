@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-02
+//! - Rust version: 2023-01-03
 //! - Rust since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -16,9 +16,9 @@ use crate::functions::location::to_index_from_xy;
 use crate::functions::web_sys::{
   add_mouse_down_handler_by_id, get_canvas_xy, get_html_canvas_element_by_id,
 };
-use crate::models::input::Input;
 use crate::models::world::World;
 use crate::painters::world::WorldPainter;
+use crate::traits::InputWriter;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
 use web_sys::{HtmlCanvasElement, MouseEvent};
 
@@ -68,9 +68,9 @@ impl CanvasComponent {
     }
   }
 
-  pub fn update(
+  pub fn update<I: InputWriter>(
     &mut self,
-    input: &mut Input,
+    input: &mut I,
   ) {
     let mouse_event_option = self.poll_mouse_event();
     if let Some(mouse_event) = mouse_event_option {
