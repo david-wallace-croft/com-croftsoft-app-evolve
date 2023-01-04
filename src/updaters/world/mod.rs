@@ -42,7 +42,7 @@ pub fn update<I: InputReader>(
   input: &I,
   world: &mut World,
 ) {
-  if input.get_reset() {
+  if input.get_reset_requested() {
     reset(world);
   } else {
     super::flora::update(input, world);

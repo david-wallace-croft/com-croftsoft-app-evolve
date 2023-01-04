@@ -39,9 +39,11 @@ pub fn update<I: InputReader>(
   }
   let mut new_bugs = Vec::<Bug>::new();
   let bugs_length = world.bugs.len();
-  if bugs_length < BUGS_MAX && input.get_bug() {
-    let new_bug = Bug::new(input.get_bug_position_index());
-    new_bugs.push(new_bug);
+  if bugs_length < BUGS_MAX {
+    if let Some(position_index) = input.get_bug_requested() {
+      let new_bug = Bug::new(position_index);
+      new_bugs.push(new_bug);
+    }
   }
   for bug in world.bugs.iter_mut() {
     if bug.energy == 0 {

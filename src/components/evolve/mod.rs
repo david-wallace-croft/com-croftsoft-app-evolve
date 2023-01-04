@@ -117,7 +117,7 @@ impl EvolveComponent {
   }
 
   fn update_frame_rate(&mut self) {
-    if !self.input.get_speed() {
+    if !self.input.get_speed_toggle_requested() {
       return;
     }
     if self.frame_period_millis == FRAME_PERIOD_MILLIS_MINIMUM {

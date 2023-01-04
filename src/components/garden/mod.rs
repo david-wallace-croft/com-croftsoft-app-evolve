@@ -59,11 +59,7 @@ impl GardenComponent {
         let result: Result<HtmlInputElement, EventTarget> =
           event_target.dyn_into::<HtmlInputElement>();
         let html_input_element: HtmlInputElement = result.unwrap();
-        if html_input_element.checked() {
-          input.request_garden_on();
-        } else {
-          input.request_garden_off();
-        }
+        input.request_garden_change(html_input_element.checked());
       }
     }
   }

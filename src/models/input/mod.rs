@@ -16,104 +16,82 @@ use crate::traits::{InputReader, InputWriter};
 // TODO: split into read-only and write-only parts
 #[derive(Debug, Default)]
 pub struct Input {
-  blight: bool,
-  bug: bool,
-  bug_position_index: usize,
-  flora: bool,
-  flora_growth_rate: usize,
-  garden_off: bool,
-  garden_on: bool,
-  reset: bool,
-  speed: bool,
+  blight_requested: bool,
+  bug_requested: Option<usize>,
+  flora_growth_rate_change_requested: Option<usize>,
+  garden_change_requested: Option<bool>,
+  reset_requested: bool,
+  speed_toggle_requested: bool,
 }
 
 impl Input {
   pub fn clear(&mut self) {
-    self.blight = false;
-    self.bug = false;
-    self.bug_position_index = 0;
-    self.flora = false;
-    self.flora_growth_rate = 0;
-    // TODO: change to garden_toggled
-    self.garden_off = false;
-    self.garden_on = false;
-    self.reset = false;
-    self.speed = false;
+    self.blight_requested = false;
+    self.bug_requested = None;
+    self.flora_growth_rate_change_requested = None;
+    self.garden_change_requested = None;
+    self.reset_requested = false;
+    self.speed_toggle_requested = false;
   }
 }
 
 impl InputReader for Input {
-  fn get_blight(&self) -> bool {
-    self.blight
+  fn get_blight_requested(&self) -> bool {
+    self.blight_requested
   }
 
-  fn get_bug(&self) -> bool {
-    self.bug
+  fn get_bug_requested(&self) -> Option<usize> {
+    self.bug_requested
   }
 
-  fn get_bug_position_index(&self) -> usize {
-    self.bug_position_index
+  fn get_flora_growth_rate_change_requested(&self) -> Option<usize> {
+    self.flora_growth_rate_change_requested
   }
 
-  fn get_flora(&self) -> bool {
-    self.flora
+  fn get_garden_change_requested(&self) -> Option<bool> {
+    self.garden_change_requested
   }
 
-  fn get_flora_growth_rate(&self) -> usize {
-    self.flora_growth_rate
+  fn get_reset_requested(&self) -> bool {
+    self.reset_requested
   }
 
-  fn get_garden_off(&self) -> bool {
-    self.garden_off
-  }
-
-  fn get_garden_on(&self) -> bool {
-    self.garden_on
-  }
-
-  fn get_reset(&self) -> bool {
-    self.reset
-  }
-
-  fn get_speed(&self) -> bool {
-    self.speed
+  fn get_speed_toggle_requested(&self) -> bool {
+    self.speed_toggle_requested
   }
 }
 
 impl InputWriter for Input {
   fn request_blight(&mut self) {
-    self.blight = true;
+    self.blight_requested = true;
   }
 
   fn request_bug(
     &mut self,
     position_index: usize,
   ) {
-    self.bug = true;
-    self.bug_position_index = position_index;
+    self.bug_requested = Some(position_index);
   }
 
-  fn request_flora(
+  fn request_flora_growth_rate_change(
     &mut self,
     flora_growth_rate: usize,
   ) {
-    self.flora = true;
-    self.flora_growth_rate = flora_growth_rate;
+    self.flora_growth_rate_change_requested = Some(flora_growth_rate);
   }
 
-  fn request_garden_off(&mut self) {
-    self.garden_off = true;
-  }
-
-  fn request_garden_on(&mut self) {
-    self.garden_on = true;
+  fn request_garden_change(
+    &mut self,
+    enabled: bool,
+  ) {
+    self.garden_change_requested = Some(enabled);
   }
 
   fn request_reset(&mut self) {
-    self.reset = true;
+    self.reset_requested = true;
   }
 
-  fn request_speed(&mut self) {
-    self.speed = true;
+  fn request_speed_toggle(&mut self) {
+    self.speed_toggle_requested = true;
   }
 }

@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-3
+//! - Version: 2023-01-03
 //! - Since: 2023-01-03
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -12,23 +12,17 @@
 // =============================================================================
 
 pub trait InputReader {
-  fn get_blight(&self) -> bool;
+  fn get_blight_requested(&self) -> bool;
 
-  fn get_bug(&self) -> bool;
+  fn get_bug_requested(&self) -> Option<usize>;
 
-  fn get_bug_position_index(&self) -> usize;
+  fn get_flora_growth_rate_change_requested(&self) -> Option<usize>;
 
-  fn get_flora(&self) -> bool;
+  fn get_garden_change_requested(&self) -> Option<bool>;
 
-  fn get_flora_growth_rate(&self) -> usize;
+  fn get_reset_requested(&self) -> bool;
 
-  fn get_garden_off(&self) -> bool;
-
-  fn get_garden_on(&self) -> bool;
-
-  fn get_reset(&self) -> bool;
-
-  fn get_speed(&self) -> bool;
+  fn get_speed_toggle_requested(&self) -> bool;
 }
 
 pub trait InputWriter {
@@ -39,16 +33,17 @@ pub trait InputWriter {
     position_index: usize,
   );
 
-  fn request_flora(
+  fn request_flora_growth_rate_change(
     &mut self,
     flora_growth_rate: usize,
   );
 
-  fn request_garden_off(&mut self);
-
-  fn request_garden_on(&mut self);
+  fn request_garden_change(
+    &mut self,
+    enabled: bool,
+  );
 
   fn request_reset(&mut self);
 
-  fn request_speed(&mut self);
+  fn request_speed_toggle(&mut self);
 }

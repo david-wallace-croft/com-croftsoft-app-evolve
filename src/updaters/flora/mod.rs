@@ -31,15 +31,16 @@ pub fn update<I: InputReader>(
   input: &I,
   world: &mut World,
 ) {
-  if input.get_flora() {
-    let flora_growth_rate = input.get_flora_growth_rate();
+  if let Some(flora_growth_rate) =
+    input.get_flora_growth_rate_change_requested()
+  {
     if flora_growth_rate < FLORA_GROWTH_RATE_MAX {
       world.flora_growth_rate = flora_growth_rate;
     } else {
       world.flora_growth_rate = FLORA_GROWTH_RATE_MAX;
     }
   }
-  if input.get_blight() {
+  if input.get_blight_requested() {
     for i in 0..SPACE_HEIGHT * SPACE_WIDTH {
       world.flora_present[i] = false;
     }
@@ -72,10 +73,8 @@ fn update_garden<I: InputReader>(
   input: &I,
   world: &mut World,
 ) {
-  let garden_off = input.get_garden_off();
-  let garden_on = input.get_garden_on();
-  if garden_off || garden_on {
-    world.enabled_garden = garden_on;
+  if let Some(enabled) = input.get_garden_change_requested() {
+    world.enabled_garden = enabled;
     if !world.enabled_garden {
       set_garden_values(world, false);
     }
