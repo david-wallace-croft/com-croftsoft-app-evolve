@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-03
+//! - Version: 2023-01-04
 //! - Since: 2023-01-03
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -46,4 +46,11 @@ pub trait InputWriter {
   fn request_reset(&mut self);
 
   fn request_speed_toggle(&mut self);
+}
+
+pub trait Model<I: InputReader> {
+  fn update(
+    &mut self,
+    input: &I,
+  );
 }

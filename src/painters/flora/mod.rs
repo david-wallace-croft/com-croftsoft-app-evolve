@@ -2,9 +2,9 @@
 //! - FloraPainter for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
+//! - Rust version: 2023-01-04
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -56,7 +56,7 @@ impl FloraPainter {
   ) {
     context.set_fill_style(&self.fill_style);
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
-      if world.flora_present[index] {
+      if world.flora.flora_present[index] {
         // TODO: replace with PlotLib.xy()
         let x: f64 = to_x_from_index(index) as f64;
         let y: f64 = to_y_from_index(index) as f64;

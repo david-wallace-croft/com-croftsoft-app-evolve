@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-03
+//! - Rust version: 2023-01-04
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -28,7 +28,7 @@ use crate::constants::{FRAME_PERIOD_MILLIS_MINIMUM, INITIAL_CONFIGURATION};
 use crate::functions::web_sys::{get_window, spawn_local_loop, LoopUpdater};
 use crate::models::input::Input;
 use crate::models::world::World;
-use crate::traits::{InputReader, InputWriter};
+use crate::traits::{InputReader, InputWriter, Model};
 use web_sys::{Document, HtmlCollection};
 
 pub struct EvolveComponentInitialConfiguration {
@@ -148,7 +148,8 @@ impl LoopUpdater for EvolveComponent {
     self.garden_component.update(&mut self.input);
     self.reset_component.update(&mut self.input);
     self.speed_component.update(&mut self.input);
-    crate::updaters::world::update(&self.input, &mut self.world);
+    self.world.update(&self.input);
+    // crate::updaters::world::update(&self.input, &mut self.world);
     self.canvas_component.paint(&self.world);
     self.update_frame_rate();
     self.next_update_time = update_time + self.frame_period_millis;

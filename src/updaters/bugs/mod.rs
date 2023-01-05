@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-03
+//! - Rust version: 2023-01-04
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -52,8 +52,8 @@ pub fn update<I: InputReader>(
     let bug_position: usize = bug.position;
     let mut x = to_x_from_index(bug_position);
     let mut y = to_y_from_index(bug_position);
-    if world.flora_present[bug_position] {
-      world.flora_present[bug_position] = false;
+    if world.flora.flora_present[bug_position] {
+      world.flora.flora_present[bug_position] = false;
       bug.energy = bug.energy.saturating_add(FLORA_ENERGY);
       if bug.energy > MAX_ENERGY {
         bug.energy = MAX_ENERGY;
