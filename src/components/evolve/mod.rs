@@ -26,8 +26,8 @@ use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
 use crate::constants::{FRAME_PERIOD_MILLIS_MINIMUM, INITIAL_CONFIGURATION};
 use crate::functions::web_sys::{get_window, spawn_local_loop, LoopUpdater};
-use crate::models::input::Input;
 use crate::models::world::World;
+use crate::structs::input::Input;
 use crate::traits::{InputReader, InputWriter};
 use web_sys::{Document, HtmlCollection};
 

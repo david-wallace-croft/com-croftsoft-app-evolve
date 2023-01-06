@@ -29,6 +29,7 @@ mod constants;
 mod functions;
 mod models;
 mod painters;
+mod structs;
 mod traits;
 
 #[cfg(feature = "wee_alloc")]
