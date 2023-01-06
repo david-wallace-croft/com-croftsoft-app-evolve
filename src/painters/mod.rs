@@ -1,5 +1,5 @@
 pub mod background;
-pub mod bugs;
+pub mod fauna;
 pub mod flora;
 pub mod overlay;
 pub mod world;

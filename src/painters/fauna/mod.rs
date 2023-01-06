@@ -1,5 +1,5 @@
 // =============================================================================
-//! - BugsPainter for CroftSoft Evolve
+//! - FaunaPainter for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
@@ -20,11 +20,11 @@
 
 use crate::functions::location::{to_x_from_index, to_y_from_index};
 use crate::models::bug::Species;
-use crate::models::world::World;
+use crate::models::fauna::Fauna;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
-pub struct BugsPainter {
+pub struct FaunaPainter {
   pub bug_color_cruiser: JsValue,
   pub bug_color_normal: JsValue,
   pub bug_color_twirler: JsValue,
@@ -35,7 +35,7 @@ pub struct BugsPainter {
   pub scale_y: f64,
 }
 
-impl BugsPainter {
+impl FaunaPainter {
   pub fn new(
     scale_x: f64,
     scale_y: f64,
@@ -61,9 +61,9 @@ impl BugsPainter {
   pub fn paint(
     &self,
     context: &CanvasRenderingContext2d,
-    world: &World,
+    fauna: &Fauna,
   ) {
-    for bug in world.fauna.bugs.iter() {
+    for bug in fauna.bugs.iter() {
       let bug_color = match bug.species {
         Species::Cruiser => &self.bug_color_cruiser,
         Species::Normal => &self.bug_color_normal,
