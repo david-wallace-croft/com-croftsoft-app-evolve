@@ -66,6 +66,7 @@ impl EvolveComponent {
     self.reset_component.init();
     self.speed_component.init();
     self.input.request_reset();
+    self.world.time = usize::MAX;
   }
 
   pub fn launch() {

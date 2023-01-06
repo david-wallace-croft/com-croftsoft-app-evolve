@@ -35,11 +35,12 @@ impl World {
     &mut self,
     input: &I,
   ) {
+    if input.get_reset_requested() || self.time >= GENES_MAX - 1 {
+      self.time = 0;
+    } else {
+      self.time += 1;
+    }
     self.flora.update(input);
     self.fauna.update(input, &mut self.flora, self.time);
-    self.time += 1;
-    if self.time >= GENES_MAX {
-      self.time = 0;
-    }
   }
 }
