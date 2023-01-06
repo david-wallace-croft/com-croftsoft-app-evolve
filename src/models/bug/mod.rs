@@ -2,9 +2,9 @@
 //! - Bug model for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-31
+//! - Rust version: 2023-01-05
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,10 +18,18 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::constants::{BABY_ENERGY, BIRTH_ENERGY_COST, GENES_MAX};
+use crate::constants::{
+  BABY_ENERGY, BIRTH_ENERGY, BIRTH_ENERGY_COST, BUGS_MAX, FLORA_ENERGY,
+  GENES_MAX, MAX_ENERGY, MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
+};
+use crate::functions::location::{
+  to_index_from_xy, to_x_from_index, to_y_from_index,
+};
 
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
+
+use super::flora::Flora;
 
 #[derive(Debug)]
 pub struct Bug {
@@ -40,7 +48,33 @@ pub enum Species {
 }
 
 impl Bug {
-  pub fn give_birth(&mut self) -> Self {
+  fn classify_species(&mut self) {
+    let mut x_sum: isize = 0;
+    let mut y_sum: isize = 0;
+    for i in 0..GENES_MAX {
+      if self.genes_x[i] {
+        x_sum += 1;
+      } else {
+        x_sum -= 1;
+      }
+      if self.genes_y[i] {
+        y_sum += 1;
+      } else {
+        y_sum -= 1;
+      }
+    }
+    let unscaled_speed: f64 =
+      ((x_sum as f64).powi(2) + (y_sum as f64).powi(2)).sqrt();
+    let scaling_factor: f64 = (2.0 * ((GENES_MAX as f64).powi(2))).sqrt();
+    let speed: f64 = unscaled_speed / scaling_factor;
+    if speed >= 0.70 {
+      self.species = Species::Cruiser;
+    } else if speed <= 0.30 {
+      self.species = Species::Twirlie;
+    }
+  }
+
+  fn give_birth(&mut self) -> Self {
     self.energy = self.energy.saturating_sub(BIRTH_ENERGY_COST);
     let mut baby_bug = Bug::new(self.position);
     for index in 0..GENES_MAX {
@@ -81,29 +115,54 @@ impl Bug {
     bug
   }
 
-  pub fn classify_species(&mut self) {
-    let mut x_sum: isize = 0;
-    let mut y_sum: isize = 0;
-    for i in 0..GENES_MAX {
-      if self.genes_x[i] {
-        x_sum += 1;
-      } else {
-        x_sum -= 1;
-      }
-      if self.genes_y[i] {
-        y_sum += 1;
-      } else {
-        y_sum -= 1;
+  pub fn update(
+    &mut self,
+    bugs_length: usize,
+    flora: &mut Flora,
+    new_bugs: &mut Vec<Bug>,
+    time: usize,
+  ) {
+    let bug_position: usize = self.position;
+    if flora.flora_present[bug_position] {
+      flora.flora_present[bug_position] = false;
+      self.energy = self.energy.saturating_add(FLORA_ENERGY);
+      if self.energy > MAX_ENERGY {
+        self.energy = MAX_ENERGY;
       }
     }
-    let unscaled_speed: f64 =
-      ((x_sum as f64).powi(2) + (y_sum as f64).powi(2)).sqrt();
-    let scaling_factor: f64 = (2.0 * ((GENES_MAX as f64).powi(2))).sqrt();
-    let speed: f64 = unscaled_speed / scaling_factor;
-    if speed >= 0.70 {
-      self.species = Species::Cruiser;
-    } else if speed <= 0.30 {
-      self.species = Species::Twirlie;
+    if self.energy >= BIRTH_ENERGY && bugs_length + new_bugs.len() < BUGS_MAX {
+      let new_bug = self.give_birth();
+      new_bugs.push(new_bug);
     }
+    let mut x = to_x_from_index(bug_position);
+    let mut y = to_y_from_index(bug_position);
+    if rand::random() {
+      if self.genes_x[time] {
+        if x < SPACE_WIDTH - 1 {
+          x += 1;
+        } else {
+          x = 0;
+        }
+      } else if x > 0 {
+        x -= 1;
+      } else {
+        x = SPACE_WIDTH - 1;
+      }
+    }
+    if rand::random() {
+      if self.genes_y[time] {
+        if y < SPACE_HEIGHT - 1 {
+          y += 1;
+        } else {
+          y = 0;
+        }
+      } else if y > 0 {
+        y -= 1;
+      } else {
+        y = SPACE_HEIGHT - 1;
+      }
+    }
+    self.position = to_index_from_xy(x, y);
+    self.energy = self.energy.saturating_sub(MOVE_COST);
   }
 }
