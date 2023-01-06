@@ -36,7 +36,7 @@ impl World {
     input: &I,
   ) {
     self.flora.update(input);
-    Fauna::update(input, self);
+    self.fauna.update(input, &mut self.flora, self.time);
     self.time = self.time.saturating_add(1);
     if self.time >= GENES_MAX {
       self.time = 0;

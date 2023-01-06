@@ -149,7 +149,6 @@ impl LoopUpdater for EvolveComponent {
     self.reset_component.update(&mut self.input);
     self.speed_component.update(&mut self.input);
     self.world.update(&self.input);
-    // crate::updaters::world::update(&self.input, &mut self.world);
     self.canvas_component.paint(&self.world);
     self.update_frame_rate();
     self.next_update_time = update_time + self.frame_period_millis;
