@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-04
+//! - Rust version: 2023-01-05
 //! - Rust since: 2023-01-04
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -23,7 +23,7 @@ use crate::constants::{
   FLORA_GROWTH_RATE_MAX, SPACE_HEIGHT, SPACE_WIDTH,
 };
 use crate::functions::location::to_index_from_xy;
-use crate::traits::{InputReader, Model};
+use crate::traits::InputReader;
 
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
@@ -54,34 +54,7 @@ impl Flora {
     }
   }
 
-  fn update_garden<I: InputReader>(
-    &mut self,
-    input: &I,
-  ) {
-    if let Some(enabled) = input.get_garden_change_requested() {
-      self.enabled_garden = enabled;
-      if !self.enabled_garden {
-        self.set_garden_values(false);
-      }
-    }
-    if self.enabled_garden {
-      self.set_garden_values(true);
-    }
-  }
-}
-
-impl Default for Flora {
-  fn default() -> Self {
-    Self {
-      enabled_garden: true,
-      flora_growth_rate: FLORA_GROWTH_RATE_INIT,
-      flora_present: [false; SPACE_HEIGHT * SPACE_WIDTH],
-    }
-  }
-}
-
-impl<I: InputReader> Model<I> for Flora {
-  fn update(
+  pub fn update<I: InputReader>(
     &mut self,
     input: &I,
   ) {
@@ -111,5 +84,30 @@ impl<I: InputReader> Model<I> for Flora {
       }
     }
     self.update_garden(input);
+  }
+
+  fn update_garden<I: InputReader>(
+    &mut self,
+    input: &I,
+  ) {
+    if let Some(enabled) = input.get_garden_change_requested() {
+      self.enabled_garden = enabled;
+      if !self.enabled_garden {
+        self.set_garden_values(false);
+      }
+    }
+    if self.enabled_garden {
+      self.set_garden_values(true);
+    }
+  }
+}
+
+impl Default for Flora {
+  fn default() -> Self {
+    Self {
+      enabled_garden: true,
+      flora_growth_rate: FLORA_GROWTH_RATE_INIT,
+      flora_present: [false; SPACE_HEIGHT * SPACE_WIDTH],
+    }
   }
 }

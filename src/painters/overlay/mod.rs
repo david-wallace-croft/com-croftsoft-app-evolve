@@ -2,9 +2,9 @@
 //! - OverlayPainter for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
+//! - Rust version: 2023-01-05
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -36,7 +36,7 @@ impl OverlayPainter {
     let mut gene_x_string = String::from("X:");
     let mut gene_y_string = String::from("Y:");
     let mut bugs_alive: usize = 0;
-    for bug in world.bugs.iter() {
+    for bug in world.fauna.bugs.iter() {
       if bug.energy > 0 {
         bugs_alive += 1;
       }
@@ -44,7 +44,7 @@ impl OverlayPainter {
     for i in 0..GENES_MAX {
       let mut x_sum: usize = 0;
       let mut y_sum: usize = 0;
-      for bug in world.bugs.iter() {
+      for bug in world.fauna.bugs.iter() {
         if bug.energy > 0 {
           if bug.genes_x[i] {
             x_sum += 1;
@@ -76,7 +76,7 @@ impl OverlayPainter {
     world: &World,
   ) -> String {
     let genes_average_string = self.make_genes_average_string(world);
-    let bugs_alive = world.bugs.iter().fold(0, |count, bug| {
+    let bugs_alive = world.fauna.bugs.iter().fold(0, |count, bug| {
       if bug.energy > 0 {
         count + 1
       } else {

@@ -2,9 +2,9 @@
 //! - BugsPainter for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-21
+//! - Rust version: 2023-01-05
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -63,7 +63,7 @@ impl BugsPainter {
     context: &CanvasRenderingContext2d,
     world: &World,
   ) {
-    for bug in world.bugs.iter() {
+    for bug in world.fauna.bugs.iter() {
       let bug_color = match bug.species {
         Species::Cruiser => &self.bug_color_cruiser,
         Species::Normal => &self.bug_color_normal,
