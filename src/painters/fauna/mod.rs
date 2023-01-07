@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-05
+//! - Rust version: 2023-01-07
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,9 +18,10 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::functions::location::{to_x_from_index, to_y_from_index};
+use crate::engine::functions::location::{to_x_from_index, to_y_from_index};
+use crate::engine::traits::CanvasPainter;
 use crate::models::bug::Species;
-use crate::models::fauna::Fauna;
+use crate::models::world::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
@@ -57,13 +58,15 @@ impl FaunaPainter {
       scale_y,
     }
   }
+}
 
-  pub fn paint(
+impl CanvasPainter for FaunaPainter {
+  fn paint(
     &self,
     context: &CanvasRenderingContext2d,
-    fauna: &Fauna,
+    world: &World,
   ) {
-    for bug in fauna.bugs.iter() {
+    for bug in world.fauna.bugs.iter() {
       let bug_color = match bug.species {
         Species::Cruiser => &self.bug_color_cruiser,
         Species::Normal => &self.bug_color_normal,

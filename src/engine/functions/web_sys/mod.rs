@@ -29,7 +29,7 @@ type LoopClosure = Closure<dyn FnMut(f64)>;
 
 // TODO: Move this to another crate and pull it back in as a dependency
 pub trait LoopUpdater {
-  fn update(
+  fn update_loop(
     &mut self,
     update_time: f64,
   );
@@ -158,7 +158,7 @@ pub async fn start_looping<L: LoopUpdater + 'static>(
   let f: Rc<RefCell<Option<LoopClosure>>> = Rc::new(RefCell::new(None));
   let g = f.clone();
   *g.borrow_mut() = Some(Closure::wrap(Box::new(move |update_time: f64| {
-    loop_updater.update(update_time);
+    loop_updater.update_loop(update_time);
     let _result: Result<i32, anyhow::Error> =
       request_animation_frame(f.borrow().as_ref().unwrap());
   })));

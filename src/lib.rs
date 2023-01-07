@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-05
+//! - Rust version: 2023-01-07
 //! - Rust since: 2022-09-12
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,19 +18,17 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use components::evolve::EvolveComponent;
 use constants::INFO;
-use functions::web_sys::log;
+use engine::functions::web_sys::log;
+use engine::looper::Looper;
 use wasm_bindgen::prelude::*;
 use wee_alloc::WeeAlloc;
 
 mod components;
 mod constants;
-mod functions;
+mod engine;
 mod models;
 mod painters;
-mod structs;
-mod traits;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
@@ -40,6 +38,6 @@ static ALLOC: WeeAlloc = WeeAlloc::INIT;
 pub fn main_js() -> Result<(), JsValue> {
   console_error_panic_hook::set_once();
   log(INFO);
-  EvolveComponent::launch();
+  Looper::launch();
   Ok(())
 }

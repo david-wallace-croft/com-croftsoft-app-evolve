@@ -18,11 +18,11 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use crate::constants::GENES_MAX;
+use crate::engine::traits::CanvasPainter;
+use crate::models::world::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
-
-use crate::constants::GENES_MAX;
-use crate::models::world::World;
 
 pub struct OverlayPainter {
   pub fill_style: JsValue,
@@ -89,17 +89,6 @@ impl OverlayPainter {
       genes_average_string, time, bugs_alive,
     )
   }
-
-  pub fn paint(
-    &self,
-    context: &CanvasRenderingContext2d,
-    world: &World,
-  ) {
-    let status_string = self.make_status_string(world);
-    context.set_fill_style(&self.fill_style);
-    context.set_font("bold 17px monospace");
-    context.fill_text(&status_string, 4.0, 17.0).unwrap();
-  }
 }
 
 impl Default for OverlayPainter {
@@ -108,5 +97,18 @@ impl Default for OverlayPainter {
     Self {
       fill_style,
     }
+  }
+}
+
+impl CanvasPainter for OverlayPainter {
+  fn paint(
+    &self,
+    context: &CanvasRenderingContext2d,
+    world: &World,
+  ) {
+    let status_string = self.make_status_string(world);
+    context.set_fill_style(&self.fill_style);
+    context.set_font("bold 17px monospace");
+    context.fill_text(&status_string, 4.0, 17.0).unwrap();
   }
 }

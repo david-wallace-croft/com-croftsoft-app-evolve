@@ -1,10 +1,10 @@
 // =============================================================================
-//! - WorldPainter for CroftSoft Evolve
+//! - RootPainter for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-20
+//! - Rust version: 2023-01-07
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,7 +18,9 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use super::overlay::OverlayPainter;
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
+use crate::engine::traits::{CanvasPainter, WorldPainter};
 use crate::models::world::World;
 use crate::painters::background::BackgroundPainter;
 use crate::painters::fauna::FaunaPainter;
@@ -29,17 +31,12 @@ use web_sys::{
   window, CanvasRenderingContext2d, Document, Element, HtmlCanvasElement,
 };
 
-use super::overlay::OverlayPainter;
-
-pub struct WorldPainter {
-  pub background_painter: BackgroundPainter,
+pub struct RootPainter {
+  pub canvas_painters: Vec<Box<dyn CanvasPainter>>,
   pub context: CanvasRenderingContext2d,
-  pub fauna_painter: FaunaPainter,
-  pub flora_painter: FloraPainter,
-  pub overlay_painter: OverlayPainter,
 }
 
-impl WorldPainter {
+impl RootPainter {
   pub fn new(canvas_element_id: &str) -> Self {
     let document: Document = window().unwrap().document().unwrap();
     let element: Element =
@@ -57,22 +54,27 @@ impl WorldPainter {
     let fauna_painter = FaunaPainter::new(scale_x, scale_y);
     let flora_painter = FloraPainter::new(scale_x, scale_y);
     let overlay_painter = OverlayPainter::default();
+    let canvas_painters: Vec<Box<dyn CanvasPainter>> = vec![
+      Box::new(background_painter),
+      Box::new(flora_painter),
+      Box::new(fauna_painter),
+      Box::new(overlay_painter),
+    ];
     Self {
-      background_painter,
-      fauna_painter,
+      canvas_painters,
       context,
-      flora_painter,
-      overlay_painter,
     }
   }
+}
 
-  pub fn paint(
+impl WorldPainter for RootPainter {
+  fn paint(
     &self,
     world: &World,
   ) {
-    self.background_painter.paint(&self.context);
-    self.flora_painter.paint(&self.context, &world.flora);
-    self.fauna_painter.paint(&self.context, &world.fauna);
-    self.overlay_painter.paint(&self.context, world);
+    self
+      .canvas_painters
+      .iter()
+      .for_each(|canvas_painter| canvas_painter.paint(&self.context, world));
   }
 }

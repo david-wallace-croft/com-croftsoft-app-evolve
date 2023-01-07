@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-05
+//! - Rust version: 2023-01-07
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -19,8 +19,9 @@
 // =============================================================================
 
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
-use crate::functions::location::{to_x_from_index, to_y_from_index};
-use crate::models::flora::Flora;
+use crate::engine::functions::location::{to_x_from_index, to_y_from_index};
+use crate::engine::traits::CanvasPainter;
+use crate::models::world::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
@@ -48,15 +49,17 @@ impl FloraPainter {
       scale_y,
     }
   }
+}
 
-  pub fn paint(
+impl CanvasPainter for FloraPainter {
+  fn paint(
     &self,
     context: &CanvasRenderingContext2d,
-    flora: &Flora,
+    world: &World,
   ) {
     context.set_fill_style(&self.fill_style);
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
-      if flora.flora_present[index] {
+      if world.flora.flora_present[index] {
         // TODO: replace with PlotLib.xy()
         let x: f64 = to_x_from_index(index) as f64;
         let y: f64 = to_y_from_index(index) as f64;

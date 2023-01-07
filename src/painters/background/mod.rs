@@ -18,6 +18,8 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use crate::engine::traits::CanvasPainter;
+use crate::models::world::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
@@ -39,10 +41,13 @@ impl BackgroundPainter {
       fill_style,
     }
   }
+}
 
-  pub fn paint(
+impl CanvasPainter for BackgroundPainter {
+  fn paint(
     &self,
     context: &CanvasRenderingContext2d,
+    _world: &World,
   ) {
     context.set_fill_style(&self.fill_style);
     context.fill_rect(0.0, 0.0, self.canvas_width, self.canvas_height);

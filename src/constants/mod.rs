@@ -2,9 +2,9 @@
 //! - Constants for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-29
+//! - Rust version: 2023-01-07
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,7 +18,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::components::evolve::EvolveComponentInitialConfiguration;
+use crate::engine::configuration::Configuration;
 
 pub static INFO: &str =
   "CroftSoft Evolve v0.8.3-SNAPSHOT Copyright 2022 CroftSoft Inc";
@@ -44,7 +44,6 @@ pub const MOVE_COST: usize = 1;
 pub const SPACE_HEIGHT: usize = 100;
 pub const SPACE_WIDTH: usize = 100;
 
-pub const INITIAL_CONFIGURATION: EvolveComponentInitialConfiguration =
-  EvolveComponentInitialConfiguration {
-    frame_period_millis: 1_000.0 / FRAMES_PER_SECOND,
-  };
+pub const CONFIGURATION: Configuration = Configuration {
+  frame_period_millis: 1_000.0 / FRAMES_PER_SECOND,
+};

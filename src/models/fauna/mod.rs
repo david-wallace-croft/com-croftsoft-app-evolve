@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-05
+//! - Rust version: 2023-01-07
 //! - Rust since: 2023-01-05
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -21,8 +21,8 @@
 use super::bug::Bug;
 use super::flora::Flora;
 use crate::constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH};
-use crate::functions::location::to_index_from_xy;
-use crate::traits::InputReader;
+use crate::engine::functions::location::to_index_from_xy;
+use crate::engine::input::Input;
 
 #[derive(Default)]
 pub struct Fauna {
@@ -39,20 +39,20 @@ impl Fauna {
     }
   }
 
-  pub fn update<I: InputReader>(
+  pub fn update(
     &mut self,
-    input: &I,
+    input: &Input,
     flora: &mut Flora,
     time: usize,
   ) {
-    if input.get_reset_requested() {
+    if input.reset_requested {
       self.reset();
       return;
     }
     let mut new_bugs = Vec::<Bug>::new();
     let bugs_length = self.bugs.len();
     if bugs_length < BUGS_MAX {
-      if let Some(position_index) = input.get_bug_requested() {
+      if let Some(position_index) = input.bug_requested {
         let new_bug = Bug::new(position_index);
         new_bugs.push(new_bug);
       }

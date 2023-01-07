@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-03
+//! - Rust version: 2023-01-07
 //! - Rust since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -12,24 +12,25 @@
 // =============================================================================
 
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
-use crate::functions::location::to_index_from_xy;
-use crate::functions::web_sys::{
+use crate::engine::functions::location::to_index_from_xy;
+use crate::engine::functions::web_sys::{
   add_mouse_down_handler_by_id, get_canvas_xy, get_html_canvas_element_by_id,
 };
+use crate::engine::input::Input;
+use crate::engine::traits::{Component, WorldPainter};
 use crate::models::world::World;
-use crate::painters::world::WorldPainter;
-use crate::traits::InputWriter;
+use crate::painters::root::RootPainter;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
 use web_sys::{HtmlCanvasElement, MouseEvent};
 
 pub struct CanvasComponent {
   pub id: String,
   pub unbounded_receiver_option: Option<UnboundedReceiver<MouseEvent>>,
-  pub world_painter_option: Option<WorldPainter>,
+  pub root_painter_option: Option<RootPainter>,
 }
 
 impl CanvasComponent {
-  pub fn get_scale_xy(canvas_element_id: &str) -> (f64, f64) {
+  fn get_scale_xy(canvas_element_id: &str) -> (f64, f64) {
     let html_canvas_element: HtmlCanvasElement =
       get_html_canvas_element_by_id(canvas_element_id);
     let canvas_height = html_canvas_element.height();
@@ -38,49 +39,6 @@ impl CanvasComponent {
     let scale_y = canvas_height as f64 / SPACE_HEIGHT as f64;
     (scale_x, scale_y)
   }
-
-  pub fn init(&mut self) {
-    self.unbounded_receiver_option = add_mouse_down_handler_by_id(&self.id);
-    self.world_painter_option = Some(WorldPainter::new("canvas"));
-  }
-
-  pub fn make_html(&self) -> String {
-    format!(
-      "<canvas id=\"{}\" height=\"600\" width=\"600\"></canvas>",
-      self.id
-    )
-  }
-
-  pub fn new(id: &str) -> Self {
-    Self {
-      id: String::from(id),
-      unbounded_receiver_option: None,
-      world_painter_option: None,
-    }
-  }
-
-  pub fn paint(
-    &self,
-    world: &World,
-  ) {
-    if let Some(world_painter) = &self.world_painter_option {
-      world_painter.paint(world);
-    }
-  }
-
-  pub fn update<I: InputWriter>(
-    &mut self,
-    input: &mut I,
-  ) {
-    let mouse_event_option = self.poll_mouse_event();
-    if let Some(mouse_event) = mouse_event_option {
-      let (canvas_x, canvas_y) = get_canvas_xy(&mouse_event);
-      let index = self.to_world_index_from_canvas_xy(canvas_x, canvas_y);
-      input.request_bug(index);
-    }
-  }
-
-  // private methods
 
   fn poll_mouse_event(&mut self) -> Option<MouseEvent> {
     let unbounded_receiver: &mut UnboundedReceiver<MouseEvent> =
@@ -110,5 +68,50 @@ impl CanvasComponent {
       world_y = SPACE_HEIGHT - 1;
     }
     to_index_from_xy(world_x, world_y)
+  }
+}
+
+impl Component for CanvasComponent {
+  fn init(&mut self) {
+    self.unbounded_receiver_option = add_mouse_down_handler_by_id(&self.id);
+    self.root_painter_option = Some(RootPainter::new("canvas"));
+  }
+
+  fn make_html(&self) -> String {
+    format!(
+      "<canvas id=\"{}\" height=\"600\" width=\"600\"></canvas>",
+      self.id
+    )
+  }
+
+  fn new(id: &str) -> Self {
+    Self {
+      id: String::from(id),
+      unbounded_receiver_option: None,
+      root_painter_option: None,
+    }
+  }
+
+  fn update(
+    &mut self,
+    input: &mut Input,
+  ) {
+    let mouse_event_option = self.poll_mouse_event();
+    if let Some(mouse_event) = mouse_event_option {
+      let (canvas_x, canvas_y) = get_canvas_xy(&mouse_event);
+      let index = self.to_world_index_from_canvas_xy(canvas_x, canvas_y);
+      input.bug_requested = Some(index);
+    }
+  }
+}
+
+impl WorldPainter for CanvasComponent {
+  fn paint(
+    &self,
+    world: &World,
+  ) {
+    if let Some(root_painter) = &self.root_painter_option {
+      root_painter.paint(world);
+    }
   }
 }
