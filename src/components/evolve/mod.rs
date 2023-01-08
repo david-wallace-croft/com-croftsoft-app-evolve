@@ -27,14 +27,13 @@ use super::speed::SpeedComponent;
 use crate::engine::functions::web_sys::get_window;
 use crate::engine::input::Input;
 use crate::engine::traits::{Component, Painter};
-use crate::models::clock::Clock;
-use crate::models::fauna::Fauna;
-use crate::models::flora::Flora;
+use crate::models::world::World;
 use core::cell::RefCell;
 use std::rc::Rc;
 use web_sys::{Document, HtmlCollection};
 
 pub struct EvolveComponent {
+  // TODO: components: Vec<Box<dyn Component>>
   blight_component: BlightComponent,
   canvas_component: CanvasComponent,
   flora_component: FloraComponent,
@@ -46,14 +45,12 @@ pub struct EvolveComponent {
 impl EvolveComponent {
   // TODO: do something with the ID
   pub fn new(
-    clock: Rc<RefCell<Clock>>,
-    fauna: Rc<RefCell<Fauna>>,
-    flora: Rc<RefCell<Flora>>,
     _id: &str,
+    world: Rc<RefCell<World>>,
   ) -> Self {
     Self {
       blight_component: BlightComponent::new("blight"),
-      canvas_component: CanvasComponent::new(clock, fauna, flora, "canvas"),
+      canvas_component: CanvasComponent::new("canvas", world),
       flora_component: FloraComponent::new("flora"),
       garden_component: GardenComponent::new("garden"),
       reset_component: ResetComponent::new("reset"),

@@ -21,15 +21,11 @@
 use super::overlay::OverlayPainter;
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::engine::traits::{CanvasPainter, Painter};
-use crate::models::clock::Clock;
-use crate::models::fauna::Fauna;
-use crate::models::flora::Flora;
+use crate::models::world::World;
 use crate::painters::background::BackgroundPainter;
 use crate::painters::fauna::FaunaPainter;
 use crate::painters::flora::FloraPainter;
-use core::cell::RefCell;
 use js_sys::Object;
-use std::rc::Rc;
 use wasm_bindgen::JsCast;
 use web_sys::{
   window, CanvasRenderingContext2d, Document, Element, HtmlCanvasElement,
@@ -43,9 +39,7 @@ pub struct RootPainter {
 impl RootPainter {
   pub fn new(
     canvas_element_id: &str,
-    clock: Rc<RefCell<Clock>>,
-    fauna: Rc<RefCell<Fauna>>,
-    flora: Rc<RefCell<Flora>>,
+    world: &World,
   ) -> Self {
     let document: Document = window().unwrap().document().unwrap();
     let element: Element =
@@ -60,9 +54,12 @@ impl RootPainter {
       BackgroundPainter::new(canvas_height, canvas_width);
     let scale_x = canvas_width / SPACE_WIDTH as f64;
     let scale_y = canvas_height / SPACE_HEIGHT as f64;
-    let fauna_painter = FaunaPainter::new(fauna.clone(), scale_x, scale_y);
-    let flora_painter = FloraPainter::new(flora, scale_x, scale_y);
-    let overlay_painter = OverlayPainter::new(clock, fauna);
+    let fauna_painter =
+      FaunaPainter::new(world.fauna_clone(), scale_x, scale_y);
+    let flora_painter =
+      FloraPainter::new(world.flora_clone(), scale_x, scale_y);
+    let overlay_painter =
+      OverlayPainter::new(world.clock_clone(), world.fauna_clone());
     let canvas_painters: Vec<Box<dyn CanvasPainter>> = vec![
       Box::new(background_painter),
       Box::new(flora_painter),

@@ -18,9 +18,7 @@ use crate::engine::functions::web_sys::{
 };
 use crate::engine::input::Input;
 use crate::engine::traits::{Component, Painter};
-use crate::models::clock::Clock;
-use crate::models::fauna::Fauna;
-use crate::models::flora::Flora;
+use crate::models::world::World;
 use crate::painters::root::RootPainter;
 use core::cell::RefCell;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
@@ -28,12 +26,10 @@ use std::rc::Rc;
 use web_sys::{HtmlCanvasElement, MouseEvent};
 
 pub struct CanvasComponent {
-  clock: Rc<RefCell<Clock>>,
-  fauna: Rc<RefCell<Fauna>>,
-  flora: Rc<RefCell<Flora>>,
   id: String,
   unbounded_receiver_option: Option<UnboundedReceiver<MouseEvent>>,
   root_painter_option: Option<RootPainter>,
+  world: Rc<RefCell<World>>,
 }
 
 impl CanvasComponent {
@@ -48,18 +44,14 @@ impl CanvasComponent {
   }
 
   pub fn new(
-    clock: Rc<RefCell<Clock>>,
-    fauna: Rc<RefCell<Fauna>>,
-    flora: Rc<RefCell<Flora>>,
     id: &str,
+    world: Rc<RefCell<World>>,
   ) -> Self {
     Self {
-      clock,
-      fauna,
-      flora,
       id: String::from(id),
       unbounded_receiver_option: None,
       root_painter_option: None,
+      world,
     }
   }
 
@@ -97,12 +89,8 @@ impl CanvasComponent {
 impl Component for CanvasComponent {
   fn init(&mut self) {
     self.unbounded_receiver_option = add_mouse_down_handler_by_id(&self.id);
-    self.root_painter_option = Some(RootPainter::new(
-      "canvas",
-      self.clock.clone(),
-      self.fauna.clone(),
-      self.flora.clone(),
-    ));
+    self.root_painter_option =
+      Some(RootPainter::new("canvas", &self.world.borrow()));
   }
 
   fn make_html(&self) -> String {

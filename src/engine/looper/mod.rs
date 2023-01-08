@@ -18,6 +18,8 @@ use crate::components::evolve::EvolveComponent;
 use crate::constants::{CONFIGURATION, FRAME_PERIOD_MILLIS_MINIMUM};
 use crate::engine::functions::web_sys::{spawn_local_loop, LoopUpdater};
 use crate::models::world::World;
+use core::cell::RefCell;
+use std::rc::Rc;
 
 // TODO: rename this
 pub struct Looper {
@@ -26,7 +28,7 @@ pub struct Looper {
   frame_period_millis: f64,
   input: Input,
   next_update_time: f64,
-  world: World,
+  world: Rc<RefCell<World>>,
 }
 
 impl Looper {
@@ -45,14 +47,9 @@ impl Looper {
     let Configuration {
       frame_period_millis,
     } = configuration;
-    let world = World::default();
+    let world = Rc::new(RefCell::new(World::default()));
     Self {
-      evolve_component: EvolveComponent::new(
-        world.clock_clone(),
-        world.fauna_clone(),
-        world.flora_clone(),
-        "evolve",
-      ),
+      evolve_component: EvolveComponent::new("evolve", world.clone()),
       configuration,
       input: Input::default(),
       frame_period_millis,
@@ -89,7 +86,7 @@ impl LoopUpdater for Looper {
       return;
     }
     self.evolve_component.update(&mut self.input);
-    self.world.update(&self.input);
+    self.world.borrow_mut().update(&self.input);
     self.evolve_component.paint();
     self.update_frame_rate();
     self.next_update_time = update_time + self.frame_period_millis;
