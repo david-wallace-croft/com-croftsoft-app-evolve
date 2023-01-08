@@ -18,17 +18,20 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use super::clock::Clock;
 use super::fauna::Fauna;
 use super::flora::Flora;
-use crate::constants::GENES_MAX;
 use crate::engine::input::Input;
-use crate::engine::traits::{Model, WorldUpdater};
+use crate::engine::traits::Model;
+use core::cell::RefCell;
 use core::mem::take;
+use std::rc::Rc;
 
+#[derive(Default)]
 pub struct World {
-  fauna_option: Option<Fauna>,
+  pub clock: Clock,
+  pub fauna_option: Option<Fauna>,
   pub flora: Flora,
-  pub time: usize,
 }
 
 impl World {
@@ -37,36 +40,15 @@ impl World {
     self.fauna_option.as_ref().unwrap()
   }
 
-  // pub fn get_fauna_as_mut(&mut self) -> &mut Fauna {
-  //   self.fauna_option.as_mut().unwrap()
-  // }
-}
-
-impl Default for World {
-  fn default() -> Self {
-    Self {
-      fauna_option: Some(Fauna::default()),
-      flora: Flora::default(),
-      time: 0,
-    }
-  }
-}
-
-impl Model for World {
-  fn update(
-    &mut self,
+  pub fn update_world(
     input: &Input,
+    world_ref: &Rc<RefCell<World>>,
   ) {
-    if input.reset_requested || self.time >= GENES_MAX - 1 {
-      self.time = 0;
-    } else {
-      self.time += 1;
-    }
-    self.flora.update(input);
-    // TODO: convert updater tree to vector so grandchildren can mutate parent
-    let mut fauna_option = take(&mut self.fauna_option);
+    world_ref.borrow_mut().clock.update(input);
+    world_ref.borrow_mut().flora.update(input);
+    let mut fauna_option = take(&mut world_ref.borrow_mut().fauna_option);
     let fauna: &mut Fauna = fauna_option.as_mut().unwrap();
-    fauna.update_world(input, self);
-    self.fauna_option = fauna_option;
+    fauna.update(input);
+    world_ref.borrow_mut().fauna_option = fauna_option;
   }
 }

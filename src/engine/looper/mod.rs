@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-07
+//! - Version: 2023-01-08
 //! - Since: 2023-01-07
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -13,11 +13,14 @@
 
 use super::configuration::Configuration;
 use super::input::Input;
-use super::traits::{Component, Model, WorldPainter};
+use super::traits::{Component, WorldPainter};
 use crate::components::evolve::EvolveComponent;
 use crate::constants::{CONFIGURATION, FRAME_PERIOD_MILLIS_MINIMUM};
 use crate::engine::functions::web_sys::{spawn_local_loop, LoopUpdater};
+use crate::models::fauna::Fauna;
 use crate::models::world::World;
+use core::cell::RefCell;
+use std::rc::Rc;
 
 // TODO: rename this
 pub struct Looper {
@@ -26,7 +29,7 @@ pub struct Looper {
   frame_period_millis: f64,
   input: Input,
   next_update_time: f64,
-  world: World,
+  world_ref: Rc<RefCell<World>>,
 }
 
 impl Looper {
@@ -45,14 +48,18 @@ impl Looper {
     let Configuration {
       frame_period_millis,
     } = configuration;
-    Self {
+    let world_ref = Rc::new(RefCell::new(World::default()));
+    let clone = Rc::clone(&world_ref);
+    let looper = Self {
       evolve_component: EvolveComponent::new("evolve"),
       configuration,
       input: Input::default(),
       frame_period_millis,
       next_update_time: 0.0,
-      world: World::default(),
-    }
+      world_ref,
+    };
+    looper.world_ref.borrow_mut().fauna_option = Some(Fauna::new(clone));
+    looper
   }
 
   fn update_frame_rate(&mut self) {
@@ -83,8 +90,8 @@ impl LoopUpdater for Looper {
       return;
     }
     self.evolve_component.update(&mut self.input);
-    self.world.update(&self.input);
-    self.evolve_component.paint(&self.world);
+    World::update_world(&self.input, &self.world_ref);
+    self.evolve_component.paint(&self.world_ref.borrow());
     self.update_frame_rate();
     self.next_update_time = update_time + self.frame_period_millis;
     self.input.clear();

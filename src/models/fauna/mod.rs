@@ -23,14 +23,23 @@ use super::world::World;
 use crate::constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH};
 use crate::engine::functions::location::to_index_from_xy;
 use crate::engine::input::Input;
-use crate::engine::traits::WorldUpdater;
+use crate::engine::traits::Model;
+use core::cell::RefCell;
+use std::rc::Rc;
 
-#[derive(Default)]
 pub struct Fauna {
   pub bugs: Vec<Bug>,
+  pub world: Rc<RefCell<World>>,
 }
 
 impl Fauna {
+  pub fn new(world: Rc<RefCell<World>>) -> Self {
+    Self {
+      bugs: Vec::new(),
+      world,
+    }
+  }
+
   fn reset(&mut self) {
     let position: usize = to_index_from_xy(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
     self.bugs.clear();
@@ -41,11 +50,10 @@ impl Fauna {
   }
 }
 
-impl WorldUpdater for Fauna {
-  fn update_world(
+impl Model for Fauna {
+  fn update(
     &mut self,
     input: &Input,
-    world: &mut World,
   ) {
     if input.reset_requested {
       self.reset();
@@ -61,7 +69,7 @@ impl WorldUpdater for Fauna {
     }
     for bug in self.bugs.iter_mut() {
       // TODO: Can I implement WorldUpdater trait for Bug?
-      bug.update(bugs_length, &mut new_bugs, world);
+      bug.update(bugs_length, &mut new_bugs, &mut self.world.borrow_mut());
     }
     self.bugs.retain(|bug| bug.energy > 0);
     self.bugs.append(&mut new_bugs);

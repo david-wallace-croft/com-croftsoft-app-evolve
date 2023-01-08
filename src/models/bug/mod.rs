@@ -138,7 +138,7 @@ impl Bug {
     let mut x = to_x_from_index(bug_position);
     let mut y = to_y_from_index(bug_position);
     if rand::random() {
-      if self.genes_x[world.time] {
+      if self.genes_x[world.clock.time] {
         if x < SPACE_WIDTH - 1 {
           x += 1;
         } else {
@@ -151,7 +151,7 @@ impl Bug {
       }
     }
     if rand::random() {
-      if self.genes_y[world.time] {
+      if self.genes_y[world.clock.time] {
         if y < SPACE_HEIGHT - 1 {
           y += 1;
         } else {

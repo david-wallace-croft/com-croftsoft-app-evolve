@@ -51,11 +51,3 @@ pub trait WorldPainter {
     world: &World,
   );
 }
-
-pub trait WorldUpdater {
-  fn update_world(
-    &mut self,
-    input: &Input,
-    world: &mut World,
-  );
-}

@@ -84,7 +84,7 @@ impl OverlayPainter {
           count
         }
       });
-    let time = world.time;
+    let time = world.clock.time;
     format!(
       "Average Movement Genes {} Time:{} Alive:{}",
       genes_average_string, time, bugs_alive,
