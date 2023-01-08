@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-07
+//! - Rust version: 2023-01-08
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -22,21 +22,23 @@ use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::engine::functions::location::{to_x_from_index, to_y_from_index};
 use crate::engine::traits::CanvasPainter;
 use crate::models::flora::Flora;
-use crate::models::world::World;
-use core::cell::Ref;
+use core::cell::{Ref, RefCell};
+use std::rc::Rc;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
 pub struct FloraPainter {
-  pub fill_style: JsValue,
-  pub flora_height: f64,
-  pub flora_width: f64,
-  pub scale_x: f64,
-  pub scale_y: f64,
+  fill_style: JsValue,
+  flora: Rc<RefCell<Flora>>,
+  flora_height: f64,
+  flora_width: f64,
+  scale_x: f64,
+  scale_y: f64,
 }
 
 impl FloraPainter {
   pub fn new(
+    flora: Rc<RefCell<Flora>>,
     scale_x: f64,
     scale_y: f64,
   ) -> Self {
@@ -47,6 +49,7 @@ impl FloraPainter {
       fill_style,
       flora_height,
       flora_width,
+      flora,
       scale_x,
       scale_y,
     }
@@ -57,10 +60,9 @@ impl CanvasPainter for FloraPainter {
   fn paint(
     &self,
     context: &CanvasRenderingContext2d,
-    world: &World,
   ) {
     context.set_fill_style(&self.fill_style);
-    let flora: Ref<Flora> = world.flora_as_ref();
+    let flora: Ref<Flora> = self.flora.borrow();
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
       if flora.flora_present[index] {
         // TODO: replace with PlotLib.xy()

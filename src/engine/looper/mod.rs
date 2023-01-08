@@ -13,7 +13,7 @@
 
 use super::configuration::Configuration;
 use super::input::Input;
-use super::traits::{Component, Model, WorldPainter};
+use super::traits::{Component, Model, Painter};
 use crate::components::evolve::EvolveComponent;
 use crate::constants::{CONFIGURATION, FRAME_PERIOD_MILLIS_MINIMUM};
 use crate::engine::functions::web_sys::{spawn_local_loop, LoopUpdater};
@@ -45,13 +45,19 @@ impl Looper {
     let Configuration {
       frame_period_millis,
     } = configuration;
+    let world = World::default();
     Self {
-      evolve_component: EvolveComponent::new("evolve"),
+      evolve_component: EvolveComponent::new(
+        world.clock_clone(),
+        world.fauna_clone(),
+        world.flora_clone(),
+        "evolve",
+      ),
       configuration,
       input: Input::default(),
       frame_period_millis,
       next_update_time: 0.0,
-      world: World::default(),
+      world,
     }
   }
 
@@ -84,7 +90,7 @@ impl LoopUpdater for Looper {
     }
     self.evolve_component.update(&mut self.input);
     self.world.update(&self.input);
-    self.evolve_component.paint(&self.world);
+    self.evolve_component.paint();
     self.update_frame_rate();
     self.next_update_time = update_time + self.frame_period_millis;
     self.input.clear();

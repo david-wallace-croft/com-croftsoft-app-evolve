@@ -2,9 +2,9 @@
 //! - BackgroundPainter for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 1996-2022 [`CroftSoft Inc`]
+//! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2022-12-10
+//! - Rust version: 2023-001-08
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -19,14 +19,13 @@
 // =============================================================================
 
 use crate::engine::traits::CanvasPainter;
-use crate::models::world::World;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
 pub struct BackgroundPainter {
-  pub canvas_height: f64,
-  pub canvas_width: f64,
-  pub fill_style: JsValue,
+  canvas_height: f64,
+  canvas_width: f64,
+  fill_style: JsValue,
 }
 
 impl BackgroundPainter {
@@ -47,7 +46,6 @@ impl CanvasPainter for BackgroundPainter {
   fn paint(
     &self,
     context: &CanvasRenderingContext2d,
-    _world: &World,
   ) {
     context.set_fill_style(&self.fill_style);
     context.fill_rect(0.0, 0.0, self.canvas_width, self.canvas_height);

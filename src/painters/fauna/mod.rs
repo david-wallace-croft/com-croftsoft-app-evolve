@@ -21,23 +21,26 @@
 use crate::engine::functions::location::{to_x_from_index, to_y_from_index};
 use crate::engine::traits::CanvasPainter;
 use crate::models::bug::Species;
-use crate::models::world::World;
+use crate::models::fauna::Fauna;
+use core::cell::RefCell;
+use std::rc::Rc;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
 pub struct FaunaPainter {
-  pub bug_color_cruiser: JsValue,
-  pub bug_color_normal: JsValue,
-  pub bug_color_twirler: JsValue,
-  pub bug_height: f64,
-  pub bug_width: f64,
-  pub fill_style: JsValue,
-  pub scale_x: f64,
-  pub scale_y: f64,
+  bug_color_cruiser: JsValue,
+  bug_color_normal: JsValue,
+  bug_color_twirler: JsValue,
+  bug_height: f64,
+  bug_width: f64,
+  fauna: Rc<RefCell<Fauna>>,
+  scale_x: f64,
+  scale_y: f64,
 }
 
 impl FaunaPainter {
   pub fn new(
+    fauna: Rc<RefCell<Fauna>>,
     scale_x: f64,
     scale_y: f64,
   ) -> Self {
@@ -46,14 +49,13 @@ impl FaunaPainter {
     let bug_color_twirler = JsValue::from_str("blue");
     let bug_height = scale_y / 2.0;
     let bug_width = scale_x / 2.0;
-    let fill_style: JsValue = JsValue::from_str("black");
     Self {
       bug_color_cruiser,
       bug_color_normal,
       bug_color_twirler,
       bug_height,
       bug_width,
-      fill_style,
+      fauna,
       scale_x,
       scale_y,
     }
@@ -64,9 +66,8 @@ impl CanvasPainter for FaunaPainter {
   fn paint(
     &self,
     context: &CanvasRenderingContext2d,
-    world: &World,
   ) {
-    for bug in world.fauna_as_ref().bugs.iter() {
+    for bug in self.fauna.borrow().bugs.iter() {
       let bug_color = match bug.species {
         Species::Cruiser => &self.bug_color_cruiser,
         Species::Normal => &self.bug_color_normal,

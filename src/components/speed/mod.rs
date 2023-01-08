@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-07
+//! - Version: 2023-01-08
 //! - Since: 2022-12-20
 //!
 //! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
@@ -18,11 +18,18 @@ use crate::engine::traits::Component;
 use futures::channel::mpsc::UnboundedReceiver;
 
 pub struct SpeedComponent {
-  pub id: String,
-  pub unbounded_receiver: Option<UnboundedReceiver<()>>,
+  id: String,
+  unbounded_receiver: Option<UnboundedReceiver<()>>,
 }
 
 impl SpeedComponent {
+  pub fn new(id: &str) -> Self {
+    Self {
+      id: String::from(id),
+      unbounded_receiver: None,
+    }
+  }
+
   fn pressed(&mut self) -> bool {
     if self.unbounded_receiver.is_none() {
       return false;
@@ -41,13 +48,6 @@ impl Component for SpeedComponent {
 
   fn make_html(&self) -> String {
     format!("<button id=\"{}\">Speed</button>", self.id)
-  }
-
-  fn new(id: &str) -> Self {
-    Self {
-      id: String::from(id),
-      unbounded_receiver: None,
-    }
   }
 
   fn update(

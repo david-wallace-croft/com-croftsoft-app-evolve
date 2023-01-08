@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-07
+//! - Version: 2023-01-08
 //! - Since: 2022-12-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -20,8 +20,8 @@ use wasm_bindgen::JsCast;
 use web_sys::{Event, EventTarget, HtmlInputElement};
 
 pub struct FloraComponent {
-  pub id: String,
-  pub unbounded_receiver_option: Option<UnboundedReceiver<Event>>,
+  id: String,
+  unbounded_receiver_option: Option<UnboundedReceiver<Event>>,
 }
 
 impl FloraComponent {
@@ -35,6 +35,13 @@ impl FloraComponent {
     }
     None
   }
+
+  pub fn new(id: &str) -> Self {
+    Self {
+      id: String::from(id),
+      unbounded_receiver_option: None,
+    }
+  }
 }
 
 impl Component for FloraComponent {
@@ -47,13 +54,6 @@ impl Component for FloraComponent {
       "Food growth rate <input id=\"{}\" max=\"{}\" type=\"range\" value\"{}\">",
       self.id, FLORA_GROWTH_RATE_MAX, FLORA_GROWTH_RATE_INIT,
     )
-  }
-
-  fn new(id: &str) -> Self {
-    Self {
-      id: String::from(id),
-      unbounded_receiver_option: None,
-    }
   }
 
   fn update(

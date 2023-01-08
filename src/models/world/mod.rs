@@ -23,7 +23,7 @@ use super::fauna::Fauna;
 use super::flora::Flora;
 use crate::engine::input::Input;
 use crate::engine::traits::Model;
-use core::cell::{Ref, RefCell};
+use core::cell::RefCell;
 use std::rc::Rc;
 
 pub struct World {
@@ -35,16 +35,16 @@ pub struct World {
 
 // TODO: extract the trait?
 impl World {
-  pub fn clock_as_ref(&self) -> Ref<Clock> {
-    self.clock.borrow()
+  pub fn clock_clone(&self) -> Rc<RefCell<Clock>> {
+    self.clock.clone()
   }
 
-  pub fn fauna_as_ref(&self) -> Ref<Fauna> {
-    self.fauna.borrow()
+  pub fn fauna_clone(&self) -> Rc<RefCell<Fauna>> {
+    self.fauna.clone()
   }
 
-  pub fn flora_as_ref(&self) -> Ref<Flora> {
-    self.flora.borrow()
+  pub fn flora_clone(&self) -> Rc<RefCell<Flora>> {
+    self.flora.clone()
   }
 }
 

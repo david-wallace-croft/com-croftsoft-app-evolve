@@ -11,17 +11,14 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use web_sys::CanvasRenderingContext2d;
-
 use crate::engine::input::Input;
-use crate::models::world::World;
+use web_sys::CanvasRenderingContext2d;
 
 // TODO: Maybe merge with WorldPainter
 pub trait CanvasPainter {
   fn paint(
     &self,
     context: &CanvasRenderingContext2d,
-    world: &World,
   );
 }
 
@@ -29,8 +26,6 @@ pub trait Component {
   fn init(&mut self);
 
   fn make_html(&self) -> String;
-
-  fn new(id: &str) -> Self;
 
   fn update(
     &mut self,
@@ -45,9 +40,6 @@ pub trait Model {
   );
 }
 
-pub trait WorldPainter {
-  fn paint(
-    &self,
-    world: &World,
-  );
+pub trait Painter {
+  fn paint(&self);
 }

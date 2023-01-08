@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-07
+//! - Rust version: 2023-01-08
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -20,24 +20,33 @@
 
 use super::overlay::OverlayPainter;
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
-use crate::engine::traits::{CanvasPainter, WorldPainter};
-use crate::models::world::World;
+use crate::engine::traits::{CanvasPainter, Painter};
+use crate::models::clock::Clock;
+use crate::models::fauna::Fauna;
+use crate::models::flora::Flora;
 use crate::painters::background::BackgroundPainter;
 use crate::painters::fauna::FaunaPainter;
 use crate::painters::flora::FloraPainter;
+use core::cell::RefCell;
 use js_sys::Object;
+use std::rc::Rc;
 use wasm_bindgen::JsCast;
 use web_sys::{
   window, CanvasRenderingContext2d, Document, Element, HtmlCanvasElement,
 };
 
 pub struct RootPainter {
-  pub canvas_painters: Vec<Box<dyn CanvasPainter>>,
-  pub context: CanvasRenderingContext2d,
+  canvas_painters: Vec<Box<dyn CanvasPainter>>,
+  context: CanvasRenderingContext2d,
 }
 
 impl RootPainter {
-  pub fn new(canvas_element_id: &str) -> Self {
+  pub fn new(
+    canvas_element_id: &str,
+    clock: Rc<RefCell<Clock>>,
+    fauna: Rc<RefCell<Fauna>>,
+    flora: Rc<RefCell<Flora>>,
+  ) -> Self {
     let document: Document = window().unwrap().document().unwrap();
     let element: Element =
       document.get_element_by_id(canvas_element_id).unwrap();
@@ -51,9 +60,9 @@ impl RootPainter {
       BackgroundPainter::new(canvas_height, canvas_width);
     let scale_x = canvas_width / SPACE_WIDTH as f64;
     let scale_y = canvas_height / SPACE_HEIGHT as f64;
-    let fauna_painter = FaunaPainter::new(scale_x, scale_y);
-    let flora_painter = FloraPainter::new(scale_x, scale_y);
-    let overlay_painter = OverlayPainter::default();
+    let fauna_painter = FaunaPainter::new(fauna.clone(), scale_x, scale_y);
+    let flora_painter = FloraPainter::new(flora, scale_x, scale_y);
+    let overlay_painter = OverlayPainter::new(clock, fauna);
     let canvas_painters: Vec<Box<dyn CanvasPainter>> = vec![
       Box::new(background_painter),
       Box::new(flora_painter),
@@ -67,14 +76,11 @@ impl RootPainter {
   }
 }
 
-impl WorldPainter for RootPainter {
-  fn paint(
-    &self,
-    world: &World,
-  ) {
+impl Painter for RootPainter {
+  fn paint(&self) {
     self
       .canvas_painters
       .iter()
-      .for_each(|canvas_painter| canvas_painter.paint(&self.context, world));
+      .for_each(|canvas_painter| canvas_painter.paint(&self.context));
   }
 }

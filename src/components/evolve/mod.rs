@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-07
+//! - Rust version: 2023-01-08
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -26,8 +26,12 @@ use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
 use crate::engine::functions::web_sys::get_window;
 use crate::engine::input::Input;
-use crate::engine::traits::{Component, WorldPainter};
-use crate::models::world::World;
+use crate::engine::traits::{Component, Painter};
+use crate::models::clock::Clock;
+use crate::models::fauna::Fauna;
+use crate::models::flora::Flora;
+use core::cell::RefCell;
+use std::rc::Rc;
 use web_sys::{Document, HtmlCollection};
 
 pub struct EvolveComponent {
@@ -37,6 +41,25 @@ pub struct EvolveComponent {
   garden_component: GardenComponent,
   reset_component: ResetComponent,
   speed_component: SpeedComponent,
+}
+
+impl EvolveComponent {
+  // TODO: do something with the ID
+  pub fn new(
+    clock: Rc<RefCell<Clock>>,
+    fauna: Rc<RefCell<Fauna>>,
+    flora: Rc<RefCell<Flora>>,
+    _id: &str,
+  ) -> Self {
+    Self {
+      blight_component: BlightComponent::new("blight"),
+      canvas_component: CanvasComponent::new(clock, fauna, flora, "canvas"),
+      flora_component: FloraComponent::new("flora"),
+      garden_component: GardenComponent::new("garden"),
+      reset_component: ResetComponent::new("reset"),
+      speed_component: SpeedComponent::new("speed"),
+    }
+  }
 }
 
 impl Component for EvolveComponent {
@@ -78,18 +101,6 @@ impl Component for EvolveComponent {
     .join("\n")
   }
 
-  // TODO: do something with the ID
-  fn new(_id: &str) -> Self {
-    Self {
-      blight_component: BlightComponent::new("blight"),
-      canvas_component: CanvasComponent::new("canvas"),
-      flora_component: FloraComponent::new("flora"),
-      garden_component: GardenComponent::new("garden"),
-      reset_component: ResetComponent::new("reset"),
-      speed_component: SpeedComponent::new("speed"),
-    }
-  }
-
   fn update(
     &mut self,
     input: &mut Input,
@@ -103,11 +114,8 @@ impl Component for EvolveComponent {
   }
 }
 
-impl WorldPainter for EvolveComponent {
-  fn paint(
-    &self,
-    world: &World,
-  ) {
-    self.canvas_component.paint(world);
+impl Painter for EvolveComponent {
+  fn paint(&self) {
+    self.canvas_component.paint();
   }
 }

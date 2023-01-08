@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-07
+//! - Rust version: 2023-01-08
 //! - Rust since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -17,16 +17,23 @@ use crate::engine::functions::web_sys::{
   add_mouse_down_handler_by_id, get_canvas_xy, get_html_canvas_element_by_id,
 };
 use crate::engine::input::Input;
-use crate::engine::traits::{Component, WorldPainter};
-use crate::models::world::World;
+use crate::engine::traits::{Component, Painter};
+use crate::models::clock::Clock;
+use crate::models::fauna::Fauna;
+use crate::models::flora::Flora;
 use crate::painters::root::RootPainter;
+use core::cell::RefCell;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
+use std::rc::Rc;
 use web_sys::{HtmlCanvasElement, MouseEvent};
 
 pub struct CanvasComponent {
-  pub id: String,
-  pub unbounded_receiver_option: Option<UnboundedReceiver<MouseEvent>>,
-  pub root_painter_option: Option<RootPainter>,
+  clock: Rc<RefCell<Clock>>,
+  fauna: Rc<RefCell<Fauna>>,
+  flora: Rc<RefCell<Flora>>,
+  id: String,
+  unbounded_receiver_option: Option<UnboundedReceiver<MouseEvent>>,
+  root_painter_option: Option<RootPainter>,
 }
 
 impl CanvasComponent {
@@ -38,6 +45,22 @@ impl CanvasComponent {
     let scale_x = canvas_width as f64 / SPACE_WIDTH as f64;
     let scale_y = canvas_height as f64 / SPACE_HEIGHT as f64;
     (scale_x, scale_y)
+  }
+
+  pub fn new(
+    clock: Rc<RefCell<Clock>>,
+    fauna: Rc<RefCell<Fauna>>,
+    flora: Rc<RefCell<Flora>>,
+    id: &str,
+  ) -> Self {
+    Self {
+      clock,
+      fauna,
+      flora,
+      id: String::from(id),
+      unbounded_receiver_option: None,
+      root_painter_option: None,
+    }
   }
 
   fn poll_mouse_event(&mut self) -> Option<MouseEvent> {
@@ -74,7 +97,12 @@ impl CanvasComponent {
 impl Component for CanvasComponent {
   fn init(&mut self) {
     self.unbounded_receiver_option = add_mouse_down_handler_by_id(&self.id);
-    self.root_painter_option = Some(RootPainter::new("canvas"));
+    self.root_painter_option = Some(RootPainter::new(
+      "canvas",
+      self.clock.clone(),
+      self.fauna.clone(),
+      self.flora.clone(),
+    ));
   }
 
   fn make_html(&self) -> String {
@@ -82,14 +110,6 @@ impl Component for CanvasComponent {
       "<canvas id=\"{}\" height=\"600\" width=\"600\"></canvas>",
       self.id
     )
-  }
-
-  fn new(id: &str) -> Self {
-    Self {
-      id: String::from(id),
-      unbounded_receiver_option: None,
-      root_painter_option: None,
-    }
   }
 
   fn update(
@@ -105,13 +125,10 @@ impl Component for CanvasComponent {
   }
 }
 
-impl WorldPainter for CanvasComponent {
-  fn paint(
-    &self,
-    world: &World,
-  ) {
+impl Painter for CanvasComponent {
+  fn paint(&self) {
     if let Some(root_painter) = &self.root_painter_option {
-      root_painter.paint(world);
+      root_painter.paint();
     }
   }
 }

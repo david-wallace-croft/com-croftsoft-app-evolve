@@ -18,25 +18,28 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use core::cell::RefCell;
+
 use crate::constants::GENES_MAX;
 use crate::engine::traits::CanvasPainter;
-use crate::models::world::World;
+use crate::models::clock::Clock;
+use crate::models::fauna::Fauna;
+use std::rc::Rc;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
 pub struct OverlayPainter {
-  pub fill_style: JsValue,
+  clock: Rc<RefCell<Clock>>,
+  fauna: Rc<RefCell<Fauna>>,
+  fill_style: JsValue,
 }
 
 impl OverlayPainter {
-  fn make_genes_average_string(
-    &self,
-    world: &World,
-  ) -> String {
+  fn make_genes_average_string(&self) -> String {
     let mut gene_x_string = String::from("X:");
     let mut gene_y_string = String::from("Y:");
     let mut bugs_alive: usize = 0;
-    for bug in world.fauna_as_ref().bugs.iter() {
+    for bug in self.fauna.borrow().bugs.iter() {
       if bug.energy > 0 {
         bugs_alive += 1;
       }
@@ -44,7 +47,7 @@ impl OverlayPainter {
     for i in 0..GENES_MAX {
       let mut x_sum: usize = 0;
       let mut y_sum: usize = 0;
-      for bug in world.fauna_as_ref().bugs.iter() {
+      for bug in self.fauna.borrow().bugs.iter() {
         if bug.energy > 0 {
           if bug.genes_x[i] {
             x_sum += 1;
@@ -71,30 +74,30 @@ impl OverlayPainter {
     result
   }
 
-  fn make_status_string(
-    &self,
-    world: &World,
-  ) -> String {
-    let genes_average_string = self.make_genes_average_string(world);
-    let bugs_alive = world.fauna_as_ref().bugs.iter().fold(0, |count, bug| {
+  fn make_status_string(&self) -> String {
+    let genes_average_string = self.make_genes_average_string();
+    let bugs_alive = self.fauna.borrow().bugs.iter().fold(0, |count, bug| {
       if bug.energy > 0 {
         count + 1
       } else {
         count
       }
     });
-    let time = world.clock_as_ref().time;
+    let time = self.clock.borrow().time;
     format!(
       "Average Movement Genes {} Time:{} Alive:{}",
       genes_average_string, time, bugs_alive,
     )
   }
-}
 
-impl Default for OverlayPainter {
-  fn default() -> Self {
+  pub fn new(
+    clock: Rc<RefCell<Clock>>,
+    fauna: Rc<RefCell<Fauna>>,
+  ) -> Self {
     let fill_style: JsValue = JsValue::from_str("white");
     Self {
+      clock,
+      fauna,
       fill_style,
     }
   }
@@ -104,9 +107,8 @@ impl CanvasPainter for OverlayPainter {
   fn paint(
     &self,
     context: &CanvasRenderingContext2d,
-    world: &World,
   ) {
-    let status_string = self.make_status_string(world);
+    let status_string = self.make_status_string();
     context.set_fill_style(&self.fill_style);
     context.set_font("bold 17px monospace");
     context.fill_text(&status_string, 4.0, 17.0).unwrap();

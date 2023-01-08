@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-07
+//! - Rust version: 2023-01-08
 //! - Rust since: 2022-12-16
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -26,8 +26,8 @@ use wasm_bindgen::JsCast;
 use web_sys::{Event, EventTarget, HtmlInputElement};
 
 pub struct GardenComponent {
-  pub id: String,
-  pub event_unbounded_receiver_option: Option<UnboundedReceiver<Event>>,
+  event_unbounded_receiver_option: Option<UnboundedReceiver<Event>>,
+  id: String,
 }
 
 impl GardenComponent {
@@ -41,6 +41,13 @@ impl GardenComponent {
     }
     None
   }
+
+  pub fn new(id: &str) -> Self {
+    Self {
+      id: String::from(id),
+      event_unbounded_receiver_option: None,
+    }
+  }
 }
 
 impl Component for GardenComponent {
@@ -53,13 +60,6 @@ impl Component for GardenComponent {
       "Garden of Eden <input id=\"{}\" type=\"checkbox\" checked>",
       self.id
     )
-  }
-
-  fn new(id: &str) -> Self {
-    Self {
-      id: String::from(id),
-      event_unbounded_receiver_option: None,
-    }
   }
 
   fn update(

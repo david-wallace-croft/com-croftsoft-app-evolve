@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-07
+//! - Rust version: 2023-01-08
 //! - Rust since: 2022-12-14
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -24,8 +24,8 @@ use crate::engine::traits::Component;
 use futures::channel::mpsc::UnboundedReceiver;
 
 pub struct BlightComponent {
-  pub id: String,
-  pub unbounded_receiver: Option<UnboundedReceiver<()>>,
+  id: String,
+  unbounded_receiver: Option<UnboundedReceiver<()>>,
 }
 
 impl BlightComponent {
@@ -38,6 +38,13 @@ impl BlightComponent {
       Ok(Some(()))
     )
   }
+
+  pub fn new(id: &str) -> Self {
+    Self {
+      id: String::from(id),
+      unbounded_receiver: None,
+    }
+  }
 }
 
 impl Component for BlightComponent {
@@ -47,13 +54,6 @@ impl Component for BlightComponent {
 
   fn make_html(&self) -> String {
     format!("<button id=\"{}\">Blight</button>", self.id)
-  }
-
-  fn new(id: &str) -> Self {
-    Self {
-      id: String::from(id),
-      unbounded_receiver: None,
-    }
   }
 
   fn update(
