@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-07
+//! - Version: 2023-01-08
 //! - Since: 2023-01-03
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -49,5 +49,13 @@ pub trait WorldPainter {
   fn paint(
     &self,
     world: &World,
+  );
+}
+
+pub trait WorldUpdater {
+  fn update_world(
+    &mut self,
+    input: &Input,
+    world: &mut World,
   );
 }

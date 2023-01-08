@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-07
+//! - Rust version: 2023-01-08
 //! - Rust since: 2023-01-05
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -19,10 +19,11 @@
 // =============================================================================
 
 use super::bug::Bug;
-use super::flora::Flora;
+use super::world::World;
 use crate::constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH};
 use crate::engine::functions::location::to_index_from_xy;
 use crate::engine::input::Input;
+use crate::engine::traits::WorldUpdater;
 
 #[derive(Default)]
 pub struct Fauna {
@@ -38,12 +39,13 @@ impl Fauna {
       self.bugs.push(bug);
     }
   }
+}
 
-  pub fn update(
+impl WorldUpdater for Fauna {
+  fn update_world(
     &mut self,
     input: &Input,
-    flora: &mut Flora,
-    time: usize,
+    world: &mut World,
   ) {
     if input.reset_requested {
       self.reset();
@@ -58,7 +60,8 @@ impl Fauna {
       }
     }
     for bug in self.bugs.iter_mut() {
-      bug.update(bugs_length, flora, &mut new_bugs, time);
+      // TODO: Can I implement WorldUpdater trait for Bug?
+      bug.update(bugs_length, &mut new_bugs, world);
     }
     self.bugs.retain(|bug| bug.energy > 0);
     self.bugs.append(&mut new_bugs);

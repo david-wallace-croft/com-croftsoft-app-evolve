@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-07
+//! - Rust version: 2023-01-08
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -66,7 +66,7 @@ impl CanvasPainter for FaunaPainter {
     context: &CanvasRenderingContext2d,
     world: &World,
   ) {
-    for bug in world.fauna.bugs.iter() {
+    for bug in world.get_fauna_as_ref().bugs.iter() {
       let bug_color = match bug.species {
         Species::Cruiser => &self.bug_color_cruiser,
         Species::Normal => &self.bug_color_normal,

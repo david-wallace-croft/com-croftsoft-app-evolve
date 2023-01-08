@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-07
+//! - Rust version: 2023-01-08
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -30,6 +30,7 @@ use crate::engine::functions::location::{
 use rand::{rngs::ThreadRng, Rng};
 
 use super::flora::Flora;
+use super::world::World;
 
 #[derive(Debug)]
 pub struct Bug {
@@ -118,11 +119,11 @@ impl Bug {
   pub fn update(
     &mut self,
     bugs_length: usize,
-    flora: &mut Flora,
     new_bugs: &mut Vec<Bug>,
-    time: usize,
+    world: &mut World,
   ) {
     let bug_position: usize = self.position;
+    let flora: &mut Flora = &mut world.flora;
     if flora.flora_present[bug_position] {
       flora.flora_present[bug_position] = false;
       self.energy = self.energy.saturating_add(FLORA_ENERGY);
@@ -137,7 +138,7 @@ impl Bug {
     let mut x = to_x_from_index(bug_position);
     let mut y = to_y_from_index(bug_position);
     if rand::random() {
-      if self.genes_x[time] {
+      if self.genes_x[world.time] {
         if x < SPACE_WIDTH - 1 {
           x += 1;
         } else {
@@ -150,7 +151,7 @@ impl Bug {
       }
     }
     if rand::random() {
-      if self.genes_y[time] {
+      if self.genes_y[world.time] {
         if y < SPACE_HEIGHT - 1 {
           y += 1;
         } else {
