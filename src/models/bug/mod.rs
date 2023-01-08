@@ -29,8 +29,8 @@ use crate::engine::functions::location::{
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
 
+use super::clock::Clock;
 use super::flora::Flora;
-use super::world::World;
 
 #[derive(Debug)]
 pub struct Bug {
@@ -119,11 +119,11 @@ impl Bug {
   pub fn update(
     &mut self,
     bugs_length: usize,
+    clock: &Clock,
+    flora: &mut Flora,
     new_bugs: &mut Vec<Bug>,
-    world: &mut World,
   ) {
     let bug_position: usize = self.position;
-    let flora: &mut Flora = &mut world.flora;
     if flora.flora_present[bug_position] {
       flora.flora_present[bug_position] = false;
       self.energy = self.energy.saturating_add(FLORA_ENERGY);
@@ -138,7 +138,7 @@ impl Bug {
     let mut x = to_x_from_index(bug_position);
     let mut y = to_y_from_index(bug_position);
     if rand::random() {
-      if self.genes_x[world.clock.time] {
+      if self.genes_x[clock.time] {
         if x < SPACE_WIDTH - 1 {
           x += 1;
         } else {
@@ -151,7 +151,7 @@ impl Bug {
       }
     }
     if rand::random() {
-      if self.genes_y[world.clock.time] {
+      if self.genes_y[clock.time] {
         if y < SPACE_HEIGHT - 1 {
           y += 1;
         } else {

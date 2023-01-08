@@ -21,7 +21,9 @@
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::engine::functions::location::{to_x_from_index, to_y_from_index};
 use crate::engine::traits::CanvasPainter;
+use crate::models::flora::Flora;
 use crate::models::world::World;
+use core::cell::Ref;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
@@ -58,8 +60,9 @@ impl CanvasPainter for FloraPainter {
     world: &World,
   ) {
     context.set_fill_style(&self.fill_style);
+    let flora: Ref<Flora> = world.flora_as_ref();
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
-      if world.flora.flora_present[index] {
+      if flora.flora_present[index] {
         // TODO: replace with PlotLib.xy()
         let x: f64 = to_x_from_index(index) as f64;
         let y: f64 = to_y_from_index(index) as f64;

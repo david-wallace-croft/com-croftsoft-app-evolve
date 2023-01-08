@@ -66,7 +66,7 @@ impl CanvasPainter for FaunaPainter {
     context: &CanvasRenderingContext2d,
     world: &World,
   ) {
-    for bug in world.get_fauna_as_ref().bugs.iter() {
+    for bug in world.fauna_as_ref().bugs.iter() {
       let bug_color = match bug.species {
         Species::Cruiser => &self.bug_color_cruiser,
         Species::Normal => &self.bug_color_normal,

@@ -36,7 +36,7 @@ impl OverlayPainter {
     let mut gene_x_string = String::from("X:");
     let mut gene_y_string = String::from("Y:");
     let mut bugs_alive: usize = 0;
-    for bug in world.get_fauna_as_ref().bugs.iter() {
+    for bug in world.fauna_as_ref().bugs.iter() {
       if bug.energy > 0 {
         bugs_alive += 1;
       }
@@ -44,7 +44,7 @@ impl OverlayPainter {
     for i in 0..GENES_MAX {
       let mut x_sum: usize = 0;
       let mut y_sum: usize = 0;
-      for bug in world.get_fauna_as_ref().bugs.iter() {
+      for bug in world.fauna_as_ref().bugs.iter() {
         if bug.energy > 0 {
           if bug.genes_x[i] {
             x_sum += 1;
@@ -76,15 +76,14 @@ impl OverlayPainter {
     world: &World,
   ) -> String {
     let genes_average_string = self.make_genes_average_string(world);
-    let bugs_alive =
-      world.get_fauna_as_ref().bugs.iter().fold(0, |count, bug| {
-        if bug.energy > 0 {
-          count + 1
-        } else {
-          count
-        }
-      });
-    let time = world.clock.time;
+    let bugs_alive = world.fauna_as_ref().bugs.iter().fold(0, |count, bug| {
+      if bug.energy > 0 {
+        count + 1
+      } else {
+        count
+      }
+    });
+    let time = world.clock_as_ref().time;
     format!(
       "Average Movement Genes {} Time:{} Alive:{}",
       genes_average_string, time, bugs_alive,

@@ -19,7 +19,8 @@
 // =============================================================================
 
 use super::bug::Bug;
-use super::world::World;
+use super::clock::Clock;
+use super::flora::Flora;
 use crate::constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH};
 use crate::engine::functions::location::to_index_from_xy;
 use crate::engine::input::Input;
@@ -29,14 +30,19 @@ use std::rc::Rc;
 
 pub struct Fauna {
   pub bugs: Vec<Bug>,
-  pub world: Rc<RefCell<World>>,
+  pub clock: Rc<RefCell<Clock>>,
+  pub flora: Rc<RefCell<Flora>>,
 }
 
 impl Fauna {
-  pub fn new(world: Rc<RefCell<World>>) -> Self {
+  pub fn new(
+    clock: Rc<RefCell<Clock>>,
+    flora: Rc<RefCell<Flora>>,
+  ) -> Self {
     Self {
       bugs: Vec::new(),
-      world,
+      clock,
+      flora,
     }
   }
 
@@ -67,9 +73,11 @@ impl Model for Fauna {
         new_bugs.push(new_bug);
       }
     }
+    let clock = &self.clock.borrow();
+    let flora = &mut self.flora.borrow_mut();
     for bug in self.bugs.iter_mut() {
       // TODO: Can I implement WorldUpdater trait for Bug?
-      bug.update(bugs_length, &mut new_bugs, &mut self.world.borrow_mut());
+      bug.update(bugs_length, clock, flora, &mut new_bugs);
     }
     self.bugs.retain(|bug| bug.energy > 0);
     self.bugs.append(&mut new_bugs);

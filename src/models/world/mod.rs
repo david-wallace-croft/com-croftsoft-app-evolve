@@ -23,32 +23,55 @@ use super::fauna::Fauna;
 use super::flora::Flora;
 use crate::engine::input::Input;
 use crate::engine::traits::Model;
-use core::cell::RefCell;
-use core::mem::take;
+use core::cell::{Ref, RefCell};
 use std::rc::Rc;
 
-#[derive(Default)]
 pub struct World {
-  pub clock: Clock,
-  pub fauna_option: Option<Fauna>,
-  pub flora: Flora,
+  clock: Rc<RefCell<Clock>>,
+  fauna: Rc<RefCell<Fauna>>,
+  flora: Rc<RefCell<Flora>>,
+  models: Vec<Rc<RefCell<dyn Model>>>,
 }
 
+// TODO: extract the trait?
 impl World {
-  // make a Trait out of these methods
-  pub fn get_fauna_as_ref(&self) -> &Fauna {
-    self.fauna_option.as_ref().unwrap()
+  pub fn clock_as_ref(&self) -> Ref<Clock> {
+    self.clock.borrow()
   }
 
-  pub fn update_world(
+  pub fn fauna_as_ref(&self) -> Ref<Fauna> {
+    self.fauna.borrow()
+  }
+
+  pub fn flora_as_ref(&self) -> Ref<Flora> {
+    self.flora.borrow()
+  }
+}
+
+impl Default for World {
+  fn default() -> Self {
+    let clock = Rc::new(RefCell::new(Clock::default()));
+    let flora = Rc::new(RefCell::new(Flora::default()));
+    let fauna = Rc::new(RefCell::new(Fauna::new(clock.clone(), flora.clone())));
+    let models: Vec<Rc<RefCell<dyn Model>>> = vec![
+      clock.clone(),
+      flora.clone(),
+      fauna.clone(),
+    ];
+    Self {
+      clock,
+      fauna,
+      flora,
+      models,
+    }
+  }
+}
+
+impl Model for World {
+  fn update(
+    &mut self,
     input: &Input,
-    world_ref: &Rc<RefCell<World>>,
   ) {
-    world_ref.borrow_mut().clock.update(input);
-    world_ref.borrow_mut().flora.update(input);
-    let mut fauna_option = take(&mut world_ref.borrow_mut().fauna_option);
-    let fauna: &mut Fauna = fauna_option.as_mut().unwrap();
-    fauna.update(input);
-    world_ref.borrow_mut().fauna_option = fauna_option;
+    self.models.iter().for_each(|model| model.borrow_mut().update(input));
   }
 }
