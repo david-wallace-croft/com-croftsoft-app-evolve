@@ -33,13 +33,13 @@ use std::rc::Rc;
 use web_sys::{Document, HtmlCollection};
 
 pub struct EvolveComponent {
-  // TODO: components: Vec<Box<dyn Component>>
-  blight_component: BlightComponent,
-  canvas_component: CanvasComponent,
-  flora_component: FloraComponent,
-  garden_component: GardenComponent,
-  reset_component: ResetComponent,
-  speed_component: SpeedComponent,
+  blight_component: Rc<RefCell<BlightComponent>>,
+  canvas_component: Rc<RefCell<CanvasComponent>>,
+  components: [Rc<RefCell<dyn Component>>; 6],
+  flora_component: Rc<RefCell<FloraComponent>>,
+  garden_component: Rc<RefCell<GardenComponent>>,
+  reset_component: Rc<RefCell<ResetComponent>>,
+  speed_component: Rc<RefCell<SpeedComponent>>,
 }
 
 impl EvolveComponent {
@@ -48,13 +48,31 @@ impl EvolveComponent {
     _id: &str,
     world: Rc<RefCell<World>>,
   ) -> Self {
+    let blight_component =
+      Rc::new(RefCell::new(BlightComponent::new("blight")));
+    let canvas_component =
+      Rc::new(RefCell::new(CanvasComponent::new("canvas", world)));
+    let flora_component = Rc::new(RefCell::new(FloraComponent::new("flora")));
+    let garden_component =
+      Rc::new(RefCell::new(GardenComponent::new("garden")));
+    let reset_component = Rc::new(RefCell::new(ResetComponent::new("reset")));
+    let speed_component = Rc::new(RefCell::new(SpeedComponent::new("speed")));
+    let components: [Rc<RefCell<dyn Component>>; 6] = [
+      blight_component.clone(),
+      canvas_component.clone(),
+      flora_component.clone(),
+      garden_component.clone(),
+      reset_component.clone(),
+      speed_component.clone(),
+    ];
     Self {
-      blight_component: BlightComponent::new("blight"),
-      canvas_component: CanvasComponent::new("canvas", world),
-      flora_component: FloraComponent::new("flora"),
-      garden_component: GardenComponent::new("garden"),
-      reset_component: ResetComponent::new("reset"),
-      speed_component: SpeedComponent::new("speed"),
+      blight_component,
+      canvas_component,
+      components,
+      flora_component,
+      garden_component,
+      reset_component,
+      speed_component,
     }
   }
 }
@@ -67,23 +85,19 @@ impl Component for EvolveComponent {
     let element_option = html_collection.item(0);
     let element = element_option.unwrap();
     let evolve_html: String = self.make_html();
-    // TODO: remove existing child nodes
+    // TODO: Remove existing child nodes
     let _result = element.insert_adjacent_html("afterbegin", &evolve_html);
-    self.blight_component.init();
-    self.canvas_component.init();
-    self.flora_component.init();
-    self.garden_component.init();
-    self.reset_component.init();
-    self.speed_component.init();
+    self.components.iter().for_each(|component| component.borrow_mut().init());
   }
 
   fn make_html(&self) -> String {
-    let blight_html: String = self.blight_component.make_html();
-    let canvas_html: String = self.canvas_component.make_html();
-    let flora_html: String = self.flora_component.make_html();
-    let garden_html: String = self.garden_component.make_html();
-    let reset_html: String = self.reset_component.make_html();
-    let speed_html: String = self.speed_component.make_html();
+    let blight_html: String = self.blight_component.borrow().make_html();
+    let canvas_html: String = self.canvas_component.borrow().make_html();
+    let flora_html: String = self.flora_component.borrow().make_html();
+    let garden_html: String = self.garden_component.borrow().make_html();
+    let reset_html: String = self.reset_component.borrow().make_html();
+    let speed_html: String = self.speed_component.borrow().make_html();
+    // TODO: Assemble this from an HTML template
     [
       String::from("<div id=\"evolve\">"),
       canvas_html,
@@ -102,17 +116,15 @@ impl Component for EvolveComponent {
     &mut self,
     input: &mut Input,
   ) {
-    self.blight_component.update(input);
-    self.canvas_component.update(input);
-    self.flora_component.update(input);
-    self.garden_component.update(input);
-    self.reset_component.update(input);
-    self.speed_component.update(input);
+    self
+      .components
+      .iter()
+      .for_each(|component| component.borrow_mut().update(input));
   }
 }
 
 impl Painter for EvolveComponent {
   fn paint(&self) {
-    self.canvas_component.paint();
+    self.canvas_component.borrow().paint();
   }
 }
