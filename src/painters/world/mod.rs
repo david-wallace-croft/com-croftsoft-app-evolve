@@ -1,5 +1,5 @@
 // =============================================================================
-//! - RootPainter for CroftSoft Evolve
+//! - WorldPainter for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
@@ -31,12 +31,12 @@ use web_sys::{
   window, CanvasRenderingContext2d, Document, Element, HtmlCanvasElement,
 };
 
-pub struct RootPainter {
+pub struct WorldPainter {
   canvas_painters: Vec<Box<dyn CanvasPainter>>,
   context: CanvasRenderingContext2d,
 }
 
-impl RootPainter {
+impl WorldPainter {
   pub fn new(
     canvas_element_id: &str,
     world: &World,
@@ -73,7 +73,7 @@ impl RootPainter {
   }
 }
 
-impl Painter for RootPainter {
+impl Painter for WorldPainter {
   fn paint(&self) {
     self
       .canvas_painters

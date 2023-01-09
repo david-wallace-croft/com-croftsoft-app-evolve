@@ -19,7 +19,7 @@ use crate::engine::functions::web_sys::{
 use crate::engine::input::Input;
 use crate::engine::traits::{Component, Painter};
 use crate::models::world::World;
-use crate::painters::root::RootPainter;
+use crate::painters::world::WorldPainter;
 use core::cell::RefCell;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
 use std::rc::Rc;
@@ -28,7 +28,7 @@ use web_sys::{HtmlCanvasElement, MouseEvent};
 pub struct CanvasComponent {
   id: String,
   unbounded_receiver_option: Option<UnboundedReceiver<MouseEvent>>,
-  root_painter_option: Option<RootPainter>,
+  root_painter_option: Option<WorldPainter>,
   world: Rc<RefCell<World>>,
 }
 
@@ -90,7 +90,7 @@ impl Component for CanvasComponent {
   fn init(&mut self) {
     self.unbounded_receiver_option = add_mouse_down_handler_by_id(&self.id);
     self.root_painter_option =
-      Some(RootPainter::new("canvas", &self.world.borrow()));
+      Some(WorldPainter::new("canvas", &self.world.borrow()));
   }
 
   fn make_html(&self) -> String {
