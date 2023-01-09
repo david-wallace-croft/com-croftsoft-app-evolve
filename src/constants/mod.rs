@@ -2,7 +2,7 @@
 //! - Constants for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 1996-2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Rust version: 2023-01-07
 //! - Rust since: 2022-11-27
@@ -21,7 +21,7 @@
 use crate::engine::configuration::Configuration;
 
 pub static INFO: &str =
-  "CroftSoft Evolve v0.8.3-SNAPSHOT Copyright 2022-2023 CroftSoft Inc";
+  "CroftSoft Evolve v0.8.3 Copyright 2022-2023 CroftSoft Inc";
 
 pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;
