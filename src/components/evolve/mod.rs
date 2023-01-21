@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-08
+//! - Rust version: 2023-01-20
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -26,8 +26,9 @@ use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
 use crate::engine::functions::web_sys::get_window;
 use crate::engine::input::Input;
-use crate::engine::traits::{Component, Painter};
+use crate::engine::traits::Component;
 use crate::models::world::World;
+use com_croftsoft_lib_role::{Painter, Updater};
 use core::cell::RefCell;
 use std::rc::Rc;
 use web_sys::{Document, HtmlCollection};
@@ -46,17 +47,24 @@ impl EvolveComponent {
   // TODO: do something with the ID
   pub fn new(
     _id: &str,
+    input: Rc<RefCell<Input>>,
     world: Rc<RefCell<World>>,
   ) -> Self {
     let blight_component =
-      Rc::new(RefCell::new(BlightComponent::new("blight")));
-    let canvas_component =
-      Rc::new(RefCell::new(CanvasComponent::new("canvas", world)));
-    let flora_component = Rc::new(RefCell::new(FloraComponent::new("flora")));
+      Rc::new(RefCell::new(BlightComponent::new("blight", input.clone())));
+    let canvas_component = Rc::new(RefCell::new(CanvasComponent::new(
+      "canvas",
+      input.clone(),
+      world,
+    )));
+    let flora_component =
+      Rc::new(RefCell::new(FloraComponent::new("flora", input.clone())));
     let garden_component =
-      Rc::new(RefCell::new(GardenComponent::new("garden")));
-    let reset_component = Rc::new(RefCell::new(ResetComponent::new("reset")));
-    let speed_component = Rc::new(RefCell::new(SpeedComponent::new("speed")));
+      Rc::new(RefCell::new(GardenComponent::new("garden", input.clone())));
+    let reset_component =
+      Rc::new(RefCell::new(ResetComponent::new("reset", input.clone())));
+    let speed_component =
+      Rc::new(RefCell::new(SpeedComponent::new("speed", input)));
     let components: [Rc<RefCell<dyn Component>>; 6] = [
       blight_component.clone(),
       canvas_component.clone(),
@@ -111,20 +119,19 @@ impl Component for EvolveComponent {
     ]
     .join("\n")
   }
-
-  fn update(
-    &mut self,
-    input: &mut Input,
-  ) {
-    self
-      .components
-      .iter()
-      .for_each(|component| component.borrow_mut().update(input));
-  }
 }
 
 impl Painter for EvolveComponent {
   fn paint(&self) {
     self.canvas_component.borrow().paint();
+  }
+}
+
+impl Updater for EvolveComponent {
+  fn update(&mut self) {
+    self
+      .components
+      .iter()
+      .for_each(|component| component.borrow_mut().update());
   }
 }

@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-08
+//! - Version: 2023-01-20
 //! - Since: 2022-12-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -15,12 +15,16 @@ use crate::constants::{FLORA_GROWTH_RATE_INIT, FLORA_GROWTH_RATE_MAX};
 use crate::engine::functions::web_sys::add_change_handler_by_id;
 use crate::engine::input::Input;
 use crate::engine::traits::Component;
+use com_croftsoft_lib_role::Updater;
+use core::cell::RefCell;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
+use std::rc::Rc;
 use wasm_bindgen::JsCast;
 use web_sys::{Event, EventTarget, HtmlInputElement};
 
 pub struct FloraComponent {
   id: String,
+  input: Rc<RefCell<Input>>,
   unbounded_receiver_option: Option<UnboundedReceiver<Event>>,
 }
 
@@ -36,9 +40,13 @@ impl FloraComponent {
     None
   }
 
-  pub fn new(id: &str) -> Self {
+  pub fn new(
+    id: &str,
+    input: Rc<RefCell<Input>>,
+  ) -> Self {
     Self {
       id: String::from(id),
+      input,
       unbounded_receiver_option: None,
     }
   }
@@ -55,11 +63,10 @@ impl Component for FloraComponent {
       self.id, FLORA_GROWTH_RATE_MAX, FLORA_GROWTH_RATE_INIT,
     )
   }
+}
 
-  fn update(
-    &mut self,
-    input: &mut Input,
-  ) {
+impl Updater for FloraComponent {
+  fn update(&mut self) {
     let event_option = self.changed();
     if let Some(event) = event_option {
       let event_target_option: Option<EventTarget> = event.target();
@@ -69,7 +76,8 @@ impl Component for FloraComponent {
         let html_input_element: HtmlInputElement = result.unwrap();
         let value: String = html_input_element.value();
         let v: Result<usize, _> = value.parse();
-        input.flora_growth_rate_change_requested = Some(v.unwrap());
+        self.input.borrow_mut().flora_growth_rate_change_requested =
+          Some(v.unwrap());
       }
     }
   }

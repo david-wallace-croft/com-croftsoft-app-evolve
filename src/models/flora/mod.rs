@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-07
+//! - Rust version: 2023-01-20
 //! - Rust since: 2023-01-04
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -24,19 +24,29 @@ use crate::constants::{
 };
 use crate::engine::functions::location::to_index_from_xy;
 use crate::engine::input::Input;
-use crate::engine::traits::Model;
-
+use com_croftsoft_lib_role::Updater;
+use core::cell::RefCell;
+use std::rc::Rc;
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
 
-#[derive(Debug)]
 pub struct Flora {
   pub enabled_garden: bool,
   pub flora_growth_rate: usize,
   pub flora_present: [bool; SPACE_HEIGHT * SPACE_WIDTH],
+  input: Rc<RefCell<Input>>,
 }
 
 impl Flora {
+  pub fn new(input: Rc<RefCell<Input>>) -> Self {
+    Self {
+      enabled_garden: true,
+      flora_growth_rate: FLORA_GROWTH_RATE_INIT,
+      flora_present: [false; SPACE_HEIGHT * SPACE_WIDTH],
+      input,
+    }
+  }
+
   fn reset(&mut self) {
     for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
       self.flora_present[index] = true;
@@ -56,11 +66,10 @@ impl Flora {
   }
 
   // TODO: move this
-  fn update_garden(
-    &mut self,
-    input: &Input,
-  ) {
-    if let Some(enabled) = input.garden_change_requested {
+  fn update_garden(&mut self) {
+    let garden_change_requested: Option<bool> =
+      self.input.borrow().garden_change_requested;
+    if let Some(enabled) = garden_change_requested {
       self.enabled_garden = enabled;
       if !self.enabled_garden {
         self.set_garden_values(false);
@@ -72,33 +81,22 @@ impl Flora {
   }
 }
 
-impl Default for Flora {
-  fn default() -> Self {
-    Self {
-      enabled_garden: true,
-      flora_growth_rate: FLORA_GROWTH_RATE_INIT,
-      flora_present: [false; SPACE_HEIGHT * SPACE_WIDTH],
-    }
-  }
-}
-
-impl Model for Flora {
-  fn update(
-    &mut self,
-    input: &Input,
-  ) {
-    if input.reset_requested {
+impl Updater for Flora {
+  fn update(&mut self) {
+    if self.input.borrow().reset_requested {
       self.reset();
       return;
     }
-    if let Some(flora_growth_rate) = input.flora_growth_rate_change_requested {
+    if let Some(flora_growth_rate) =
+      self.input.borrow().flora_growth_rate_change_requested
+    {
       if flora_growth_rate < FLORA_GROWTH_RATE_MAX {
         self.flora_growth_rate = flora_growth_rate;
       } else {
         self.flora_growth_rate = FLORA_GROWTH_RATE_MAX;
       }
     }
-    if input.blight_requested {
+    if self.input.borrow().blight_requested {
       for i in 0..SPACE_HEIGHT * SPACE_WIDTH {
         self.flora_present[i] = false;
       }
@@ -110,6 +108,6 @@ impl Model for Flora {
         self.flora_present[index] = true;
       }
     }
-    self.update_garden(input);
+    self.update_garden();
   }
 }

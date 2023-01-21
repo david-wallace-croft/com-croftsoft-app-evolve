@@ -37,6 +37,7 @@ name = "com-crofsoft-app-evolve"
 version = "0.8.4-SNAPSHOT"
 dependencies = [
  "anyhow",
+ "com-croftsoft-lib-role",
  "console_error_panic_hook",
  "futures",
  "getrandom",
@@ -48,6 +49,12 @@ dependencies = [
  "web-sys",
  "wee_alloc",
 ]
+
+[[package]]
+name = "com-croftsoft-lib-role"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8b508776c70fe41892a964536e40a4fefc7dd4098441a9611fcfcd34d1e82b25"
 
 [[package]]
 name = "console_error_panic_hook"

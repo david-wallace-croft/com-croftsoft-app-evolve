@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-08
+//! - Rust version: 2023-01-20
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -20,11 +20,12 @@
 
 use super::overlay::OverlayPainter;
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
-use crate::engine::traits::{CanvasPainter, Painter};
+use crate::engine::traits::CanvasPainter;
 use crate::models::world::World;
 use crate::painters::background::BackgroundPainter;
 use crate::painters::fauna::FaunaPainter;
 use crate::painters::flora::FloraPainter;
+use com_croftsoft_lib_role::Painter;
 use js_sys::Object;
 use wasm_bindgen::JsCast;
 use web_sys::{

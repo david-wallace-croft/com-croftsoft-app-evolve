@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-08
+//! - Rust version: 2023-01-20
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -22,7 +22,7 @@ use super::clock::Clock;
 use super::fauna::Fauna;
 use super::flora::Flora;
 use crate::engine::input::Input;
-use crate::engine::traits::Model;
+use com_croftsoft_lib_role::Updater;
 use core::cell::RefCell;
 use std::rc::Rc;
 
@@ -30,7 +30,7 @@ pub struct World {
   clock: Rc<RefCell<Clock>>,
   fauna: Rc<RefCell<Fauna>>,
   flora: Rc<RefCell<Flora>>,
-  models: Vec<Rc<RefCell<dyn Model>>>,
+  updaters: [Rc<RefCell<dyn Updater>>; 3],
 }
 
 // TODO: extract the trait?
@@ -46,14 +46,16 @@ impl World {
   pub fn flora_clone(&self) -> Rc<RefCell<Flora>> {
     self.flora.clone()
   }
-}
 
-impl Default for World {
-  fn default() -> Self {
-    let clock = Rc::new(RefCell::new(Clock::default()));
-    let flora = Rc::new(RefCell::new(Flora::default()));
-    let fauna = Rc::new(RefCell::new(Fauna::new(clock.clone(), flora.clone())));
-    let models: Vec<Rc<RefCell<dyn Model>>> = vec![
+  pub fn new(input: Rc<RefCell<Input>>) -> Self {
+    let clock = Rc::new(RefCell::new(Clock::new(input.clone())));
+    let flora = Rc::new(RefCell::new(Flora::new(input.clone())));
+    let fauna = Rc::new(RefCell::new(Fauna::new(
+      clock.clone(),
+      flora.clone(),
+      input.clone(),
+    )));
+    let updaters: [Rc<RefCell<dyn Updater>>; 3] = [
       clock.clone(),
       flora.clone(),
       fauna.clone(),
@@ -62,16 +64,13 @@ impl Default for World {
       clock,
       fauna,
       flora,
-      models,
+      updaters,
     }
   }
 }
 
-impl Model for World {
-  fn update(
-    &mut self,
-    input: &Input,
-  ) {
-    self.models.iter().for_each(|model| model.borrow_mut().update(input));
+impl Updater for World {
+  fn update(&mut self) {
+    self.updaters.iter().for_each(|model| model.borrow_mut().update());
   }
 }

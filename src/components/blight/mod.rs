@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-08
+//! - Rust version: 2023-01-20
 //! - Rust since: 2022-12-14
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -21,10 +21,14 @@
 use crate::engine::functions::web_sys::add_click_handler_by_id;
 use crate::engine::input::Input;
 use crate::engine::traits::Component;
+use com_croftsoft_lib_role::Updater;
+use core::cell::RefCell;
 use futures::channel::mpsc::UnboundedReceiver;
+use std::rc::Rc;
 
 pub struct BlightComponent {
   id: String,
+  input: Rc<RefCell<Input>>,
   unbounded_receiver: Option<UnboundedReceiver<()>>,
 }
 
@@ -39,9 +43,13 @@ impl BlightComponent {
     )
   }
 
-  pub fn new(id: &str) -> Self {
+  pub fn new(
+    id: &str,
+    input: Rc<RefCell<Input>>,
+  ) -> Self {
     Self {
       id: String::from(id),
+      input,
       unbounded_receiver: None,
     }
   }
@@ -55,13 +63,12 @@ impl Component for BlightComponent {
   fn make_html(&self) -> String {
     format!("<button id=\"{}\">Blight</button>", self.id)
   }
+}
 
-  fn update(
-    &mut self,
-    input: &mut Input,
-  ) {
+impl Updater for BlightComponent {
+  fn update(&mut self) {
     if self.clicked() {
-      input.blight_requested = true;
+      self.input.borrow_mut().blight_requested = true;
     }
   }
 }

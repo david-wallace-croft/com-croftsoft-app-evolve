@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-08
+//! - Rust version: 2023-01-20
 //! - Rust since: 2023-01-05
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -24,7 +24,7 @@ use super::flora::Flora;
 use crate::constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH};
 use crate::engine::functions::location::to_index_from_xy;
 use crate::engine::input::Input;
-use crate::engine::traits::Model;
+use com_croftsoft_lib_role::Updater;
 use core::cell::RefCell;
 use std::rc::Rc;
 
@@ -32,17 +32,20 @@ pub struct Fauna {
   pub bugs: Vec<Bug>,
   pub clock: Rc<RefCell<Clock>>,
   pub flora: Rc<RefCell<Flora>>,
+  input: Rc<RefCell<Input>>,
 }
 
 impl Fauna {
   pub fn new(
     clock: Rc<RefCell<Clock>>,
     flora: Rc<RefCell<Flora>>,
+    input: Rc<RefCell<Input>>,
   ) -> Self {
     Self {
       bugs: Vec::new(),
       clock,
       flora,
+      input,
     }
   }
 
@@ -56,19 +59,16 @@ impl Fauna {
   }
 }
 
-impl Model for Fauna {
-  fn update(
-    &mut self,
-    input: &Input,
-  ) {
-    if input.reset_requested {
+impl Updater for Fauna {
+  fn update(&mut self) {
+    if self.input.borrow().reset_requested {
       self.reset();
       return;
     }
     let mut new_bugs = Vec::<Bug>::new();
     let bugs_length = self.bugs.len();
     if bugs_length < BUGS_MAX {
-      if let Some(position_index) = input.bug_requested {
+      if let Some(position_index) = self.input.borrow().bug_requested {
         let new_bug = Bug::new(position_index);
         new_bugs.push(new_bug);
       }

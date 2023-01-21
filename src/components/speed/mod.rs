@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-08
+//! - Version: 2023-01-20
 //! - Since: 2022-12-20
 //!
 //! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
@@ -15,17 +15,25 @@
 use crate::engine::functions::web_sys::add_click_handler_by_id;
 use crate::engine::input::Input;
 use crate::engine::traits::Component;
+use com_croftsoft_lib_role::Updater;
+use core::cell::RefCell;
 use futures::channel::mpsc::UnboundedReceiver;
+use std::rc::Rc;
 
 pub struct SpeedComponent {
   id: String,
+  input: Rc<RefCell<Input>>,
   unbounded_receiver: Option<UnboundedReceiver<()>>,
 }
 
 impl SpeedComponent {
-  pub fn new(id: &str) -> Self {
+  pub fn new(
+    id: &str,
+    input: Rc<RefCell<Input>>,
+  ) -> Self {
     Self {
       id: String::from(id),
+      input,
       unbounded_receiver: None,
     }
   }
@@ -49,13 +57,12 @@ impl Component for SpeedComponent {
   fn make_html(&self) -> String {
     format!("<button id=\"{}\">Speed</button>", self.id)
   }
+}
 
-  fn update(
-    &mut self,
-    input: &mut Input,
-  ) {
+impl Updater for SpeedComponent {
+  fn update(&mut self) {
     if self.pressed() {
-      input.speed_toggle_requested = true;
+      self.input.borrow_mut().speed_toggle_requested = true;
     }
   }
 }

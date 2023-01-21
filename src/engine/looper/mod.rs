@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-08
+//! - Version: 2023-01-20
 //! - Since: 2023-01-07
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -13,11 +13,12 @@
 
 use super::configuration::Configuration;
 use super::input::Input;
-use super::traits::{Component, Model, Painter};
+use super::traits::Component;
 use crate::components::evolve::EvolveComponent;
 use crate::constants::{CONFIGURATION, FRAME_PERIOD_MILLIS_MINIMUM};
 use crate::engine::functions::web_sys::{spawn_local_loop, LoopUpdater};
 use crate::models::world::World;
+use com_croftsoft_lib_role::{Painter, Updater};
 use core::cell::RefCell;
 use std::rc::Rc;
 
@@ -26,7 +27,7 @@ pub struct Looper {
   configuration: Configuration,
   evolve_component: EvolveComponent,
   frame_period_millis: f64,
-  input: Input,
+  input: Rc<RefCell<Input>>,
   next_update_time: f64,
   world: Rc<RefCell<World>>,
 }
@@ -34,7 +35,7 @@ pub struct Looper {
 impl Looper {
   pub fn init(&mut self) {
     self.evolve_component.init();
-    self.input.reset_requested = true;
+    self.input.borrow_mut().reset_requested = true;
   }
 
   pub fn launch() {
@@ -47,19 +48,22 @@ impl Looper {
     let Configuration {
       frame_period_millis,
     } = configuration;
-    let world = Rc::new(RefCell::new(World::default()));
+    let input = Rc::new(RefCell::new(Input::default()));
+    let world = Rc::new(RefCell::new(World::new(input.clone())));
+    let evolve_component =
+      EvolveComponent::new("evolve", input.clone(), world.clone());
     Self {
-      evolve_component: EvolveComponent::new("evolve", world.clone()),
       configuration,
-      input: Input::default(),
+      evolve_component,
       frame_period_millis,
+      input,
       next_update_time: 0.0,
       world,
     }
   }
 
   fn update_frame_rate(&mut self) {
-    if !self.input.speed_toggle_requested {
+    if !self.input.borrow().speed_toggle_requested {
       return;
     }
     if self.frame_period_millis == FRAME_PERIOD_MILLIS_MINIMUM {
@@ -85,11 +89,11 @@ impl LoopUpdater for Looper {
     if update_time < self.next_update_time {
       return;
     }
-    self.evolve_component.update(&mut self.input);
-    self.world.borrow_mut().update(&self.input);
+    self.evolve_component.update();
+    self.world.borrow_mut().update();
     self.evolve_component.paint();
     self.update_frame_rate();
     self.next_update_time = update_time + self.frame_period_millis;
-    self.input.clear();
+    self.input.borrow_mut().clear();
   }
 }

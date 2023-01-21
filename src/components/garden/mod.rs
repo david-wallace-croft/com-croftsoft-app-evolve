@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-08
+//! - Rust version: 2023-01-20
 //! - Rust since: 2022-12-16
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -21,13 +21,17 @@
 use crate::engine::functions::web_sys::add_change_handler_by_id;
 use crate::engine::input::Input;
 use crate::engine::traits::Component;
+use com_croftsoft_lib_role::Updater;
+use core::cell::RefCell;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
+use std::rc::Rc;
 use wasm_bindgen::JsCast;
 use web_sys::{Event, EventTarget, HtmlInputElement};
 
 pub struct GardenComponent {
   event_unbounded_receiver_option: Option<UnboundedReceiver<Event>>,
   id: String,
+  input: Rc<RefCell<Input>>,
 }
 
 impl GardenComponent {
@@ -42,9 +46,13 @@ impl GardenComponent {
     None
   }
 
-  pub fn new(id: &str) -> Self {
+  pub fn new(
+    id: &str,
+    input: Rc<RefCell<Input>>,
+  ) -> Self {
     Self {
       id: String::from(id),
+      input,
       event_unbounded_receiver_option: None,
     }
   }
@@ -61,11 +69,10 @@ impl Component for GardenComponent {
       self.id
     )
   }
+}
 
-  fn update(
-    &mut self,
-    input: &mut Input,
-  ) {
+impl Updater for GardenComponent {
+  fn update(&mut self) {
     let event_option = self.changed();
     if let Some(event) = event_option {
       let event_target_option: Option<EventTarget> = event.target();
@@ -73,7 +80,8 @@ impl Component for GardenComponent {
         let result: Result<HtmlInputElement, EventTarget> =
           event_target.dyn_into::<HtmlInputElement>();
         let html_input_element: HtmlInputElement = result.unwrap();
-        input.garden_change_requested = Some(html_input_element.checked());
+        self.input.borrow_mut().garden_change_requested =
+          Some(html_input_element.checked());
       }
     }
   }
