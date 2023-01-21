@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-20
+//! - Version: 2023-01-21
 //! - Since: 2022-12-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -15,7 +15,7 @@ use crate::constants::{FLORA_GROWTH_RATE_INIT, FLORA_GROWTH_RATE_MAX};
 use crate::engine::functions::web_sys::add_change_handler_by_id;
 use crate::engine::input::Input;
 use crate::engine::traits::Component;
-use com_croftsoft_lib_role::Updater;
+use com_croftsoft_lib_role::{Initializer, Updater};
 use core::cell::RefCell;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
 use std::rc::Rc;
@@ -53,15 +53,17 @@ impl FloraComponent {
 }
 
 impl Component for FloraComponent {
-  fn init(&mut self) {
-    self.unbounded_receiver_option = add_change_handler_by_id(&self.id);
-  }
-
   fn make_html(&self) -> String {
     format!(
       "Food growth rate <input id=\"{}\" max=\"{}\" type=\"range\" value\"{}\">",
       self.id, FLORA_GROWTH_RATE_MAX, FLORA_GROWTH_RATE_INIT,
     )
+  }
+}
+
+impl Initializer for FloraComponent {
+  fn initialize(&mut self) {
+    self.unbounded_receiver_option = add_change_handler_by_id(&self.id);
   }
 }
 

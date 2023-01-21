@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-20
+//! - Rust version: 2023-01-21
 //! - Rust since: 2022-12-14
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -21,7 +21,7 @@
 use crate::engine::functions::web_sys::add_click_handler_by_id;
 use crate::engine::input::Input;
 use crate::engine::traits::Component;
-use com_croftsoft_lib_role::Updater;
+use com_croftsoft_lib_role::{Initializer, Updater};
 use core::cell::RefCell;
 use futures::channel::mpsc::UnboundedReceiver;
 use std::rc::Rc;
@@ -56,12 +56,14 @@ impl BlightComponent {
 }
 
 impl Component for BlightComponent {
-  fn init(&mut self) {
-    self.unbounded_receiver = add_click_handler_by_id(&self.id);
-  }
-
   fn make_html(&self) -> String {
     format!("<button id=\"{}\">Blight</button>", self.id)
+  }
+}
+
+impl Initializer for BlightComponent {
+  fn initialize(&mut self) {
+    self.unbounded_receiver = add_click_handler_by_id(&self.id);
   }
 }
 
