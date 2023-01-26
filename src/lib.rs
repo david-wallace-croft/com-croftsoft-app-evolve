@@ -1,10 +1,10 @@
 // =============================================================================
-//! - CroftSoft Evolve
+//! - Main function for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-07
+//! - Rust version: 2023-01-25
 //! - Rust since: 2022-09-12
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -29,6 +29,7 @@ mod constants;
 mod engine;
 mod models;
 mod painters;
+mod updaters;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]

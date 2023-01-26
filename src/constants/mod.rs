@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-07
+//! - Rust version: 2023-01-25
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -39,6 +39,7 @@ pub const FRAMES_PER_SECOND: f64 = 1.0;
 pub const GENES_MAX: usize = 8;
 pub const FLORA_GROWTH_RATE_INIT: usize = 10;
 pub const FLORA_GROWTH_RATE_MAX: usize = 20;
+pub const LOCATION_COUNT: usize = SPACE_HEIGHT * SPACE_WIDTH;
 pub const MAX_ENERGY: usize = 60;
 pub const MOVE_COST: usize = 1;
 pub const SPACE_HEIGHT: usize = 100;

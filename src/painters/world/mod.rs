@@ -1,10 +1,10 @@
 // =============================================================================
-//! - WorldPainter for CroftSoft Evolve
+//! - World Painter for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-20
+//! - Rust version: 2023-01-25
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -56,11 +56,11 @@ impl WorldPainter {
     let scale_x = canvas_width / SPACE_WIDTH as f64;
     let scale_y = canvas_height / SPACE_HEIGHT as f64;
     let fauna_painter =
-      FaunaPainter::new(world.fauna_clone(), scale_x, scale_y);
+      FaunaPainter::new(world.fauna.clone(), scale_x, scale_y);
     let flora_painter =
-      FloraPainter::new(world.flora_clone(), scale_x, scale_y);
+      FloraPainter::new(world.flora.clone(), scale_x, scale_y);
     let overlay_painter =
-      OverlayPainter::new(world.clock_clone(), world.fauna_clone());
+      OverlayPainter::new(world.clock.clone(), world.fauna.clone());
     let canvas_painters: Vec<Box<dyn CanvasPainter>> = vec![
       Box::new(background_painter),
       Box::new(flora_painter),
