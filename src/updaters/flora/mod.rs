@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-25
+//! - Version: 2023-01-26
 //! - Since: 2023-01-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -12,8 +12,7 @@
 // =============================================================================
 
 use crate::constants::{
-  EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1, FLORA_GROWTH_RATE_MAX, LOCATION_COUNT,
-  SPACE_HEIGHT, SPACE_WIDTH,
+  EDEN_X0, EDEN_X1, EDEN_Y0, EDEN_Y1, FLORA_GROWTH_RATE_MAX,
 };
 use crate::engine::functions::location::to_index_from_xy;
 use crate::models::flora::Flora;
@@ -46,12 +45,16 @@ impl FloraUpdater {
     }
   }
 
-  fn reset(&mut self) {
-    let mut flora: RefMut<Flora> = self.flora.borrow_mut();
-    // TODO: iterate over array length
-    for index in 0..LOCATION_COUNT {
-      flora.flora_present[index] = true;
-    }
+  fn set_flora_present_for_all_locations(
+    &mut self,
+    present: bool,
+  ) {
+    self
+      .flora
+      .borrow_mut()
+      .flora_present
+      .iter_mut()
+      .for_each(|location: &mut bool| *location = present);
   }
 
   fn set_garden_values(
@@ -86,7 +89,7 @@ impl FloraUpdater {
 impl Updater for FloraUpdater {
   fn update(&mut self) {
     if self.input.borrow().get_reset_requested() {
-      self.reset();
+      self.set_flora_present_for_all_locations(true);
       return;
     }
     if let Some(flora_growth_rate) =
@@ -100,17 +103,13 @@ impl Updater for FloraUpdater {
       }
     }
     if self.input.borrow().get_blight_requested() {
-      let mut flora: RefMut<Flora> = self.flora.borrow_mut();
-      // TODO: iterator over array length
-      for i in 0..LOCATION_COUNT {
-        flora.flora_present[i] = false;
-      }
+      self.set_flora_present_for_all_locations(false);
     } else {
       let mut thread_rng: ThreadRng = rand::thread_rng();
       let mut flora: RefMut<Flora> = self.flora.borrow_mut();
       for _i in 0..flora.flora_growth_rate {
         // Randomly position food flora
-        let index: usize = thread_rng.gen_range(0..SPACE_HEIGHT * SPACE_WIDTH);
+        let index: usize = thread_rng.gen_range(0..flora.flora_present.len());
         flora.flora_present[index] = true;
       }
     }
