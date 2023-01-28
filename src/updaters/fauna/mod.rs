@@ -4,15 +4,20 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-25
+//! - Version: 2023-01-28
 //! - Since: 2023-01-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::constants::{BUGS_MAX, SPACE_HEIGHT, SPACE_WIDTH};
-use crate::engine::functions::location::to_index_from_xy;
+use crate::constants::{
+  BIRTH_ENERGY, BUGS_MAX, FLORA_ENERGY, MAX_ENERGY, MOVE_COST, SPACE_HEIGHT,
+  SPACE_WIDTH,
+};
+use crate::engine::functions::location::{
+  to_index_from_xy, to_x_from_index, to_y_from_index,
+};
 use crate::models::bug::Bug;
 use crate::models::clock::Clock;
 use crate::models::fauna::Fauna;
@@ -57,6 +62,57 @@ impl FaunaUpdater {
       fauna.bugs.push(bug);
     }
   }
+
+  fn update_bugs(
+    &mut self,
+    bugs_length: usize,
+    new_bugs: &mut Vec<Bug>,
+  ) {
+    for bug in self.fauna.borrow_mut().bugs.iter_mut() {
+      let bug_position: usize = bug.position;
+      if self.flora.borrow().flora_present[bug_position] {
+        self.flora.borrow_mut().flora_present[bug_position] = false;
+        bug.energy = bug.energy.saturating_add(FLORA_ENERGY);
+        if bug.energy > MAX_ENERGY {
+          bug.energy = MAX_ENERGY;
+        }
+      }
+      if bug.energy >= BIRTH_ENERGY && bugs_length + new_bugs.len() < BUGS_MAX {
+        let new_bug = bug.give_birth();
+        new_bugs.push(new_bug);
+      }
+      let mut x = to_x_from_index(bug_position);
+      let mut y = to_y_from_index(bug_position);
+      if rand::random() {
+        if bug.genes_x[self.clock.borrow().time] {
+          if x < SPACE_WIDTH - 1 {
+            x += 1;
+          } else {
+            x = 0;
+          }
+        } else if x > 0 {
+          x -= 1;
+        } else {
+          x = SPACE_WIDTH - 1;
+        }
+      }
+      if rand::random() {
+        if bug.genes_y[self.clock.borrow().time] {
+          if y < SPACE_HEIGHT - 1 {
+            y += 1;
+          } else {
+            y = 0;
+          }
+        } else if y > 0 {
+          y -= 1;
+        } else {
+          y = SPACE_HEIGHT - 1;
+        }
+      }
+      bug.position = to_index_from_xy(x, y);
+      bug.energy = bug.energy.saturating_sub(MOVE_COST);
+    }
+  }
 }
 
 impl Updater for FaunaUpdater {
@@ -73,14 +129,8 @@ impl Updater for FaunaUpdater {
         new_bugs.push(new_bug);
       }
     }
-    let clock = &self.clock.borrow();
-    let flora = &mut self.flora.borrow_mut();
-    let mut fauna: RefMut<Fauna> = self.fauna.borrow_mut();
-    for bug in fauna.bugs.iter_mut() {
-      // TODO: Can I implement WorldUpdater trait for Bug?
-      bug.update(bugs_length, clock, flora, &mut new_bugs);
-    }
-    fauna.bugs.retain(|bug| bug.energy > 0);
-    fauna.bugs.append(&mut new_bugs);
+    self.update_bugs(bugs_length, &mut new_bugs);
+    self.fauna.borrow_mut().bugs.retain(|bug| bug.energy > 0);
+    self.fauna.borrow_mut().bugs.append(&mut new_bugs);
   }
 }

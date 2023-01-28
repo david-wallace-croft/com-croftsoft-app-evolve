@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-08
+//! - Rust version: 2023-01-28
 //! - Rust since: 2022-12-10
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -18,21 +18,11 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::constants::{
-  BABY_ENERGY, BIRTH_ENERGY, BIRTH_ENERGY_COST, BUGS_MAX, FLORA_ENERGY,
-  GENES_MAX, MAX_ENERGY, MOVE_COST, SPACE_HEIGHT, SPACE_WIDTH,
-};
-use crate::engine::functions::location::{
-  to_index_from_xy, to_x_from_index, to_y_from_index,
-};
+use crate::constants::{BABY_ENERGY, BIRTH_ENERGY_COST, GENES_MAX};
 
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
 
-use super::clock::Clock;
-use super::flora::Flora;
-
-#[derive(Debug)]
 pub struct Bug {
   pub energy: usize,
   pub genes_x: [bool; GENES_MAX],
@@ -75,7 +65,7 @@ impl Bug {
     }
   }
 
-  fn give_birth(&mut self) -> Self {
+  pub fn give_birth(&mut self) -> Self {
     self.energy = self.energy.saturating_sub(BIRTH_ENERGY_COST);
     let mut baby_bug = Bug::new(self.position);
     for index in 0..GENES_MAX {
@@ -114,56 +104,5 @@ impl Bug {
     };
     bug.classify_species();
     bug
-  }
-
-  pub fn update(
-    &mut self,
-    bugs_length: usize,
-    clock: &Clock,
-    flora: &mut Flora,
-    new_bugs: &mut Vec<Bug>,
-  ) {
-    let bug_position: usize = self.position;
-    if flora.flora_present[bug_position] {
-      flora.flora_present[bug_position] = false;
-      self.energy = self.energy.saturating_add(FLORA_ENERGY);
-      if self.energy > MAX_ENERGY {
-        self.energy = MAX_ENERGY;
-      }
-    }
-    if self.energy >= BIRTH_ENERGY && bugs_length + new_bugs.len() < BUGS_MAX {
-      let new_bug = self.give_birth();
-      new_bugs.push(new_bug);
-    }
-    let mut x = to_x_from_index(bug_position);
-    let mut y = to_y_from_index(bug_position);
-    if rand::random() {
-      if self.genes_x[clock.time] {
-        if x < SPACE_WIDTH - 1 {
-          x += 1;
-        } else {
-          x = 0;
-        }
-      } else if x > 0 {
-        x -= 1;
-      } else {
-        x = SPACE_WIDTH - 1;
-      }
-    }
-    if rand::random() {
-      if self.genes_y[clock.time] {
-        if y < SPACE_HEIGHT - 1 {
-          y += 1;
-        } else {
-          y = 0;
-        }
-      } else if y > 0 {
-        y -= 1;
-      } else {
-        y = SPACE_HEIGHT - 1;
-      }
-    }
-    self.position = to_index_from_xy(x, y);
-    self.energy = self.energy.saturating_sub(MOVE_COST);
   }
 }
