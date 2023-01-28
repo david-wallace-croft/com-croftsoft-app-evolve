@@ -1,23 +1,17 @@
 // =============================================================================
-//! - FaunaPainter for CroftSoft Evolve
+//! - Fauna Painter for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-08
-//! - Rust since: 2022-12-10
-//! - Java version: 2008-04-19
-//! - Java since: 1996-09-01
+//! - Version: 2023-01-27
+//! - Since: 2022-12-10
 //!
-//! # History
-//! - Adapted from the Java package com.croftsoft.apps.evolve
-//!   - In the Java-based [`CroftSoft Apps Library`]
-//!
-//! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use crate::constants::{PAINT_OFFSET, PAINT_SCALE};
 use crate::engine::functions::location::{to_x_from_index, to_y_from_index};
 use crate::engine::traits::CanvasPainter;
 use crate::models::bug::Species;
@@ -47,8 +41,8 @@ impl FaunaPainter {
     let bug_color_cruiser = JsValue::from_str("red");
     let bug_color_normal = JsValue::from_str("magenta");
     let bug_color_twirler = JsValue::from_str("blue");
-    let bug_height = scale_y / 2.0;
-    let bug_width = scale_x / 2.0;
+    let bug_height = PAINT_SCALE * scale_y;
+    let bug_width = PAINT_SCALE * scale_x;
     Self {
       bug_color_cruiser,
       bug_color_normal,
@@ -77,8 +71,8 @@ impl CanvasPainter for FaunaPainter {
       let index = bug.position;
       let x: f64 = to_x_from_index(index) as f64;
       let y: f64 = to_y_from_index(index) as f64;
-      let corner_x = self.scale_x * (x + 0.5);
-      let corner_y = self.scale_y * (y + 0.5);
+      let corner_x = self.scale_x * (x + PAINT_OFFSET);
+      let corner_y = self.scale_y * (y + PAINT_OFFSET);
       context.fill_rect(corner_x, corner_y, self.bug_width, self.bug_height);
     }
   }

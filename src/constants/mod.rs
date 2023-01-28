@@ -42,6 +42,8 @@ pub const FLORA_GROWTH_RATE_MAX: usize = 20;
 pub const LOCATION_COUNT: usize = SPACE_HEIGHT * SPACE_WIDTH;
 pub const MAX_ENERGY: usize = 60;
 pub const MOVE_COST: usize = 1;
+pub const PAINT_OFFSET: f64 = (1. - PAINT_SCALE) / 2.;
+pub const PAINT_SCALE: f64 = 2. / 3.;
 pub const SPACE_HEIGHT: usize = 100;
 pub const SPACE_WIDTH: usize = 100;
 

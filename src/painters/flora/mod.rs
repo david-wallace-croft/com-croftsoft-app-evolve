@@ -1,28 +1,21 @@
 // =============================================================================
-//! - FloraPainter for CroftSoft Evolve
+//! - Flora Painter for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-08
-//! - Rust since: 2022-12-10
-//! - Java version: 2008-04-19
-//! - Java since: 1996-09-01
+//! - Version: 2023-01-27
+//! - Since: 2022-12-10
 //!
-//! # History
-//! - Adapted from the Java package com.croftsoft.apps.evolve
-//!   - In the Java-based [`CroftSoft Apps Library`]
-//!
-//! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
+use crate::constants::{PAINT_OFFSET, PAINT_SCALE};
 use crate::engine::functions::location::{to_x_from_index, to_y_from_index};
 use crate::engine::traits::CanvasPainter;
 use crate::models::flora::Flora;
-use core::cell::{Ref, RefCell};
+use core::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
@@ -43,8 +36,8 @@ impl FloraPainter {
     scale_y: f64,
   ) -> Self {
     let fill_style = JsValue::from_str("green");
-    let flora_height = scale_y / 2.0;
-    let flora_width = scale_x / 2.0;
+    let flora_height = PAINT_SCALE * scale_y;
+    let flora_width = PAINT_SCALE * scale_x;
     Self {
       fill_style,
       flora_height,
@@ -62,21 +55,21 @@ impl CanvasPainter for FloraPainter {
     context: &CanvasRenderingContext2d,
   ) {
     context.set_fill_style(&self.fill_style);
-    let flora: Ref<Flora> = self.flora.borrow();
-    for index in 0..SPACE_HEIGHT * SPACE_WIDTH {
-      if flora.flora_present[index] {
-        // TODO: replace with PlotLib.xy()
-        let x: f64 = to_x_from_index(index) as f64;
-        let y: f64 = to_y_from_index(index) as f64;
-        let corner_x = self.scale_x * (x + 0.5);
-        let corner_y = self.scale_y * (y + 0.5);
-        context.fill_rect(
-          corner_x,
-          corner_y,
-          self.flora_width,
-          self.flora_height,
-        );
-      }
-    }
+    self.flora.borrow().flora_present.iter().enumerate().for_each(
+      |(index, location)| {
+        if *location {
+          let x: f64 = to_x_from_index(index) as f64;
+          let y: f64 = to_y_from_index(index) as f64;
+          let corner_x = self.scale_x * (x + PAINT_OFFSET);
+          let corner_y = self.scale_y * (y + PAINT_OFFSET);
+          context.fill_rect(
+            corner_x,
+            corner_y,
+            self.flora_width,
+            self.flora_height,
+          );
+        }
+      },
+    );
   }
 }
