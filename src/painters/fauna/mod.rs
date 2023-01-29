@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-27
+//! - Version: 2023-01-29
 //! - Since: 2022-12-10
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -41,8 +41,8 @@ impl FaunaPainter {
     let bug_color_cruiser = JsValue::from_str("red");
     let bug_color_normal = JsValue::from_str("magenta");
     let bug_color_twirler = JsValue::from_str("blue");
-    let bug_height = PAINT_SCALE * scale_y;
-    let bug_width = PAINT_SCALE * scale_x;
+    let bug_height = (PAINT_SCALE * scale_y).trunc();
+    let bug_width = (PAINT_SCALE * scale_x).trunc();
     Self {
       bug_color_cruiser,
       bug_color_normal,
@@ -71,8 +71,8 @@ impl CanvasPainter for FaunaPainter {
       let index = bug.position;
       let x: f64 = to_x_from_index(index) as f64;
       let y: f64 = to_y_from_index(index) as f64;
-      let corner_x = self.scale_x * (x + PAINT_OFFSET);
-      let corner_y = self.scale_y * (y + PAINT_OFFSET);
+      let corner_x = (self.scale_x * (x + PAINT_OFFSET)).trunc();
+      let corner_y = (self.scale_y * (y + PAINT_OFFSET)).trunc();
       context.fill_rect(corner_x, corner_y, self.bug_width, self.bug_height);
     }
   }
