@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-28
+//! - Rust version: 2023-02-01
 //! - Rust since: 2022-09-12
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -26,6 +26,7 @@ use engine::looper::Looper;
 use wasm_bindgen::prelude::*;
 use wee_alloc::WeeAlloc;
 
+mod animators;
 mod components;
 mod constants;
 mod engine;
