@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-01
+//! - Version: 2023-02-02
 //! - Since: 2023-01-07
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -12,25 +12,23 @@
 // =============================================================================
 
 use super::configuration::Configuration;
+use super::frame_rate::FrameRate;
 use super::input::Input;
-use crate::animators::frame_rate::FrameRateAnimator;
 use crate::components::evolve::EvolveComponent;
 use crate::constants::{CONFIGURATION, FRAME_PERIOD_MILLIS_MINIMUM};
 use crate::engine::functions::web_sys::{spawn_local_loop, LoopUpdater};
 use crate::models::world::World;
 use crate::updaters::world::WorldUpdater;
 use com_croftsoft_lib_role::{Initializer, Painter, Updater};
-use core::cell::RefCell;
+use core::cell::{RefCell, RefMut};
 use std::rc::Rc;
 
 // TODO: rename this
 pub struct Looper {
   configuration: Configuration,
   evolve_component: EvolveComponent,
-  frame_period_millis: f64,
-  frame_rate_animator: FrameRateAnimator,
+  frame_rate: Rc<RefCell<FrameRate>>,
   input: Rc<RefCell<Input>>,
-  next_update_time: f64,
   world_updater: WorldUpdater,
 }
 
@@ -45,31 +43,36 @@ impl Looper {
     let Configuration {
       frame_period_millis,
     } = configuration;
+    let frame_rate = Rc::new(RefCell::new(FrameRate::new(frame_period_millis)));
     let input = Rc::new(RefCell::new(Input::default()));
     let world = Rc::new(RefCell::new(World::default()));
-    let evolve_component =
-      EvolveComponent::new("evolve", input.clone(), world.clone());
+    let evolve_component = EvolveComponent::new(
+      "evolve",
+      frame_rate.clone(),
+      input.clone(),
+      world.clone(),
+    );
     let world_updater = WorldUpdater::new(input.clone(), world);
-    let frame_rate_animator = FrameRateAnimator::default();
     Self {
       configuration,
       evolve_component,
-      frame_period_millis,
-      frame_rate_animator,
+      frame_rate,
       input,
-      next_update_time: 0.0,
       world_updater,
     }
   }
 
+  // TODO: Move this to a frame rate updater
   fn update_frame_rate(&mut self) {
+    // TODO check input for reset
     if !self.input.borrow().speed_toggle_requested {
       return;
     }
-    if self.frame_period_millis == FRAME_PERIOD_MILLIS_MINIMUM {
-      self.frame_period_millis = self.configuration.frame_period_millis;
+    let mut frame_rate: RefMut<FrameRate> = self.frame_rate.borrow_mut();
+    if frame_rate.frame_period_millis == FRAME_PERIOD_MILLIS_MINIMUM {
+      frame_rate.frame_period_millis = self.configuration.frame_period_millis;
     } else {
-      self.frame_period_millis = FRAME_PERIOD_MILLIS_MINIMUM;
+      frame_rate.frame_period_millis = FRAME_PERIOD_MILLIS_MINIMUM;
     }
   }
 }
@@ -93,16 +96,13 @@ impl LoopUpdater for Looper {
     &mut self,
     update_time: f64,
   ) {
-    if update_time < self.next_update_time {
+    if self.frame_rate.borrow_mut().before_next_update_time(update_time) {
       return;
     }
     self.evolve_component.update();
     self.world_updater.update();
     self.evolve_component.paint();
-    self.frame_rate_animator.update();
-    self.frame_rate_animator.paint();
     self.update_frame_rate();
-    self.next_update_time = update_time + self.frame_period_millis;
     self.input.borrow_mut().clear();
   }
 }

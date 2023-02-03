@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-21
+//! - Rust version: 2023-02-02
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -24,6 +24,7 @@ use super::flora::FloraComponent;
 use super::garden::GardenComponent;
 use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
+use crate::engine::frame_rate::FrameRate;
 use crate::engine::functions::web_sys::get_window;
 use crate::engine::input::Input;
 use crate::engine::traits::Component;
@@ -47,6 +48,7 @@ impl EvolveComponent {
   // TODO: do something with the ID
   pub fn new(
     _id: &str,
+    frame_rate: Rc<RefCell<FrameRate>>,
     input: Rc<RefCell<Input>>,
     world: Rc<RefCell<World>>,
   ) -> Self {
@@ -54,6 +56,7 @@ impl EvolveComponent {
       Rc::new(RefCell::new(BlightComponent::new("blight", input.clone())));
     let canvas_component = Rc::new(RefCell::new(CanvasComponent::new(
       "canvas",
+      frame_rate,
       input.clone(),
       world,
     )));
