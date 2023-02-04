@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-02
+//! - Version: 2023-02-03
 //! - Since: 2023-01-07
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -69,10 +69,12 @@ impl Looper {
       return;
     }
     let mut frame_rate: RefMut<FrameRate> = self.frame_rate.borrow_mut();
-    if frame_rate.frame_period_millis == FRAME_PERIOD_MILLIS_MINIMUM {
-      frame_rate.frame_period_millis = self.configuration.frame_period_millis;
+    let frame_period_millis = frame_rate.get_frame_period_millis();
+    if frame_period_millis == FRAME_PERIOD_MILLIS_MINIMUM {
+      frame_rate
+        .set_frame_period_millis(self.configuration.frame_period_millis);
     } else {
-      frame_rate.frame_period_millis = FRAME_PERIOD_MILLIS_MINIMUM;
+      frame_rate.set_frame_period_millis(FRAME_PERIOD_MILLIS_MINIMUM);
     }
   }
 }

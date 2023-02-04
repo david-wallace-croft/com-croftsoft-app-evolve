@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-02
+//! - Version: 2023-02-03
 //! - Since: 2023-02-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -25,7 +25,10 @@ pub struct FrameRatePainter {
 
 impl FrameRatePainter {
   fn make_frame_rate_string(&self) -> String {
-    format!("Frame: {}", self.frame_rate.borrow().frame_count)
+    format!(
+      "Frames per second: {}",
+      self.frame_rate.borrow().get_frames_per_second_sampled()
+    )
   }
 
   pub fn new(frame_rate: Rc<RefCell<FrameRate>>) -> Self {
