@@ -26,7 +26,7 @@ pub struct FrameRatePainter {
 impl FrameRatePainter {
   fn make_frame_rate_string(&self) -> String {
     format!(
-      "Frames per second: {}",
+      "Frames per second: {:.3}",
       self.frame_rater.borrow().get_frames_per_second_sampled()
     )
   }
