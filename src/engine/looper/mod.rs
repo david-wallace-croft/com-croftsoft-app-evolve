@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-03
+//! - Version: 2023-02-04
 //! - Since: 2023-01-07
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -63,12 +63,11 @@ impl Looper {
     }
   }
 
-  // TODO: Move this to a frame rate updater
   fn update_frame_rate(&mut self) {
-    // TODO check input for reset
     if !self.input.borrow().speed_toggle_requested {
       return;
     }
+    self.input.borrow_mut().speed_toggle_requested = false;
     let mut frame_rater: RefMut<FrameRater> = self.frame_rater.borrow_mut();
     let frame_period_millis = frame_rater.get_frame_period_millis_target();
     if frame_period_millis == FRAME_PERIOD_MILLIS_MINIMUM {
@@ -99,13 +98,13 @@ impl LoopUpdater for Looper {
     &mut self,
     update_time: f64,
   ) {
+    self.evolve_component.update();
+    self.update_frame_rate();
     if self.frame_rater.borrow_mut().before_next_update_time(update_time) {
       return;
     }
-    self.evolve_component.update();
     self.world_updater.update();
     self.evolve_component.paint();
-    self.update_frame_rate();
     self.input.borrow_mut().clear();
   }
 }
