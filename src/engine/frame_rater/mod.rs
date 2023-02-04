@@ -22,7 +22,6 @@ pub struct FrameRater {
   frame_rate: f64,
   frame_rate_update_time: f64,
   frame_sample_size_target: usize,
-  update_time_millis_last: f64,
   update_time_millis_next: f64,
   update_times: VecDeque<f64>,
 }
@@ -35,7 +34,6 @@ impl FrameRater {
     if update_time_millis < self.update_time_millis_next {
       return true;
     }
-    self.update_time_millis_last = update_time_millis;
     self.update_time_millis_next =
       update_time_millis + self.frame_period_millis_target;
     let deltas = self.update_times.len();
@@ -88,7 +86,6 @@ impl FrameRater {
       frame_rate: 0.,
       frame_rate_update_time: 0.,
       frame_sample_size_target: 0,
-      update_time_millis_last: 0.,
       update_time_millis_next: 0.,
       update_times: VecDeque::new(),
     };
@@ -104,8 +101,7 @@ impl FrameRater {
     if self.frame_period_millis_target < 0. {
       self.frame_period_millis_target = 0.;
     }
-    self.update_time_millis_next =
-      self.update_time_millis_last + self.frame_period_millis_target;
+    self.update_time_millis_next = 0.;
     self.frame_sample_size_target =
       Self::calculate_frame_sample_size_target(self.frame_period_millis_target);
     self.update_times.clear();
