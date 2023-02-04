@@ -20,6 +20,7 @@ const SAMPLE_TIME_MILLIS: f64 = 1_000.;
 pub struct FrameRater {
   frame_period_millis_target: f64,
   frame_rate: f64,
+  frame_rate_update_time: f64,
   frame_sample_size_target: usize,
   update_time_millis_last: f64,
   update_time_millis_next: f64,
@@ -42,17 +43,20 @@ impl FrameRater {
     if deltas < 1 {
       return false;
     }
-    let mut frame_sample_size = self.frame_sample_size_target;
-    if frame_sample_size > deltas {
-      frame_sample_size = deltas;
+    if update_time_millis >= self.frame_rate_update_time + SAMPLE_TIME_MILLIS {
+      self.frame_rate_update_time = update_time_millis;
+      let mut frame_sample_size = self.frame_sample_size_target;
+      if frame_sample_size > deltas {
+        frame_sample_size = deltas;
+      }
+      let index = deltas - frame_sample_size;
+      let first_update_time = self.update_times[index];
+      let delta = update_time_millis - first_update_time;
+      self.frame_rate = frame_sample_size as f64 * MILLIS_PER_SECOND / delta;
     }
-    let index = deltas - frame_sample_size;
-    let first_update_time = self.update_times[index];
     if deltas >= FRAME_SAMPLE_SIZE_MAX {
       self.update_times.pop_front();
     }
-    let delta = update_time_millis - first_update_time;
-    self.frame_rate = frame_sample_size as f64 * MILLIS_PER_SECOND / delta;
     false
   }
 
@@ -82,6 +86,7 @@ impl FrameRater {
     let mut frame_rater = Self {
       frame_period_millis_target: 0.,
       frame_rate: 0.,
+      frame_rate_update_time: 0.,
       frame_sample_size_target: 0,
       update_time_millis_last: 0.,
       update_time_millis_next: 0.,
