@@ -70,12 +70,12 @@ impl Looper {
       return;
     }
     let mut frame_rater: RefMut<FrameRater> = self.frame_rater.borrow_mut();
-    let frame_period_millis = frame_rater.get_frame_period_millis();
+    let frame_period_millis = frame_rater.get_frame_period_millis_target();
     if frame_period_millis == FRAME_PERIOD_MILLIS_MINIMUM {
       frame_rater
-        .set_frame_period_millis(self.configuration.frame_period_millis);
+        .set_frame_period_millis_target(self.configuration.frame_period_millis);
     } else {
-      frame_rater.set_frame_period_millis(FRAME_PERIOD_MILLIS_MINIMUM);
+      frame_rater.set_frame_period_millis_target(FRAME_PERIOD_MILLIS_MINIMUM);
     }
   }
 }

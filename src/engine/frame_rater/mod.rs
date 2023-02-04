@@ -18,7 +18,7 @@ const MILLIS_PER_SECOND: f64 = 1_000.;
 const SAMPLE_TIME_MILLIS: f64 = 1_000.;
 
 pub struct FrameRater {
-  frame_period_millis: f64,
+  frame_period_millis_target: f64,
   frame_rate: f64,
   frame_sample_size_target: usize,
   update_time_millis_last: f64,
@@ -36,7 +36,7 @@ impl FrameRater {
     }
     self.update_time_millis_last = update_time_millis;
     self.update_time_millis_next =
-      update_time_millis + self.frame_period_millis;
+      update_time_millis + self.frame_period_millis_target;
     let deltas = self.update_times.len();
     self.update_times.push_back(update_time_millis);
     if deltas < 1 {
@@ -70,39 +70,40 @@ impl FrameRater {
     frame_sample_size
   }
 
-  pub fn get_frame_period_millis(&self) -> f64 {
-    self.frame_period_millis
+  pub fn get_frame_period_millis_target(&self) -> f64 {
+    self.frame_period_millis_target
   }
 
   pub fn get_frames_per_second_sampled(&self) -> f64 {
     self.frame_rate
   }
 
-  pub fn new(frame_period_millis: f64) -> Self {
+  pub fn new(frame_period_millis_target: f64) -> Self {
     let mut frame_rater = Self {
-      frame_period_millis: 0.,
+      frame_period_millis_target: 0.,
       frame_rate: 0.,
       frame_sample_size_target: 0,
       update_time_millis_last: 0.,
       update_time_millis_next: 0.,
       update_times: VecDeque::new(),
     };
-    frame_rater.set_frame_period_millis(frame_period_millis);
+    frame_rater.set_frame_period_millis_target(frame_period_millis_target);
     frame_rater
   }
 
-  pub fn set_frame_period_millis(
+  pub fn set_frame_period_millis_target(
     &mut self,
     frame_period_millis: f64,
   ) {
-    self.frame_period_millis = frame_period_millis;
-    if self.frame_period_millis < 0. {
-      self.frame_period_millis = 0.;
+    self.frame_period_millis_target = frame_period_millis;
+    if self.frame_period_millis_target < 0. {
+      self.frame_period_millis_target = 0.;
     }
     self.update_time_millis_next =
-      self.update_time_millis_last + self.frame_period_millis;
+      self.update_time_millis_last + self.frame_period_millis_target;
     self.frame_sample_size_target =
-      Self::calculate_frame_sample_size_target(self.frame_period_millis);
+      Self::calculate_frame_sample_size_target(self.frame_period_millis_target);
     self.update_times.clear();
+    self.frame_rate = 0.;
   }
 }
