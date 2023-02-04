@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-02-02
+//! - Rust version: 2023-02-03
 //! - Rust since: 2022-11-27
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -21,7 +21,7 @@
 use super::frame_rate::FrameRatePainter;
 use super::overlay::OverlayPainter;
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
-use crate::engine::frame_rate::FrameRate;
+use crate::engine::frame_rater::FrameRater;
 use crate::engine::traits::CanvasPainter;
 use crate::models::world::World;
 use crate::painters::background::BackgroundPainter;
@@ -44,7 +44,7 @@ pub struct WorldPainter {
 impl WorldPainter {
   pub fn new(
     canvas_element_id: &str,
-    frame_rate: Rc<RefCell<FrameRate>>,
+    frame_rater: Rc<RefCell<FrameRater>>,
     world: &World,
   ) -> Self {
     let document: Document = window().unwrap().document().unwrap();
@@ -64,7 +64,7 @@ impl WorldPainter {
       FaunaPainter::new(world.fauna.clone(), scale_x, scale_y);
     let flora_painter =
       FloraPainter::new(world.flora.clone(), scale_x, scale_y);
-    let frame_rate_painter = FrameRatePainter::new(frame_rate);
+    let frame_rater_painter = FrameRatePainter::new(frame_rater);
     let overlay_painter =
       OverlayPainter::new(world.clock.clone(), world.fauna.clone());
     let canvas_painters: Vec<Box<dyn CanvasPainter>> = vec![
@@ -72,7 +72,7 @@ impl WorldPainter {
       Box::new(flora_painter),
       Box::new(fauna_painter),
       Box::new(overlay_painter),
-      Box::new(frame_rate_painter),
+      Box::new(frame_rater_painter),
     ];
     Self {
       canvas_painters,

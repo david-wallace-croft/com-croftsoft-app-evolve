@@ -17,7 +17,7 @@ const FRAME_SAMPLE_SIZE_MAX: usize = 1_000;
 const MILLIS_PER_SECOND: f64 = 1_000.;
 const SAMPLE_TIME_MILLIS: f64 = 1_000.;
 
-pub struct FrameRate {
+pub struct FrameRater {
   frame_period_millis: f64,
   frame_rate: f64,
   frame_sample_size_target: usize,
@@ -26,7 +26,7 @@ pub struct FrameRate {
   update_times: VecDeque<f64>,
 }
 
-impl FrameRate {
+impl FrameRater {
   pub fn before_next_update_time(
     &mut self,
     update_time_millis: f64,
@@ -79,7 +79,7 @@ impl FrameRate {
   }
 
   pub fn new(frame_period_millis: f64) -> Self {
-    let mut frame_rate = Self {
+    let mut frame_rater = Self {
       frame_period_millis: 0.,
       frame_rate: 0.,
       frame_sample_size_target: 0,
@@ -87,8 +87,8 @@ impl FrameRate {
       update_time_millis_next: 0.,
       update_times: VecDeque::new(),
     };
-    frame_rate.set_frame_period_millis(frame_period_millis);
-    frame_rate
+    frame_rater.set_frame_period_millis(frame_period_millis);
+    frame_rater
   }
 
   pub fn set_frame_period_millis(

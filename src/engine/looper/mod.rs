@@ -12,7 +12,7 @@
 // =============================================================================
 
 use super::configuration::Configuration;
-use super::frame_rate::FrameRate;
+use super::frame_rater::FrameRater;
 use super::input::Input;
 use crate::components::evolve::EvolveComponent;
 use crate::constants::{CONFIGURATION, FRAME_PERIOD_MILLIS_MINIMUM};
@@ -27,7 +27,7 @@ use std::rc::Rc;
 pub struct Looper {
   configuration: Configuration,
   evolve_component: EvolveComponent,
-  frame_rate: Rc<RefCell<FrameRate>>,
+  frame_rater: Rc<RefCell<FrameRater>>,
   input: Rc<RefCell<Input>>,
   world_updater: WorldUpdater,
 }
@@ -43,12 +43,13 @@ impl Looper {
     let Configuration {
       frame_period_millis,
     } = configuration;
-    let frame_rate = Rc::new(RefCell::new(FrameRate::new(frame_period_millis)));
+    let frame_rater =
+      Rc::new(RefCell::new(FrameRater::new(frame_period_millis)));
     let input = Rc::new(RefCell::new(Input::default()));
     let world = Rc::new(RefCell::new(World::default()));
     let evolve_component = EvolveComponent::new(
       "evolve",
-      frame_rate.clone(),
+      frame_rater.clone(),
       input.clone(),
       world.clone(),
     );
@@ -56,7 +57,7 @@ impl Looper {
     Self {
       configuration,
       evolve_component,
-      frame_rate,
+      frame_rater,
       input,
       world_updater,
     }
@@ -68,13 +69,13 @@ impl Looper {
     if !self.input.borrow().speed_toggle_requested {
       return;
     }
-    let mut frame_rate: RefMut<FrameRate> = self.frame_rate.borrow_mut();
-    let frame_period_millis = frame_rate.get_frame_period_millis();
+    let mut frame_rater: RefMut<FrameRater> = self.frame_rater.borrow_mut();
+    let frame_period_millis = frame_rater.get_frame_period_millis();
     if frame_period_millis == FRAME_PERIOD_MILLIS_MINIMUM {
-      frame_rate
+      frame_rater
         .set_frame_period_millis(self.configuration.frame_period_millis);
     } else {
-      frame_rate.set_frame_period_millis(FRAME_PERIOD_MILLIS_MINIMUM);
+      frame_rater.set_frame_period_millis(FRAME_PERIOD_MILLIS_MINIMUM);
     }
   }
 }
@@ -98,7 +99,7 @@ impl LoopUpdater for Looper {
     &mut self,
     update_time: f64,
   ) {
-    if self.frame_rate.borrow_mut().before_next_update_time(update_time) {
+    if self.frame_rater.borrow_mut().before_next_update_time(update_time) {
       return;
     }
     self.evolve_component.update();

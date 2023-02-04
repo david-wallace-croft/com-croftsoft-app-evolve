@@ -11,7 +11,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::engine::frame_rate::FrameRate;
+use crate::engine::frame_rater::FrameRater;
 use crate::engine::traits::CanvasPainter;
 use core::cell::RefCell;
 use std::rc::Rc;
@@ -20,22 +20,22 @@ use web_sys::CanvasRenderingContext2d;
 
 pub struct FrameRatePainter {
   fill_style: JsValue,
-  frame_rate: Rc<RefCell<FrameRate>>,
+  frame_rater: Rc<RefCell<FrameRater>>,
 }
 
 impl FrameRatePainter {
   fn make_frame_rate_string(&self) -> String {
     format!(
       "Frames per second: {}",
-      self.frame_rate.borrow().get_frames_per_second_sampled()
+      self.frame_rater.borrow().get_frames_per_second_sampled()
     )
   }
 
-  pub fn new(frame_rate: Rc<RefCell<FrameRate>>) -> Self {
+  pub fn new(frame_rater: Rc<RefCell<FrameRater>>) -> Self {
     let fill_style: JsValue = JsValue::from_str("white");
     Self {
       fill_style,
-      frame_rate,
+      frame_rater,
     }
   }
 }
