@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-02-03
+//! - Rust version: 2023-02-05
 //! - Rust since: 2022-12-17
 //! - Java version: 2008-04-19
 //! - Java since: 1996-09-01
@@ -40,6 +40,7 @@ pub struct EvolveComponent {
   components: [Rc<RefCell<dyn Component>>; 6],
   flora_component: Rc<RefCell<FloraComponent>>,
   garden_component: Rc<RefCell<GardenComponent>>,
+  input: Rc<RefCell<Input>>,
   reset_component: Rc<RefCell<ResetComponent>>,
   speed_component: Rc<RefCell<SpeedComponent>>,
 }
@@ -67,7 +68,7 @@ impl EvolveComponent {
     let reset_component =
       Rc::new(RefCell::new(ResetComponent::new("reset", input.clone())));
     let speed_component =
-      Rc::new(RefCell::new(SpeedComponent::new("speed", input)));
+      Rc::new(RefCell::new(SpeedComponent::new("speed", input.clone())));
     let components: [Rc<RefCell<dyn Component>>; 6] = [
       blight_component.clone(),
       canvas_component.clone(),
@@ -82,6 +83,7 @@ impl EvolveComponent {
       components,
       flora_component,
       garden_component,
+      input,
       reset_component,
       speed_component,
     }
@@ -131,6 +133,9 @@ impl Initializer for EvolveComponent {
 
 impl Painter for EvolveComponent {
   fn paint(&self) {
+    if !self.input.borrow().updated_world {
+      return;
+    }
     self.canvas_component.borrow().paint();
   }
 }

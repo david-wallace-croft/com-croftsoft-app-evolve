@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-03
+//! - Version: 2023-02-05
 //! - Since: 2023-02-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -18,46 +18,13 @@ const MILLIS_PER_SECOND: f64 = 1_000.;
 const SAMPLE_TIME_MILLIS: f64 = 1_000.;
 
 pub struct FrameRater {
-  frame_period_millis_target: f64,
   frame_rate: f64,
-  frame_rate_update_time: f64,
   frame_sample_size_target: usize,
   update_time_millis_next: f64,
   update_times: VecDeque<f64>,
 }
 
 impl FrameRater {
-  pub fn before_next_update_time(
-    &mut self,
-    update_time_millis: f64,
-  ) -> bool {
-    if update_time_millis < self.update_time_millis_next {
-      return true;
-    }
-    self.update_time_millis_next =
-      update_time_millis + self.frame_period_millis_target;
-    let deltas = self.update_times.len();
-    self.update_times.push_back(update_time_millis);
-    if deltas < 1 {
-      return false;
-    }
-    if update_time_millis >= self.frame_rate_update_time + SAMPLE_TIME_MILLIS {
-      self.frame_rate_update_time = update_time_millis;
-      let mut frame_sample_size = self.frame_sample_size_target;
-      if frame_sample_size > deltas {
-        frame_sample_size = deltas;
-      }
-      let index = deltas - frame_sample_size;
-      let first_update_time = self.update_times[index];
-      let delta = update_time_millis - first_update_time;
-      self.frame_rate = frame_sample_size as f64 * MILLIS_PER_SECOND / delta;
-    }
-    if deltas >= FRAME_SAMPLE_SIZE_MAX {
-      self.update_times.pop_front();
-    }
-    false
-  }
-
   fn calculate_frame_sample_size_target(frame_period_millis: f64) -> usize {
     let mut frame_sample_size = if frame_period_millis > 0. {
       (SAMPLE_TIME_MILLIS / frame_period_millis) as usize
@@ -72,8 +39,9 @@ impl FrameRater {
     frame_sample_size
   }
 
-  pub fn get_frame_period_millis_target(&self) -> f64 {
-    self.frame_period_millis_target
+  pub fn clear(&mut self) {
+    self.update_times.clear();
+    self.frame_rate = 0.;
   }
 
   pub fn get_frames_per_second_sampled(&self) -> f64 {
@@ -82,28 +50,48 @@ impl FrameRater {
 
   pub fn new(frame_period_millis_target: f64) -> Self {
     let mut frame_rater = Self {
-      frame_period_millis_target: 0.,
       frame_rate: 0.,
-      frame_rate_update_time: 0.,
       frame_sample_size_target: 0,
       update_time_millis_next: 0.,
       update_times: VecDeque::new(),
     };
-    frame_rater.set_frame_period_millis_target(frame_period_millis_target);
+    frame_rater.update_frame_sample_size(frame_period_millis_target);
     frame_rater
   }
 
-  pub fn set_frame_period_millis_target(
+  pub fn sample(
     &mut self,
-    frame_period_millis: f64,
+    update_time_millis: f64,
+  ) -> bool {
+    let deltas = self.update_times.len();
+    self.update_times.push_back(update_time_millis);
+    if deltas < 1 {
+      return false;
+    }
+    let mut frame_sample_size = self.frame_sample_size_target;
+    if frame_sample_size > deltas {
+      frame_sample_size = deltas;
+    }
+    let index = deltas - frame_sample_size;
+    let first_update_time = self.update_times[index];
+    let delta = update_time_millis - first_update_time;
+    self.frame_rate = frame_sample_size as f64 * MILLIS_PER_SECOND / delta;
+    if deltas >= FRAME_SAMPLE_SIZE_MAX {
+      self.update_times.pop_front();
+    }
+    false
+  }
+
+  pub fn update_frame_sample_size(
+    &mut self,
+    mut frame_period_millis: f64,
   ) {
-    self.frame_period_millis_target = frame_period_millis;
-    if self.frame_period_millis_target < 0. {
-      self.frame_period_millis_target = 0.;
+    if frame_period_millis < 0. {
+      frame_period_millis = 0.;
     }
     self.update_time_millis_next = 0.;
     self.frame_sample_size_target =
-      Self::calculate_frame_sample_size_target(self.frame_period_millis_target);
+      Self::calculate_frame_sample_size_target(frame_period_millis);
     self.update_times.clear();
     self.frame_rate = 0.;
   }
