@@ -2,9 +2,9 @@
 //! - Fauna Updater for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-30
+//! - Version: 2023-02-06
 //! - Since: 2023-01-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -30,7 +30,7 @@ use std::rc::Rc;
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
 
-pub trait FaunaUpdaterInput {
+pub trait FaunaUpdaterInputs {
   fn get_bug_requested(&self) -> Option<usize>;
   fn get_reset_requested(&self) -> bool;
 }
@@ -39,7 +39,7 @@ pub struct FaunaUpdater {
   clock: Rc<RefCell<Clock>>,
   fauna: Rc<RefCell<Fauna>>,
   flora: Rc<RefCell<Flora>>,
-  input: Rc<RefCell<dyn FaunaUpdaterInput>>,
+  inputs: Rc<RefCell<dyn FaunaUpdaterInputs>>,
 }
 
 impl FaunaUpdater {
@@ -95,13 +95,13 @@ impl FaunaUpdater {
     clock: Rc<RefCell<Clock>>,
     fauna: Rc<RefCell<Fauna>>,
     flora: Rc<RefCell<Flora>>,
-    input: Rc<RefCell<dyn FaunaUpdaterInput>>,
+    inputs: Rc<RefCell<dyn FaunaUpdaterInputs>>,
   ) -> Self {
     Self {
       clock,
       fauna,
       flora,
-      input,
+      inputs,
     }
   }
 
@@ -210,14 +210,14 @@ impl FaunaUpdater {
 
 impl Updater for FaunaUpdater {
   fn update(&mut self) {
-    if self.input.borrow().get_reset_requested() {
+    if self.inputs.borrow().get_reset_requested() {
       self.reset();
       return;
     }
     let mut new_bugs = Vec::<Bug>::new();
     let bugs_length = self.fauna.borrow().bugs.len();
     if bugs_length < BUGS_MAX {
-      if let Some(position_index) = self.input.borrow().get_bug_requested() {
+      if let Some(position_index) = self.inputs.borrow().get_bug_requested() {
         new_bugs.push(Self::make_bug(position_index));
       }
     }

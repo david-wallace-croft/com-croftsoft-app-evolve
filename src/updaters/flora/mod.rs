@@ -2,9 +2,9 @@
 //! - Flora Updater for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-26
+//! - Version: 2023-02-06
 //! - Since: 2023-01-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -22,7 +22,7 @@ use std::rc::Rc;
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
 
-pub trait FloraUpdaterInput {
+pub trait FloraUpdaterInputs {
   fn get_blight_requested(&self) -> bool;
   fn get_flora_growth_rate_change_requested(&self) -> Option<usize>;
   fn get_garden_change_requested(&self) -> Option<bool>;
@@ -31,17 +31,17 @@ pub trait FloraUpdaterInput {
 
 pub struct FloraUpdater {
   flora: Rc<RefCell<Flora>>,
-  input: Rc<RefCell<dyn FloraUpdaterInput>>,
+  inputs: Rc<RefCell<dyn FloraUpdaterInputs>>,
 }
 
 impl FloraUpdater {
   pub fn new(
     flora: Rc<RefCell<Flora>>,
-    input: Rc<RefCell<dyn FloraUpdaterInput>>,
+    inputs: Rc<RefCell<dyn FloraUpdaterInputs>>,
   ) -> Self {
     Self {
       flora,
-      input,
+      inputs,
     }
   }
 
@@ -73,7 +73,7 @@ impl FloraUpdater {
   // TODO: move this
   fn update_garden(&mut self) {
     let garden_change_requested: Option<bool> =
-      self.input.borrow().get_garden_change_requested();
+      self.inputs.borrow().get_garden_change_requested();
     if let Some(enabled) = garden_change_requested {
       self.flora.borrow_mut().enabled_garden = enabled;
       if !self.flora.borrow().enabled_garden {
@@ -88,12 +88,12 @@ impl FloraUpdater {
 
 impl Updater for FloraUpdater {
   fn update(&mut self) {
-    if self.input.borrow().get_reset_requested() {
+    if self.inputs.borrow().get_reset_requested() {
       self.set_flora_present_for_all_locations(true);
       return;
     }
     if let Some(flora_growth_rate) =
-      self.input.borrow().get_flora_growth_rate_change_requested()
+      self.inputs.borrow().get_flora_growth_rate_change_requested()
     {
       let mut flora: RefMut<Flora> = self.flora.borrow_mut();
       if flora_growth_rate < FLORA_GROWTH_RATE_MAX {
@@ -102,7 +102,7 @@ impl Updater for FloraUpdater {
         flora.flora_growth_rate = FLORA_GROWTH_RATE_MAX;
       }
     }
-    if self.input.borrow().get_blight_requested() {
+    if self.inputs.borrow().get_blight_requested() {
       self.set_flora_present_for_all_locations(false);
     } else {
       let mut thread_rng: ThreadRng = rand::thread_rng();

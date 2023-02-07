@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-21
+//! - Version: 2023-02-06
 //! - Since: 2022-12-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -13,8 +13,8 @@
 
 use crate::constants::{FLORA_GROWTH_RATE_INIT, FLORA_GROWTH_RATE_MAX};
 use crate::engine::functions::web_sys::add_change_handler_by_id;
-use crate::engine::input::Input;
 use crate::engine::traits::Component;
+use crate::messages::inputs::Inputs;
 use com_croftsoft_lib_role::{Initializer, Updater};
 use core::cell::RefCell;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
@@ -24,7 +24,7 @@ use web_sys::{Event, EventTarget, HtmlInputElement};
 
 pub struct FloraComponent {
   id: String,
-  input: Rc<RefCell<Input>>,
+  inputs: Rc<RefCell<Inputs>>,
   unbounded_receiver_option: Option<UnboundedReceiver<Event>>,
 }
 
@@ -42,11 +42,11 @@ impl FloraComponent {
 
   pub fn new(
     id: &str,
-    input: Rc<RefCell<Input>>,
+    inputs: Rc<RefCell<Inputs>>,
   ) -> Self {
     Self {
       id: String::from(id),
-      input,
+      inputs,
       unbounded_receiver_option: None,
     }
   }
@@ -78,7 +78,7 @@ impl Updater for FloraComponent {
         let html_input_element: HtmlInputElement = result.unwrap();
         let value: String = html_input_element.value();
         let v: Result<usize, _> = value.parse();
-        self.input.borrow_mut().flora_growth_rate_change_requested =
+        self.inputs.borrow_mut().flora_growth_rate_change_requested =
           Some(v.unwrap());
       }
     }

@@ -4,23 +4,16 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-21
+//! - Rust version: 2023-02-06
 //! - Rust since: 2022-12-14
-//! - Java version: 2008-04-19
-//! - Java since: 1996-09-01
 //!
-//! # History
-//! - Adapted from the Java package com.croftsoft.apps.evolve
-//!   - In the Java-based [`CroftSoft Apps Library`]
-//!
-//! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
 use crate::engine::functions::web_sys::add_click_handler_by_id;
-use crate::engine::input::Input;
 use crate::engine::traits::Component;
+use crate::messages::inputs::Inputs;
 use com_croftsoft_lib_role::{Initializer, Updater};
 use core::cell::RefCell;
 use futures::channel::mpsc::UnboundedReceiver;
@@ -28,7 +21,7 @@ use std::rc::Rc;
 
 pub struct BlightComponent {
   id: String,
-  input: Rc<RefCell<Input>>,
+  inputs: Rc<RefCell<Inputs>>,
   unbounded_receiver: Option<UnboundedReceiver<()>>,
 }
 
@@ -45,11 +38,11 @@ impl BlightComponent {
 
   pub fn new(
     id: &str,
-    input: Rc<RefCell<Input>>,
+    inputs: Rc<RefCell<Inputs>>,
   ) -> Self {
     Self {
       id: String::from(id),
-      input,
+      inputs,
       unbounded_receiver: None,
     }
   }
@@ -70,7 +63,7 @@ impl Initializer for BlightComponent {
 impl Updater for BlightComponent {
   fn update(&mut self) {
     if self.clicked() {
-      self.input.borrow_mut().blight_requested = true;
+      self.inputs.borrow_mut().blight_requested = true;
     }
   }
 }

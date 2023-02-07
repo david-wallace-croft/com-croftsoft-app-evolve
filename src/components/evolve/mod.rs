@@ -4,16 +4,9 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-02-05
-//! - Rust since: 2022-12-17
-//! - Java version: 2008-04-19
-//! - Java since: 1996-09-01
+//! - Version: 2023-02-06
+//! - Since: 2022-12-17
 //!
-//! # History
-//! - Adapted from the Java package com.croftsoft.apps.evolve
-//!   - In the Java-based [`CroftSoft Apps Library`]
-//!
-//! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
@@ -26,8 +19,9 @@ use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
 use crate::engine::frame_rater::FrameRater;
 use crate::engine::functions::web_sys::get_window;
-use crate::engine::input::Input;
 use crate::engine::traits::Component;
+use crate::messages::events::Events;
+use crate::messages::inputs::Inputs;
 use crate::models::world::World;
 use com_croftsoft_lib_role::{Initializer, Painter, Updater};
 use core::cell::RefCell;
@@ -38,9 +32,9 @@ pub struct EvolveComponent {
   blight_component: Rc<RefCell<BlightComponent>>,
   canvas_component: Rc<RefCell<CanvasComponent>>,
   components: [Rc<RefCell<dyn Component>>; 6],
+  events: Rc<RefCell<Events>>,
   flora_component: Rc<RefCell<FloraComponent>>,
   garden_component: Rc<RefCell<GardenComponent>>,
-  input: Rc<RefCell<Input>>,
   reset_component: Rc<RefCell<ResetComponent>>,
   speed_component: Rc<RefCell<SpeedComponent>>,
 }
@@ -48,27 +42,28 @@ pub struct EvolveComponent {
 impl EvolveComponent {
   // TODO: do something with the ID
   pub fn new(
+    events: Rc<RefCell<Events>>,
     _id: &str,
     frame_rater: Rc<RefCell<FrameRater>>,
-    input: Rc<RefCell<Input>>,
+    inputs: Rc<RefCell<Inputs>>,
     world: Rc<RefCell<World>>,
   ) -> Self {
     let blight_component =
-      Rc::new(RefCell::new(BlightComponent::new("blight", input.clone())));
+      Rc::new(RefCell::new(BlightComponent::new("blight", inputs.clone())));
     let canvas_component = Rc::new(RefCell::new(CanvasComponent::new(
-      "canvas",
       frame_rater,
-      input.clone(),
+      "canvas",
+      inputs.clone(),
       world,
     )));
     let flora_component =
-      Rc::new(RefCell::new(FloraComponent::new("flora", input.clone())));
+      Rc::new(RefCell::new(FloraComponent::new("flora", inputs.clone())));
     let garden_component =
-      Rc::new(RefCell::new(GardenComponent::new("garden", input.clone())));
+      Rc::new(RefCell::new(GardenComponent::new("garden", inputs.clone())));
     let reset_component =
-      Rc::new(RefCell::new(ResetComponent::new("reset", input.clone())));
+      Rc::new(RefCell::new(ResetComponent::new("reset", inputs.clone())));
     let speed_component =
-      Rc::new(RefCell::new(SpeedComponent::new("speed", input.clone())));
+      Rc::new(RefCell::new(SpeedComponent::new("speed", inputs)));
     let components: [Rc<RefCell<dyn Component>>; 6] = [
       blight_component.clone(),
       canvas_component.clone(),
@@ -81,9 +76,9 @@ impl EvolveComponent {
       blight_component,
       canvas_component,
       components,
+      events,
       flora_component,
       garden_component,
-      input,
       reset_component,
       speed_component,
     }
@@ -133,7 +128,7 @@ impl Initializer for EvolveComponent {
 
 impl Painter for EvolveComponent {
   fn paint(&self) {
-    if !self.input.borrow().updated_world {
+    if !self.events.borrow().updated_world {
       return;
     }
     self.canvas_component.borrow().paint();

@@ -4,23 +4,16 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-21
-//! - Rust since: 2022-12-16
-//! - Java version: 2008-04-19
-//! - Java since: 1996-09-01
+//! - Version: 2023-02-06
+//! - Since: 2022-12-16
 //!
-//! # History
-//! - Adapted from the Java package com.croftsoft.apps.evolve
-//!   - In the Java-based [`CroftSoft Apps Library`]
-//!
-//! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
 use crate::engine::functions::web_sys::add_change_handler_by_id;
-use crate::engine::input::Input;
 use crate::engine::traits::Component;
+use crate::messages::inputs::Inputs;
 use com_croftsoft_lib_role::{Initializer, Updater};
 use core::cell::RefCell;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
@@ -31,7 +24,7 @@ use web_sys::{Event, EventTarget, HtmlInputElement};
 pub struct GardenComponent {
   event_unbounded_receiver_option: Option<UnboundedReceiver<Event>>,
   id: String,
-  input: Rc<RefCell<Input>>,
+  inputs: Rc<RefCell<Inputs>>,
 }
 
 impl GardenComponent {
@@ -48,11 +41,11 @@ impl GardenComponent {
 
   pub fn new(
     id: &str,
-    input: Rc<RefCell<Input>>,
+    inputs: Rc<RefCell<Inputs>>,
   ) -> Self {
     Self {
       id: String::from(id),
-      input,
+      inputs,
       event_unbounded_receiver_option: None,
     }
   }
@@ -82,7 +75,7 @@ impl Updater for GardenComponent {
         let result: Result<HtmlInputElement, EventTarget> =
           event_target.dyn_into::<HtmlInputElement>();
         let html_input_element: HtmlInputElement = result.unwrap();
-        self.input.borrow_mut().garden_change_requested =
+        self.inputs.borrow_mut().garden_change_requested =
           Some(html_input_element.checked());
       }
     }

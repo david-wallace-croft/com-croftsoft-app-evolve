@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-05
+//! - Version: 2023-02-06
 //! - Since: 2023-01-07
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -13,10 +13,11 @@
 
 use super::configuration::Configuration;
 use super::frame_rater::FrameRater;
-use super::input::Input;
 use crate::components::evolve::EvolveComponent;
 use crate::constants::{CONFIGURATION, FRAME_PERIOD_MILLIS_MINIMUM};
 use crate::engine::functions::web_sys::{spawn_local_loop, LoopUpdater};
+use crate::messages::events::Events;
+use crate::messages::inputs::Inputs;
 use crate::models::world::World;
 use crate::updaters::world::{WorldUpdater, WorldUpdaterConfiguration};
 use com_croftsoft_lib_role::{Initializer, Painter, Updater};
@@ -25,8 +26,9 @@ use std::rc::Rc;
 
 // TODO: rename this
 pub struct Looper {
+  events: Rc<RefCell<Events>>,
   evolve_component: EvolveComponent,
-  input: Rc<RefCell<Input>>,
+  inputs: Rc<RefCell<Inputs>>,
   world_updater: WorldUpdater,
 }
 
@@ -45,23 +47,27 @@ impl Looper {
     let frame_rater = Rc::new(RefCell::new(FrameRater::new(
       configuration.frame_period_millis,
     )));
-    let input = Rc::new(RefCell::new(Input::default()));
+    let events = Rc::new(RefCell::new(Events::default()));
+    let inputs = Rc::new(RefCell::new(Inputs::default()));
     let world = Rc::new(RefCell::new(World::default()));
     let evolve_component = EvolveComponent::new(
+      events.clone(),
       "evolve",
       frame_rater.clone(),
-      input.clone(),
+      inputs.clone(),
       world.clone(),
     );
     let world_updater = WorldUpdater::new(
       world_updater_configuration,
+      events.clone(),
       frame_rater,
-      input.clone(),
+      inputs.clone(),
       world,
     );
     Self {
+      events,
       evolve_component,
-      input,
+      inputs,
       world_updater,
     }
   }
@@ -76,7 +82,7 @@ impl Default for Looper {
 impl Initializer for Looper {
   fn initialize(&mut self) {
     self.evolve_component.initialize();
-    self.input.borrow_mut().reset_requested = true;
+    self.inputs.borrow_mut().reset_requested = true;
   }
 }
 
@@ -86,10 +92,11 @@ impl LoopUpdater for Looper {
     &mut self,
     update_time_millis: f64,
   ) {
-    self.input.borrow_mut().update_time_millis = update_time_millis;
+    self.events.borrow_mut().update_time_millis = update_time_millis;
     self.evolve_component.update();
     self.world_updater.update();
     self.evolve_component.paint();
-    self.input.borrow_mut().clear();
+    self.events.borrow_mut().clear();
+    self.inputs.borrow_mut().clear();
   }
 }

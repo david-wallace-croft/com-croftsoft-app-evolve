@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-03
+//! - Version: 2023-02-06
 //! - Since: 2022-12-18
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -17,8 +17,8 @@ use crate::engine::functions::location::to_index_from_xy;
 use crate::engine::functions::web_sys::{
   add_mouse_down_handler_by_id, get_canvas_xy, get_html_canvas_element_by_id,
 };
-use crate::engine::input::Input;
 use crate::engine::traits::Component;
+use crate::messages::inputs::Inputs;
 use crate::models::world::World;
 use crate::painters::world::WorldPainter;
 use com_croftsoft_lib_role::{Initializer, Painter, Updater};
@@ -30,7 +30,7 @@ use web_sys::{HtmlCanvasElement, MouseEvent};
 pub struct CanvasComponent {
   frame_rater: Rc<RefCell<FrameRater>>,
   id: String,
-  input: Rc<RefCell<Input>>,
+  inputs: Rc<RefCell<Inputs>>,
   root_painter_option: Option<WorldPainter>,
   unbounded_receiver_option: Option<UnboundedReceiver<MouseEvent>>,
   world: Rc<RefCell<World>>,
@@ -48,15 +48,15 @@ impl CanvasComponent {
   }
 
   pub fn new(
-    id: &str,
     frame_rater: Rc<RefCell<FrameRater>>,
-    input: Rc<RefCell<Input>>,
+    id: &str,
+    inputs: Rc<RefCell<Inputs>>,
     world: Rc<RefCell<World>>,
   ) -> Self {
     Self {
       frame_rater,
       id: String::from(id),
-      input,
+      inputs,
       unbounded_receiver_option: None,
       root_painter_option: None,
       world,
@@ -128,7 +128,7 @@ impl Updater for CanvasComponent {
     if let Some(mouse_event) = mouse_event_option {
       let (canvas_x, canvas_y) = get_canvas_xy(&mouse_event);
       let index = self.to_world_index_from_canvas_xy(canvas_x, canvas_y);
-      self.input.borrow_mut().bug_requested = Some(index);
+      self.inputs.borrow_mut().bug_requested = Some(index);
     }
   }
 }

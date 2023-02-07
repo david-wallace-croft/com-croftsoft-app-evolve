@@ -4,16 +4,9 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-02-02
-//! - Rust since: 2022-09-12
-//! - Java version: 2008-04-19
-//! - Java since: 1996-09-01
+//! - Version: 2023-02-06
+//! - Since: 2022-09-12
 //!
-//! # History
-//! - Adapted from the Java package com.croftsoft.apps.evolve
-//!   - In the Java-based [`CroftSoft Apps Library`]
-//!
-//! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
@@ -29,6 +22,7 @@ use wee_alloc::WeeAlloc;
 mod components;
 mod constants;
 mod engine;
+mod messages;
 mod models;
 mod painters;
 mod updaters;
