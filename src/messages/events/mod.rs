@@ -16,14 +16,12 @@ use crate::updaters::world::WorldUpdaterEvents;
 #[derive(Default)]
 pub struct Events {
   pub update_period_millis_changed: Option<f64>,
-  pub update_time_millis: f64,
   pub updated_world: bool,
 }
 
 impl Events {
   pub fn clear(&mut self) {
     self.update_period_millis_changed = None;
-    self.update_time_millis = 0.;
     self.updated_world = false;
   }
 }
@@ -31,10 +29,6 @@ impl Events {
 impl WorldUpdaterEvents for Events {
   fn get_update_period_millis_changed(&self) -> Option<f64> {
     self.update_period_millis_changed
-  }
-
-  fn get_update_time_millis(&self) -> f64 {
-    self.update_time_millis
   }
 
   fn set_update_period_millis_changed(

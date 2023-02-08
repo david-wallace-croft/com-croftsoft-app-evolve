@@ -34,7 +34,6 @@ pub struct WorldUpdaterConfiguration {
 
 pub trait WorldUpdaterEvents {
   fn get_update_period_millis_changed(&self) -> Option<f64>;
-  fn get_update_time_millis(&self) -> f64;
   fn set_update_period_millis_changed(
     &mut self,
     update_period_millis: f64,
@@ -49,6 +48,7 @@ pub trait WorldUpdaterInputs {
   fn get_garden_change_requested(&self) -> Option<bool>;
   fn get_reset_requested(&self) -> bool;
   fn get_speed_toggle_requested(&self) -> bool;
+  fn get_update_time_millis(&self) -> f64;
 }
 
 struct WorldUpdaterEventsAdapter {
@@ -113,15 +113,15 @@ impl FrameRateUpdaterEvents for WorldUpdaterEventsAdapter {
   fn get_update_period_millis_changed(&self) -> Option<f64> {
     self.events.borrow().get_update_period_millis_changed()
   }
-
-  fn get_update_time_millis(&self) -> f64 {
-    self.events.borrow().get_update_time_millis()
-  }
 }
 
 impl FrameRateUpdaterInputs for WorldUpdaterInputAdapter {
   fn get_reset_requested(&self) -> bool {
     self.inputs.borrow().get_reset_requested()
+  }
+
+  fn get_update_time_millis(&self) -> f64 {
+    self.inputs.borrow().get_update_time_millis()
   }
 }
 
@@ -200,7 +200,7 @@ impl Updater for WorldUpdater {
       );
       self.update_timer_world.update_time_millis_next = 0.;
     }
-    let update_time_millis = self.events.borrow().get_update_time_millis();
+    let update_time_millis = self.inputs.borrow().get_update_time_millis();
     {
       let inputs: Ref<dyn WorldUpdaterInputs> = self.inputs.borrow();
       if self.update_timer_world.before_next_update_time(update_time_millis)

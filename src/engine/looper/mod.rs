@@ -92,7 +92,7 @@ impl LoopUpdater for Looper {
     &mut self,
     update_time_millis: f64,
   ) {
-    self.events.borrow_mut().update_time_millis = update_time_millis;
+    self.inputs.borrow_mut().update_time_millis = update_time_millis;
     self.evolve_component.update();
     self.world_updater.update();
     self.evolve_component.paint();

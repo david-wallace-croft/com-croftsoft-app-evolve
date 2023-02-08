@@ -18,11 +18,11 @@ use std::rc::Rc;
 
 pub trait FrameRateUpdaterEvents {
   fn get_update_period_millis_changed(&self) -> Option<f64>;
-  fn get_update_time_millis(&self) -> f64;
 }
 
 pub trait FrameRateUpdaterInputs {
   fn get_reset_requested(&self) -> bool;
+  fn get_update_time_millis(&self) -> f64;
 }
 
 pub struct FrameRateUpdater {
@@ -60,6 +60,9 @@ impl Updater for FrameRateUpdater {
       self.frame_rater.borrow_mut().clear();
       return;
     }
-    self.frame_rater.borrow_mut().sample(events.get_update_time_millis());
+    self
+      .frame_rater
+      .borrow_mut()
+      .sample(self.inputs.borrow().get_update_time_millis());
   }
 }

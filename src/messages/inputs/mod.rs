@@ -21,6 +21,7 @@ pub struct Inputs {
   pub garden_change_requested: Option<bool>,
   pub reset_requested: bool,
   pub speed_toggle_requested: bool,
+  pub update_time_millis: f64,
 }
 
 impl Inputs {
@@ -31,6 +32,7 @@ impl Inputs {
     self.garden_change_requested = None;
     self.reset_requested = false;
     self.speed_toggle_requested = false;
+    self.update_time_millis = 0.;
   }
 }
 
@@ -57,5 +59,9 @@ impl WorldUpdaterInputs for Inputs {
 
   fn get_speed_toggle_requested(&self) -> bool {
     self.speed_toggle_requested
+  }
+
+  fn get_update_time_millis(&self) -> f64 {
+    self.update_time_millis
   }
 }
