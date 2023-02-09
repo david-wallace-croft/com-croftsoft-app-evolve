@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-06
+//! - Version: 2023-02-08
 //! - Since: 2023-01-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -22,6 +22,7 @@ use crate::engine::update_timer::UpdateTimer;
 use crate::models::clock::Clock;
 use crate::models::fauna::Fauna;
 use crate::models::flora::Flora;
+use crate::models::frame_rate::FrameRate;
 use crate::models::world::World;
 use com_croftsoft_lib_role::Updater;
 use core::cell::{Ref, RefCell};
@@ -45,6 +46,7 @@ pub trait WorldUpdaterInputs {
   fn get_blight_requested(&self) -> bool;
   fn get_bug_requested(&self) -> Option<usize>;
   fn get_flora_growth_rate_change_requested(&self) -> Option<usize>;
+  fn get_frame_rate_display_change_requested(&self) -> Option<bool>;
   fn get_garden_change_requested(&self) -> Option<bool>;
   fn get_reset_requested(&self) -> bool;
   fn get_speed_toggle_requested(&self) -> bool;
@@ -116,6 +118,10 @@ impl FrameRateUpdaterEvents for WorldUpdaterEventsAdapter {
 }
 
 impl FrameRateUpdaterInputs for WorldUpdaterInputAdapter {
+  fn get_frame_rate_display_change_requested(&self) -> Option<bool> {
+    self.inputs.borrow().get_frame_rate_display_change_requested()
+  }
+
   fn get_reset_requested(&self) -> bool {
     self.inputs.borrow().get_reset_requested()
   }
@@ -137,6 +143,7 @@ impl WorldUpdater {
   pub fn new(
     configuration: WorldUpdaterConfiguration,
     events: Rc<RefCell<dyn WorldUpdaterEvents>>,
+    frame_rate: Rc<RefCell<FrameRate>>,
     frame_rater: Rc<RefCell<FrameRater>>,
     inputs: Rc<RefCell<dyn WorldUpdaterInputs>>,
     world: Rc<RefCell<World>>,
@@ -151,6 +158,7 @@ impl WorldUpdater {
     let clock: Rc<RefCell<Clock>> = world.clock.clone();
     let fauna: Rc<RefCell<Fauna>> = world.fauna.clone();
     let flora: Rc<RefCell<Flora>> = world.flora.clone();
+
     let world_updater_input_adapter =
       Rc::new(RefCell::new(WorldUpdaterInputAdapter::new(inputs.clone())));
     let clock_updater =
@@ -165,6 +173,7 @@ impl WorldUpdater {
       FloraUpdater::new(flora, world_updater_input_adapter.clone());
     let frame_rate_updater = FrameRateUpdater::new(
       world_updater_events_adapter,
+      frame_rate,
       frame_rater,
       world_updater_input_adapter,
     );
@@ -207,6 +216,7 @@ impl Updater for WorldUpdater {
         && !inputs.get_blight_requested()
         && inputs.get_bug_requested().is_none()
         && inputs.get_flora_growth_rate_change_requested().is_none()
+        && inputs.get_frame_rate_display_change_requested().is_none()
         && inputs.get_garden_change_requested().is_none()
         && !inputs.get_reset_requested()
       {

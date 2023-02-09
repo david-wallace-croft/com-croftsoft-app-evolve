@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-06
+//! - Version: 2023-02-08
 //! - Since: 2022-12-17
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -14,6 +14,7 @@
 use super::blight::BlightComponent;
 use super::canvas::CanvasComponent;
 use super::flora::FloraComponent;
+use super::frame_rate::FrameRateComponent;
 use super::garden::GardenComponent;
 use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
@@ -22,6 +23,7 @@ use crate::engine::functions::web_sys::get_window;
 use crate::engine::traits::Component;
 use crate::messages::events::Events;
 use crate::messages::inputs::Inputs;
+use crate::models::frame_rate::FrameRate;
 use crate::models::world::World;
 use com_croftsoft_lib_role::{Initializer, Painter, Updater};
 use core::cell::RefCell;
@@ -31,9 +33,10 @@ use web_sys::{Document, HtmlCollection};
 pub struct EvolveComponent {
   blight_component: Rc<RefCell<BlightComponent>>,
   canvas_component: Rc<RefCell<CanvasComponent>>,
-  components: [Rc<RefCell<dyn Component>>; 6],
+  components: [Rc<RefCell<dyn Component>>; 7],
   events: Rc<RefCell<Events>>,
   flora_component: Rc<RefCell<FloraComponent>>,
+  frame_rate_component: Rc<RefCell<FrameRateComponent>>,
   garden_component: Rc<RefCell<GardenComponent>>,
   reset_component: Rc<RefCell<ResetComponent>>,
   speed_component: Rc<RefCell<SpeedComponent>>,
@@ -44,6 +47,7 @@ impl EvolveComponent {
   pub fn new(
     events: Rc<RefCell<Events>>,
     _id: &str,
+    frame_rate: Rc<RefCell<FrameRate>>,
     frame_rater: Rc<RefCell<FrameRater>>,
     inputs: Rc<RefCell<Inputs>>,
     world: Rc<RefCell<World>>,
@@ -51,6 +55,7 @@ impl EvolveComponent {
     let blight_component =
       Rc::new(RefCell::new(BlightComponent::new("blight", inputs.clone())));
     let canvas_component = Rc::new(RefCell::new(CanvasComponent::new(
+      frame_rate,
       frame_rater,
       "canvas",
       inputs.clone(),
@@ -58,16 +63,21 @@ impl EvolveComponent {
     )));
     let flora_component =
       Rc::new(RefCell::new(FloraComponent::new("flora", inputs.clone())));
+    let frame_rate_component = Rc::new(RefCell::new(FrameRateComponent::new(
+      "frame-rate",
+      inputs.clone(),
+    )));
     let garden_component =
       Rc::new(RefCell::new(GardenComponent::new("garden", inputs.clone())));
     let reset_component =
       Rc::new(RefCell::new(ResetComponent::new("reset", inputs.clone())));
     let speed_component =
       Rc::new(RefCell::new(SpeedComponent::new("speed", inputs)));
-    let components: [Rc<RefCell<dyn Component>>; 6] = [
+    let components: [Rc<RefCell<dyn Component>>; 7] = [
       blight_component.clone(),
       canvas_component.clone(),
       flora_component.clone(),
+      frame_rate_component.clone(),
       garden_component.clone(),
       reset_component.clone(),
       speed_component.clone(),
@@ -78,6 +88,7 @@ impl EvolveComponent {
       components,
       events,
       flora_component,
+      frame_rate_component,
       garden_component,
       reset_component,
       speed_component,
@@ -90,6 +101,8 @@ impl Component for EvolveComponent {
     let blight_html: String = self.blight_component.borrow().make_html();
     let canvas_html: String = self.canvas_component.borrow().make_html();
     let flora_html: String = self.flora_component.borrow().make_html();
+    let frame_rate_html: String =
+      self.frame_rate_component.borrow().make_html();
     let garden_html: String = self.garden_component.borrow().make_html();
     let reset_html: String = self.reset_component.borrow().make_html();
     let speed_html: String = self.speed_component.borrow().make_html();
@@ -103,6 +116,7 @@ impl Component for EvolveComponent {
       garden_html,
       reset_html,
       speed_html,
+      frame_rate_html,
       String::from("</div>"),
     ]
     .join("\n")

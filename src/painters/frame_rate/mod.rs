@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-03
+//! - Version: 2023-02-08
 //! - Since: 2023-02-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -13,6 +13,7 @@
 
 use crate::engine::frame_rater::FrameRater;
 use crate::engine::traits::CanvasPainter;
+use crate::models::frame_rate::FrameRate;
 use core::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::JsValue;
@@ -20,6 +21,7 @@ use web_sys::CanvasRenderingContext2d;
 
 pub struct FrameRatePainter {
   fill_style: JsValue,
+  frame_rate: Rc<RefCell<FrameRate>>,
   frame_rater: Rc<RefCell<FrameRater>>,
 }
 
@@ -31,10 +33,14 @@ impl FrameRatePainter {
     )
   }
 
-  pub fn new(frame_rater: Rc<RefCell<FrameRater>>) -> Self {
+  pub fn new(
+    frame_rate: Rc<RefCell<FrameRate>>,
+    frame_rater: Rc<RefCell<FrameRater>>,
+  ) -> Self {
     let fill_style: JsValue = JsValue::from_str("white");
     Self {
       fill_style,
+      frame_rate,
       frame_rater,
     }
   }
@@ -45,6 +51,9 @@ impl CanvasPainter for FrameRatePainter {
     &self,
     context: &CanvasRenderingContext2d,
   ) {
+    if !self.frame_rate.borrow().display {
+      return;
+    }
     let frame_rate_string = self.make_frame_rate_string();
     context.set_fill_style(&self.fill_style);
     context.set_font("bold 17px monospace");

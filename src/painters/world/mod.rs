@@ -4,16 +4,9 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-02-03
-//! - Rust since: 2022-11-27
-//! - Java version: 2008-04-19
-//! - Java since: 1996-09-01
+//! - Version: 2023-02-08
+//! - Since: 2022-11-27
 //!
-//! # History
-//! - Adapted from the Java package com.croftsoft.apps.evolve
-//!   - In the Java-based [`CroftSoft Apps Library`]
-//!
-//! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
@@ -23,6 +16,7 @@ use super::overlay::OverlayPainter;
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::engine::frame_rater::FrameRater;
 use crate::engine::traits::CanvasPainter;
+use crate::models::frame_rate::FrameRate;
 use crate::models::world::World;
 use crate::painters::background::BackgroundPainter;
 use crate::painters::fauna::FaunaPainter;
@@ -44,6 +38,7 @@ pub struct WorldPainter {
 impl WorldPainter {
   pub fn new(
     canvas_element_id: &str,
+    frame_rate: Rc<RefCell<FrameRate>>,
     frame_rater: Rc<RefCell<FrameRater>>,
     world: &World,
   ) -> Self {
@@ -64,7 +59,7 @@ impl WorldPainter {
       FaunaPainter::new(world.fauna.clone(), scale_x, scale_y);
     let flora_painter =
       FloraPainter::new(world.flora.clone(), scale_x, scale_y);
-    let frame_rater_painter = FrameRatePainter::new(frame_rater);
+    let frame_rater_painter = FrameRatePainter::new(frame_rate, frame_rater);
     let overlay_painter =
       OverlayPainter::new(world.clock.clone(), world.fauna.clone());
     let canvas_painters: Vec<Box<dyn CanvasPainter>> = vec![

@@ -4,7 +4,7 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-06
+//! - Version: 2023-02-08
 //! - Since: 2023-01-07
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
@@ -18,6 +18,7 @@ use crate::constants::{CONFIGURATION, FRAME_PERIOD_MILLIS_MINIMUM};
 use crate::engine::functions::web_sys::{spawn_local_loop, LoopUpdater};
 use crate::messages::events::Events;
 use crate::messages::inputs::Inputs;
+use crate::models::frame_rate::FrameRate;
 use crate::models::world::World;
 use crate::updaters::world::{WorldUpdater, WorldUpdaterConfiguration};
 use com_croftsoft_lib_role::{Initializer, Painter, Updater};
@@ -44,6 +45,7 @@ impl Looper {
       update_period_millis_maximum: configuration.frame_period_millis,
       update_period_millis_minimum: FRAME_PERIOD_MILLIS_MINIMUM,
     };
+    let frame_rate = Rc::new(RefCell::new(FrameRate::default()));
     let frame_rater = Rc::new(RefCell::new(FrameRater::new(
       configuration.frame_period_millis,
     )));
@@ -53,6 +55,7 @@ impl Looper {
     let evolve_component = EvolveComponent::new(
       events.clone(),
       "evolve",
+      frame_rate.clone(),
       frame_rater.clone(),
       inputs.clone(),
       world.clone(),
@@ -60,6 +63,7 @@ impl Looper {
     let world_updater = WorldUpdater::new(
       world_updater_configuration,
       events.clone(),
+      frame_rate,
       frame_rater,
       inputs.clone(),
       world,
