@@ -4,8 +4,8 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-08
-//! - Since: 2023-01-25
+//! - Created: 2023-01-25
+//! - Updated: 2023-02-09
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -17,12 +17,14 @@ use super::flora::{FloraUpdater, FloraUpdaterInputs};
 use super::frame_rate::{
   FrameRateUpdater, FrameRateUpdaterEvents, FrameRateUpdaterInputs,
 };
+use super::overlay::{OverlayUpdater, OverlayUpdaterInputs};
 use crate::engine::frame_rater::FrameRater;
 use crate::engine::update_timer::UpdateTimer;
 use crate::models::clock::Clock;
 use crate::models::fauna::Fauna;
 use crate::models::flora::Flora;
 use crate::models::frame_rate::FrameRate;
+use crate::models::overlay::Overlay;
 use crate::models::world::World;
 use com_croftsoft_lib_role::Updater;
 use core::cell::{Ref, RefCell};
@@ -131,12 +133,18 @@ impl FrameRateUpdaterInputs for WorldUpdaterInputAdapter {
   }
 }
 
+impl OverlayUpdaterInputs for WorldUpdaterInputAdapter {
+  fn get_update_time_millis(&self) -> f64 {
+    self.inputs.borrow().get_update_time_millis()
+  }
+}
+
 pub struct WorldUpdater {
   configuration: WorldUpdaterConfiguration,
   events: Rc<RefCell<dyn WorldUpdaterEvents>>,
   inputs: Rc<RefCell<dyn WorldUpdaterInputs>>,
   update_timer_world: UpdateTimer,
-  updaters: [Box<dyn Updater>; 4],
+  updaters: [Box<dyn Updater>; 5],
 }
 
 impl WorldUpdater {
@@ -158,14 +166,14 @@ impl WorldUpdater {
     let clock: Rc<RefCell<Clock>> = world.clock.clone();
     let fauna: Rc<RefCell<Fauna>> = world.fauna.clone();
     let flora: Rc<RefCell<Flora>> = world.flora.clone();
-
+    let overlay: Rc<RefCell<Overlay>> = world.overlay.clone();
     let world_updater_input_adapter =
       Rc::new(RefCell::new(WorldUpdaterInputAdapter::new(inputs.clone())));
     let clock_updater =
       ClockUpdater::new(clock.clone(), world_updater_input_adapter.clone());
     let fauna_updater = FaunaUpdater::new(
-      clock,
-      fauna,
+      clock.clone(),
+      fauna.clone(),
       flora.clone(),
       world_updater_input_adapter.clone(),
     );
@@ -175,12 +183,15 @@ impl WorldUpdater {
       world_updater_events_adapter,
       frame_rate,
       frame_rater,
-      world_updater_input_adapter,
+      world_updater_input_adapter.clone(),
     );
-    let updaters: [Box<dyn Updater>; 4] = [
+    let overlay_updater =
+      OverlayUpdater::new(clock, fauna, world_updater_input_adapter, overlay);
+    let updaters: [Box<dyn Updater>; 5] = [
       Box::new(clock_updater),
       Box::new(flora_updater),
       Box::new(fauna_updater),
+      Box::new(overlay_updater),
       Box::new(frame_rate_updater),
     ];
     Self {

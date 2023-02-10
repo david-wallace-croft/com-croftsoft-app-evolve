@@ -4,8 +4,8 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-08
-//! - Since: 2022-11-27
+//! - Created: 2022-11-27
+//! - Updated: 2023-02-09
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -60,8 +60,7 @@ impl WorldPainter {
     let flora_painter =
       FloraPainter::new(world.flora.clone(), scale_x, scale_y);
     let frame_rater_painter = FrameRatePainter::new(frame_rate, frame_rater);
-    let overlay_painter =
-      OverlayPainter::new(world.clock.clone(), world.fauna.clone());
+    let overlay_painter = OverlayPainter::new(world.overlay.clone());
     let canvas_painters: Vec<Box<dyn CanvasPainter>> = vec![
       Box::new(background_painter),
       Box::new(flora_painter),
