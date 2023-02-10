@@ -11,7 +11,7 @@
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::constants::GENES_MAX;
+use crate::constants::{GENES_MAX, OVERLAY_REFRESH_PERIOD_MILLIS};
 use crate::engine::update_timer::UpdateTimer;
 use crate::models::clock::Clock;
 use crate::models::fauna::Fauna;
@@ -95,7 +95,7 @@ impl OverlayUpdater {
     overlay: Rc<RefCell<Overlay>>,
   ) -> Self {
     let update_timer = UpdateTimer {
-      update_period_millis: 1_000.,
+      update_period_millis: OVERLAY_REFRESH_PERIOD_MILLIS,
       update_time_millis_next: 0.,
     };
     Self {

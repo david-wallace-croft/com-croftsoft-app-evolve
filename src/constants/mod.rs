@@ -4,16 +4,9 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Rust version: 2023-01-31
-//! - Rust since: 2022-11-27
-//! - Java version: 2008-04-19
-//! - Java since: 1996-09-01
+//! - Created: 2022-11-27
+//! - Updated: 2023-02-09
 //!
-//! # History
-//! - Adapted from the Java package com.croftsoft.apps.evolve
-//!   - In the Java-based [`CroftSoft Apps Library`]
-//!
-//! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
@@ -42,6 +35,7 @@ pub const FLORA_GROWTH_RATE_MAX: usize = 20;
 pub const LOCATION_COUNT: usize = SPACE_HEIGHT * SPACE_WIDTH;
 pub const MAX_ENERGY: usize = 60;
 pub const MOVE_COST: usize = 1;
+pub const OVERLAY_REFRESH_PERIOD_MILLIS: f64 = 1_000.;
 pub const PAINT_OFFSET: f64 = (1. - PAINT_SCALE) / 2.;
 pub const PAINT_SCALE: f64 = 0.5;
 pub const SPACE_HEIGHT: usize = 100;
