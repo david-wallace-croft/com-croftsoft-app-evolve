@@ -4,8 +4,8 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-08
-//! - Since: 2023-01-07
+//! - Created: 2023-01-07
+//! - Updated: 2023-02-10
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -54,9 +54,8 @@ impl Looper {
     let world = Rc::new(RefCell::new(World::default()));
     let evolve_component = EvolveComponent::new(
       events.clone(),
-      "evolve",
       frame_rate.clone(),
-      frame_rater.clone(),
+      "evolve",
       inputs.clone(),
       world.clone(),
     );

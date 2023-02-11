@@ -4,8 +4,8 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-08
-//! - Since: 2022-12-17
+//! - Created: 2022-12-17
+//! - Updated: 2023-02-10
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -18,7 +18,6 @@ use super::frame_rate::FrameRateComponent;
 use super::garden::GardenComponent;
 use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
-use crate::engine::frame_rater::FrameRater;
 use crate::engine::functions::web_sys::get_window;
 use crate::engine::traits::Component;
 use crate::messages::events::Events;
@@ -46,9 +45,8 @@ impl EvolveComponent {
   // TODO: do something with the ID
   pub fn new(
     events: Rc<RefCell<Events>>,
-    _id: &str,
     frame_rate: Rc<RefCell<FrameRate>>,
-    frame_rater: Rc<RefCell<FrameRater>>,
+    _id: &str,
     inputs: Rc<RefCell<Inputs>>,
     world: Rc<RefCell<World>>,
   ) -> Self {
@@ -56,7 +54,6 @@ impl EvolveComponent {
       Rc::new(RefCell::new(BlightComponent::new("blight", inputs.clone())));
     let canvas_component = Rc::new(RefCell::new(CanvasComponent::new(
       frame_rate,
-      frame_rater,
       "canvas",
       inputs.clone(),
       world,

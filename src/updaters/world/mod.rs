@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2023-02-09
+//! - Updated: 2023-02-10
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -182,11 +182,16 @@ impl WorldUpdater {
     let frame_rate_updater = FrameRateUpdater::new(
       world_updater_events_adapter,
       frame_rate,
-      frame_rater,
+      frame_rater.clone(),
       world_updater_input_adapter.clone(),
     );
-    let overlay_updater =
-      OverlayUpdater::new(clock, fauna, world_updater_input_adapter, overlay);
+    let overlay_updater = OverlayUpdater::new(
+      clock,
+      fauna,
+      frame_rater,
+      world_updater_input_adapter,
+      overlay,
+    );
     let updaters: [Box<dyn Updater>; 5] = [
       Box::new(clock_updater),
       Box::new(flora_updater),

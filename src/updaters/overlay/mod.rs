@@ -5,19 +5,20 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-02-09
-//! - Updated: 2023-02-09
+//! - Updated: 2023-02-10
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
 use crate::constants::{GENES_MAX, OVERLAY_REFRESH_PERIOD_MILLIS};
+use crate::engine::frame_rater::FrameRater;
 use crate::engine::update_timer::UpdateTimer;
 use crate::models::clock::Clock;
 use crate::models::fauna::Fauna;
 use crate::models::overlay::Overlay;
 use com_croftsoft_lib_role::Updater;
-use core::cell::RefCell;
+use core::cell::{RefCell, RefMut};
 use std::rc::Rc;
 
 pub trait OverlayUpdaterInputs {
@@ -27,12 +28,20 @@ pub trait OverlayUpdaterInputs {
 pub struct OverlayUpdater {
   clock: Rc<RefCell<Clock>>,
   fauna: Rc<RefCell<Fauna>>,
+  frame_rater: Rc<RefCell<FrameRater>>,
   inputs: Rc<RefCell<dyn OverlayUpdaterInputs>>,
   overlay: Rc<RefCell<Overlay>>,
   update_timer: UpdateTimer,
 }
 
 impl OverlayUpdater {
+  fn make_frame_rate_string(&self) -> String {
+    format!(
+      "Frames per second: {:.3}",
+      self.frame_rater.borrow().get_frames_per_second_sampled()
+    )
+  }
+
   fn make_genes_average_string(&self) -> String {
     let mut gene_x_string = String::from("X:");
     let mut gene_y_string = String::from("Y:");
@@ -91,6 +100,7 @@ impl OverlayUpdater {
   pub fn new(
     clock: Rc<RefCell<Clock>>,
     fauna: Rc<RefCell<Fauna>>,
+    frame_rater: Rc<RefCell<FrameRater>>,
     inputs: Rc<RefCell<dyn OverlayUpdaterInputs>>,
     overlay: Rc<RefCell<Overlay>>,
   ) -> Self {
@@ -101,6 +111,7 @@ impl OverlayUpdater {
     Self {
       clock,
       fauna,
+      frame_rater,
       inputs,
       overlay,
       update_timer,
@@ -114,6 +125,8 @@ impl Updater for OverlayUpdater {
     if self.update_timer.before_next_update_time(update_time_millis) {
       return;
     }
-    self.overlay.borrow_mut().status_string = self.make_status_string();
+    let mut overlay: RefMut<Overlay> = self.overlay.borrow_mut();
+    overlay.frame_rate_string = self.make_frame_rate_string();
+    overlay.status_string = self.make_status_string();
   }
 }
