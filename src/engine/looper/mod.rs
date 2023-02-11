@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-07
-//! - Updated: 2023-02-10
+//! - Updated: 2023-02-11
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -14,7 +14,7 @@
 use super::configuration::Configuration;
 use super::frame_rater::FrameRater;
 use crate::components::evolve::EvolveComponent;
-use crate::constants::{CONFIGURATION, FRAME_PERIOD_MILLIS_MINIMUM};
+use crate::constants::CONFIGURATION;
 use crate::engine::functions::web_sys::{spawn_local_loop, LoopUpdater};
 use crate::messages::events::Events;
 use crate::messages::inputs::Inputs;
@@ -42,8 +42,7 @@ impl Looper {
 
   pub fn new(configuration: Configuration) -> Self {
     let world_updater_configuration = WorldUpdaterConfiguration {
-      update_period_millis_maximum: configuration.frame_period_millis,
-      update_period_millis_minimum: FRAME_PERIOD_MILLIS_MINIMUM,
+      update_period_millis_initial: configuration.frame_period_millis,
     };
     let frame_rate = Rc::new(RefCell::new(FrameRate::default()));
     let frame_rater = Rc::new(RefCell::new(FrameRater::new(

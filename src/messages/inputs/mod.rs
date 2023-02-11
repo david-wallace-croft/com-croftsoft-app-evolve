@@ -4,8 +4,8 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-08
-//! - Since: 2022-12-31
+//! - Created: 2022-12-31
+//! - Updated: 2023-02-11
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -21,7 +21,7 @@ pub struct Inputs {
   pub frame_rate_display_change_requested: Option<bool>,
   pub garden_change_requested: Option<bool>,
   pub reset_requested: bool,
-  pub speed_toggle_requested: bool,
+  pub speed_change_requested: Option<usize>,
   pub update_time_millis: f64,
 }
 
@@ -33,7 +33,7 @@ impl Inputs {
     self.frame_rate_display_change_requested = None;
     self.garden_change_requested = None;
     self.reset_requested = false;
-    self.speed_toggle_requested = false;
+    self.speed_change_requested = None;
     self.update_time_millis = 0.;
   }
 }
@@ -63,8 +63,8 @@ impl WorldUpdaterInputs for Inputs {
     self.reset_requested
   }
 
-  fn get_speed_toggle_requested(&self) -> bool {
-    self.speed_toggle_requested
+  fn get_speed_change_requested(&self) -> Option<usize> {
+    self.speed_change_requested
   }
 
   fn get_update_time_millis(&self) -> f64 {

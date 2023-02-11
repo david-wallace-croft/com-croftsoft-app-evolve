@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-17
-//! - Updated: 2023-02-10
+//! - Updated: 2023-02-11
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -108,10 +108,11 @@ impl Component for EvolveComponent {
       String::from("<div id=\"evolve\">"),
       canvas_html,
       String::from("<br>"),
+      reset_html,
       blight_html,
       flora_html,
       garden_html,
-      reset_html,
+      String::from("<br>"),
       speed_html,
       frame_rate_html,
       String::from("</div>"),

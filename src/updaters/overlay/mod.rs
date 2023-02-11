@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-02-09
-//! - Updated: 2023-02-10
+//! - Updated: 2023-02-11
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -37,7 +37,7 @@ pub struct OverlayUpdater {
 impl OverlayUpdater {
   fn make_frame_rate_string(&self) -> String {
     format!(
-      "Frames per second: {:.3}",
+      "Simulation updates per second: {:.3}",
       self.frame_rater.borrow().get_frames_per_second_sampled()
     )
   }

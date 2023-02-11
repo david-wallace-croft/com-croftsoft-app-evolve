@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2023-02-10
+//! - Updated: 2023-02-11
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -31,8 +31,7 @@ use core::cell::{Ref, RefCell};
 use std::rc::Rc;
 
 pub struct WorldUpdaterConfiguration {
-  pub update_period_millis_maximum: f64,
-  pub update_period_millis_minimum: f64,
+  pub update_period_millis_initial: f64,
 }
 
 pub trait WorldUpdaterEvents {
@@ -51,7 +50,7 @@ pub trait WorldUpdaterInputs {
   fn get_frame_rate_display_change_requested(&self) -> Option<bool>;
   fn get_garden_change_requested(&self) -> Option<bool>;
   fn get_reset_requested(&self) -> bool;
-  fn get_speed_toggle_requested(&self) -> bool;
+  fn get_speed_change_requested(&self) -> Option<usize>;
   fn get_update_time_millis(&self) -> f64;
 }
 
@@ -140,7 +139,6 @@ impl OverlayUpdaterInputs for WorldUpdaterInputAdapter {
 }
 
 pub struct WorldUpdater {
-  configuration: WorldUpdaterConfiguration,
   events: Rc<RefCell<dyn WorldUpdaterEvents>>,
   inputs: Rc<RefCell<dyn WorldUpdaterInputs>>,
   update_timer_world: UpdateTimer,
@@ -159,7 +157,7 @@ impl WorldUpdater {
     let world_updater_events_adapter =
       Rc::new(RefCell::new(WorldUpdaterEventsAdapter::new(events.clone())));
     let update_timer_world = UpdateTimer {
-      update_period_millis: configuration.update_period_millis_maximum,
+      update_period_millis: configuration.update_period_millis_initial,
       update_time_millis_next: 0.,
     };
     let world: Ref<World> = world.borrow();
@@ -200,7 +198,6 @@ impl WorldUpdater {
       Box::new(frame_rate_updater),
     ];
     Self {
-      configuration,
       events,
       inputs,
       update_timer_world,
@@ -211,15 +208,9 @@ impl WorldUpdater {
 
 impl Updater for WorldUpdater {
   fn update(&mut self) {
-    if self.inputs.borrow().get_speed_toggle_requested() {
+    if let Some(speed) = self.inputs.borrow().get_speed_change_requested() {
       self.update_timer_world.update_period_millis =
-        if self.update_timer_world.update_period_millis
-          == self.configuration.update_period_millis_minimum
-        {
-          self.configuration.update_period_millis_maximum
-        } else {
-          self.configuration.update_period_millis_minimum
-        };
+        (1_000. / speed as f64).trunc();
       self.events.borrow_mut().set_update_period_millis_changed(
         self.update_timer_world.update_period_millis,
       );

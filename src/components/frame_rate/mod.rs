@@ -4,8 +4,8 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-08
-//! - Since: 2023-02-08
+//! - Created: 2023-02-08
+//! - Updated: 2023-02-11
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -54,7 +54,7 @@ impl FrameRateComponent {
 impl Component for FrameRateComponent {
   fn make_html(&self) -> String {
     format!(
-      "Display Frame Rate <input id=\"{}\" type=\"checkbox\">",
+      "Display update rate <input id=\"{}\" type=\"checkbox\">",
       self.id
     )
   }

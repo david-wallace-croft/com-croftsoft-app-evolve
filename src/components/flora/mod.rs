@@ -4,8 +4,8 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-06
-//! - Since: 2022-12-25
+//! - Created: 2022-12-25
+//! - Updated: 2023-02-11
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -55,7 +55,7 @@ impl FloraComponent {
 impl Component for FloraComponent {
   fn make_html(&self) -> String {
     format!(
-      "Food growth rate <input id=\"{}\" max=\"{}\" type=\"range\" value\"{}\">",
+      "Food growth rate <input id=\"{}\" max=\"{}\" type=\"range\" value=\"{}\">",
       self.id, FLORA_GROWTH_RATE_MAX, FLORA_GROWTH_RATE_INIT,
     )
   }
