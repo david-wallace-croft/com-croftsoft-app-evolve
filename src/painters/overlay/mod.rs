@@ -44,14 +44,12 @@ impl CanvasPainter for OverlayPainter {
     &self,
     context: &CanvasRenderingContext2d,
   ) {
-    let overlay: Ref<Overlay> = self.overlay.borrow();
-    let frame_rate_string = &overlay.frame_rate_string;
-    let status_string = &overlay.status_string;
     context.set_fill_style(&self.fill_style);
     context.set_font("bold 17px monospace");
-    context.fill_text(status_string, 4.0, 17.0).unwrap();
+    let overlay: Ref<Overlay> = self.overlay.borrow();
+    context.fill_text(&overlay.status_string, 4.0, 17.0).unwrap();
     if self.frame_rate.borrow().display {
-      context.fill_text(frame_rate_string, 4.0, 34.0).unwrap();
+      context.fill_text(&overlay.frame_rate_string, 4.0, 34.0).unwrap();
     }
   }
 }
