@@ -4,13 +4,13 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-07
-//! - Since: 2023-01-07
+//! - Created: 2023-01-07
+//! - Updated: 2023-02-12
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
 pub struct Configuration {
-  pub frame_period_millis: f64,
+  pub update_period_millis_initial: f64,
 }

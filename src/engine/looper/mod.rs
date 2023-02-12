@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-07
-//! - Updated: 2023-02-11
+//! - Updated: 2023-02-12
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -41,12 +41,15 @@ impl Looper {
   }
 
   pub fn new(configuration: Configuration) -> Self {
+    let Configuration {
+      update_period_millis_initial,
+    } = configuration;
     let world_updater_configuration = WorldUpdaterConfiguration {
-      update_period_millis_initial: configuration.frame_period_millis,
+      update_period_millis_initial,
     };
     let frame_rate = Rc::new(RefCell::new(FrameRate::default()));
     let frame_rater = Rc::new(RefCell::new(FrameRater::new(
-      configuration.frame_period_millis,
+      configuration.update_period_millis_initial,
     )));
     let events = Rc::new(RefCell::new(Events::default()));
     let inputs = Rc::new(RefCell::new(Inputs::default()));
