@@ -1,11 +1,11 @@
 // =============================================================================
-//! - Component for the speed button
+//! - Speed Component for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-20
-//! - Updated: 2023-02-11
+//! - Updated: 2023-02-13
 //!
 //! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/

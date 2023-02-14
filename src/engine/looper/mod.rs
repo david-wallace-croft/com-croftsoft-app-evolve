@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-07
-//! - Updated: 2023-02-12
+//! - Updated: 2023-02-13
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -48,9 +48,8 @@ impl Looper {
       update_period_millis_initial,
     };
     let frame_rate = Rc::new(RefCell::new(FrameRate::default()));
-    let frame_rater = Rc::new(RefCell::new(FrameRater::new(
-      configuration.update_period_millis_initial,
-    )));
+    let frame_rater =
+      Rc::new(RefCell::new(FrameRater::new(update_period_millis_initial)));
     let events = Rc::new(RefCell::new(Events::default()));
     let inputs = Rc::new(RefCell::new(Inputs::default()));
     let world = Rc::new(RefCell::new(World::default()));
