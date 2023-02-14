@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-10
-//! - Updated: 2023-02-10
+//! - Updated: 2023-02-13
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -20,9 +20,9 @@ use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
 pub struct OverlayPainter {
+  fill_style: JsValue,
   frame_rate: Rc<RefCell<FrameRate>>,
   overlay: Rc<RefCell<Overlay>>,
-  fill_style: JsValue,
 }
 
 impl OverlayPainter {

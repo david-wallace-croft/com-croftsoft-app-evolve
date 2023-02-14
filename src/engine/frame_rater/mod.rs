@@ -1,11 +1,11 @@
 // =============================================================================
-//! - Frame Rate for CroftSoft Evolve
+//! - Frame Rater for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-05
-//! - Since: 2023-02-02
+//! - Created: 2023-02-02
+//! - Updated: 2023-02-13
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
