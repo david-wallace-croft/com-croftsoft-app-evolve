@@ -7,7 +7,6 @@
 //! - Created: 2022-12-20
 //! - Updated: 2023-02-13
 //!
-//! [`CroftSoft Apps Library`]: https://www.croftsoft.com/library/code/
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================

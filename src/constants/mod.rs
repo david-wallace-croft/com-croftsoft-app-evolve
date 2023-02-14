@@ -32,14 +32,14 @@ pub const FLORA_GROWTH_RATE_INIT: usize = 10;
 pub const FLORA_GROWTH_RATE_MAX: usize = 20;
 pub const LOCATION_COUNT: usize = SPACE_HEIGHT * SPACE_WIDTH;
 pub const MAX_ENERGY: usize = 60;
-pub const MILLIS_PER_SECOND: f64 = 1_000.0;
+pub const MILLIS_PER_SECOND: f64 = 1_000.;
 pub const MOVE_COST: usize = 1;
 pub const OVERLAY_REFRESH_PERIOD_MILLIS: f64 = 1_000.;
 pub const PAINT_OFFSET: f64 = (1. - PAINT_SCALE) / 2.;
 pub const PAINT_SCALE: f64 = 0.5;
 pub const SPACE_HEIGHT: usize = 100;
 pub const SPACE_WIDTH: usize = 100;
-pub const UPDATES_PER_SECOND: f64 = 1.0;
+pub const UPDATES_PER_SECOND: f64 = 1.;
 pub const UPDATE_PERIOD_MILLIS: f64 = MILLIS_PER_SECOND / UPDATES_PER_SECOND;
 
 pub const CONFIGURATION: Configuration = Configuration {
