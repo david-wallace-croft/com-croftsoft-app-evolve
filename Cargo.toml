@@ -1,13 +1,11 @@
 [package]
 name = "com-crofsoft-app-evolve"
 version = "0.9.1-SNAPSHOT"
-authors = ["David Wallace Croft <david@croftsoft.com>"]
-# https://crates.io/categories
-categories = ["games"]
+authors = ["David Wallace Croft <david@CroftSoft.com>"]
+categories = ["games", "simulation"]
 description = "Evolve the movement of critters through food distribution"
 edition = "2021"
-homepage = "https://www.croftsoft.com/"
-# https://doc.rust-lang.org/cargo/reference/manifest.html#the-keywords-field
+homepage = "https://www.CroftSoft.com/"
 keywords = ["evolution", "simulation"]
 license = "MIT"
 publish = false
