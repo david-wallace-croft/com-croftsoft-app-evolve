@@ -5,18 +5,18 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-02-09
-//! - Updated: 2023-02-11
+//! - Updated: 2023-02-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
 use crate::constants::{GENES_MAX, OVERLAY_REFRESH_PERIOD_MILLIS};
-use crate::engine::frame_rater::FrameRater;
 use crate::engine::update_timer::UpdateTimer;
 use crate::models::clock::Clock;
 use crate::models::fauna::Fauna;
 use crate::models::overlay::Overlay;
+use com_croftsoft_lib_animation::frame_rater::FrameRater;
 use com_croftsoft_lib_role::Updater;
 use core::cell::{RefCell, RefMut};
 use std::rc::Rc;

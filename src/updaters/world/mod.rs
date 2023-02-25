@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2023-02-11
+//! - Updated: 2023-02-25
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -18,7 +18,6 @@ use super::frame_rate::{
   FrameRateUpdater, FrameRateUpdaterEvents, FrameRateUpdaterInputs,
 };
 use super::overlay::{OverlayUpdater, OverlayUpdaterInputs};
-use crate::engine::frame_rater::FrameRater;
 use crate::engine::update_timer::UpdateTimer;
 use crate::models::clock::Clock;
 use crate::models::fauna::Fauna;
@@ -26,6 +25,7 @@ use crate::models::flora::Flora;
 use crate::models::frame_rate::FrameRate;
 use crate::models::overlay::Overlay;
 use crate::models::world::World;
+use com_croftsoft_lib_animation::frame_rater::FrameRater;
 use com_croftsoft_lib_role::Updater;
 use core::cell::{Ref, RefCell};
 use std::rc::Rc;
