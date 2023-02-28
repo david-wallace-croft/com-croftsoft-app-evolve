@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-02-09
-//! - Updated: 2023-02-25
+//! - Updated: 2023-02-27
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -22,7 +22,7 @@ use core::cell::{RefCell, RefMut};
 use std::rc::Rc;
 
 pub trait OverlayUpdaterInputs {
-  fn get_update_time_millis(&self) -> f64;
+  fn get_current_time_millis(&self) -> f64;
 }
 
 pub struct OverlayUpdater {
@@ -121,7 +121,7 @@ impl OverlayUpdater {
 
 impl Updater for OverlayUpdater {
   fn update(&mut self) {
-    let update_time_millis = self.inputs.borrow().get_update_time_millis();
+    let update_time_millis = self.inputs.borrow().get_current_time_millis();
     if self.update_timer.before_next_update_time(update_time_millis) {
       return;
     }

@@ -4,76 +4,71 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-08
-//! - Since: 2023-02-25
+//! - Created: 2023-02-25
+//! - Updated: 2023-02-27
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::models::frame_rate::FrameRate;
+use crate::models::options::Options;
 use com_croftsoft_lib_animation::frame_rater::FrameRater;
 use com_croftsoft_lib_role::Updater;
 use core::cell::{Ref, RefCell};
 use std::rc::Rc;
 
-pub trait FrameRateUpdaterEvents {
-  fn get_update_period_millis_changed(&self) -> Option<f64>;
-}
-
-pub trait FrameRateUpdaterInputs {
+pub trait FrameRaterUpdaterInputs {
   fn get_frame_rate_display_change_requested(&self) -> Option<bool>;
   fn get_reset_requested(&self) -> bool;
+  fn get_time_to_update(&self) -> bool;
+  fn get_update_period_millis_changed(&self) -> Option<f64>;
   fn get_update_time_millis(&self) -> f64;
 }
 
-pub struct FrameRateUpdater {
-  events: Rc<RefCell<dyn FrameRateUpdaterEvents>>,
-  frame_rate: Rc<RefCell<FrameRate>>,
+pub struct FrameRaterUpdater {
   frame_rater: Rc<RefCell<FrameRater>>,
-  inputs: Rc<RefCell<dyn FrameRateUpdaterInputs>>,
+  inputs: Rc<RefCell<dyn FrameRaterUpdaterInputs>>,
+  options: Rc<RefCell<Options>>,
 }
 
-impl FrameRateUpdater {
+impl FrameRaterUpdater {
   pub fn new(
-    events: Rc<RefCell<dyn FrameRateUpdaterEvents>>,
-    frame_rate: Rc<RefCell<FrameRate>>,
     frame_rater: Rc<RefCell<FrameRater>>,
-    inputs: Rc<RefCell<dyn FrameRateUpdaterInputs>>,
+    inputs: Rc<RefCell<dyn FrameRaterUpdaterInputs>>,
+    options: Rc<RefCell<Options>>,
   ) -> Self {
     Self {
-      events,
-      frame_rate,
       frame_rater,
       inputs,
+      options,
     }
   }
 }
 
-impl Updater for FrameRateUpdater {
+impl Updater for FrameRaterUpdater {
   fn update(&mut self) {
-    if let Some(display) =
-      self.inputs.borrow().get_frame_rate_display_change_requested()
+    let inputs: Ref<dyn FrameRaterUpdaterInputs> = self.inputs.borrow();
+    if let Some(frame_rate_display) =
+      inputs.get_frame_rate_display_change_requested()
     {
-      self.frame_rate.borrow_mut().display = display;
-      if display {
+      if frame_rate_display {
         self.frame_rater.borrow_mut().clear();
       }
     }
-    let events: Ref<dyn FrameRateUpdaterEvents> = self.events.borrow();
     if let Some(update_period_millis) =
-      events.get_update_period_millis_changed()
+      inputs.get_update_period_millis_changed()
     {
       self
         .frame_rater
         .borrow_mut()
         .update_frame_sample_size(update_period_millis);
     }
-    if self.inputs.borrow().get_reset_requested() {
+    if inputs.get_reset_requested() {
       self.frame_rater.borrow_mut().clear();
       return;
     }
-    if self.frame_rate.borrow().display {
+    let options: Ref<Options> = self.options.borrow();
+    if inputs.get_time_to_update() && options.frame_rate_display {
       self
         .frame_rater
         .borrow_mut()

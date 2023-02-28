@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-11-27
-//! - Updated: 2023-02-10
+//! - Updated: 2023-02-27
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -14,7 +14,7 @@
 use super::overlay::OverlayPainter;
 use crate::constants::{SPACE_HEIGHT, SPACE_WIDTH};
 use crate::engine::traits::CanvasPainter;
-use crate::models::frame_rate::FrameRate;
+use crate::models::options::Options;
 use crate::models::world::World;
 use crate::painters::background::BackgroundPainter;
 use crate::painters::fauna::FaunaPainter;
@@ -36,7 +36,7 @@ pub struct WorldPainter {
 impl WorldPainter {
   pub fn new(
     canvas_element_id: &str,
-    frame_rate: Rc<RefCell<FrameRate>>,
+    options: Rc<RefCell<Options>>,
     world: &World,
   ) -> Self {
     let document: Document = window().unwrap().document().unwrap();
@@ -56,8 +56,7 @@ impl WorldPainter {
       FaunaPainter::new(world.fauna.clone(), scale_x, scale_y);
     let flora_painter =
       FloraPainter::new(world.flora.clone(), scale_x, scale_y);
-    let overlay_painter =
-      OverlayPainter::new(frame_rate, world.overlay.clone());
+    let overlay_painter = OverlayPainter::new(options, world.overlay.clone());
     let canvas_painters: Vec<Box<dyn CanvasPainter>> = vec![
       Box::new(background_painter),
       Box::new(flora_painter),

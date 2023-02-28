@@ -1,17 +1,26 @@
 // =============================================================================
-//! - Frame Rate Model for CroftSoft Evolve
+//! - Options Model for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-08
-//! - Since: 2023-02-08
+//! - Created: 2023-02-27
+//! - Updated: 2023-02-27
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
+use crate::updaters::world::WorldUpdaterOptions;
+
 #[derive(Default)]
-pub struct FrameRate {
-  pub display: bool,
+pub struct Options {
+  pub frame_rate_display: bool,
+  pub pause: bool,
+}
+
+impl WorldUpdaterOptions for Options {
+  fn get_pause(&self) -> bool {
+    self.pause
+  }
 }

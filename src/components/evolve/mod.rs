@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-17
-//! - Updated: 2023-02-11
+//! - Updated: 2023-02-27
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -22,7 +22,7 @@ use crate::engine::functions::web_sys::get_window;
 use crate::engine::traits::Component;
 use crate::messages::events::Events;
 use crate::messages::inputs::Inputs;
-use crate::models::frame_rate::FrameRate;
+use crate::models::options::Options;
 use crate::models::world::World;
 use com_croftsoft_lib_role::{Initializer, Painter, Updater};
 use core::cell::RefCell;
@@ -42,20 +42,20 @@ pub struct EvolveComponent {
 }
 
 impl EvolveComponent {
-  // TODO: do something with the ID
   pub fn new(
     events: Rc<RefCell<Events>>,
-    frame_rate: Rc<RefCell<FrameRate>>,
+    // TODO: do something with the ID
     _id: &str,
     inputs: Rc<RefCell<Inputs>>,
+    options: Rc<RefCell<Options>>,
     world: Rc<RefCell<World>>,
   ) -> Self {
     let blight_component =
       Rc::new(RefCell::new(BlightComponent::new("blight", inputs.clone())));
     let canvas_component = Rc::new(RefCell::new(CanvasComponent::new(
-      frame_rate,
       "canvas",
       inputs.clone(),
+      options,
       world,
     )));
     let flora_component =
@@ -140,9 +140,10 @@ impl Initializer for EvolveComponent {
 
 impl Painter for EvolveComponent {
   fn paint(&self) {
-    if !self.events.borrow().updated_world {
-      return;
-    }
+    // TODO
+    // if !self.events.borrow().updated {
+    //   return;
+    // }
     self.canvas_component.borrow().paint();
   }
 }
