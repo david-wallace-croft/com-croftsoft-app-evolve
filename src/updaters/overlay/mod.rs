@@ -27,11 +27,16 @@ pub trait OverlayUpdaterEvents {
 }
 
 pub trait OverlayUpdaterInputs {
+  fn get_bug_requested(&self) -> Option<usize>;
   fn get_current_time_millis(&self) -> f64;
   fn get_frame_rate_display_change_requested(&self) -> Option<bool>;
   fn get_pause_change_requested(&self) -> Option<bool>;
   fn get_time_to_update(&self) -> bool;
   fn get_reset_requested(&self) -> bool;
+}
+
+pub trait OverlayUpdaterOptions {
+  fn get_pause(&self) -> bool;
 }
 
 pub struct OverlayUpdater {
@@ -41,6 +46,7 @@ pub struct OverlayUpdater {
   frame_rater: Rc<RefCell<FrameRater>>,
   inputs: Rc<RefCell<dyn OverlayUpdaterInputs>>,
   metronome: DeltaMetronome,
+  options: Rc<RefCell<dyn OverlayUpdaterOptions>>,
   overlay: Rc<RefCell<Overlay>>,
 }
 
@@ -113,6 +119,7 @@ impl OverlayUpdater {
     fauna: Rc<RefCell<Fauna>>,
     frame_rater: Rc<RefCell<FrameRater>>,
     inputs: Rc<RefCell<dyn OverlayUpdaterInputs>>,
+    options: Rc<RefCell<dyn OverlayUpdaterOptions>>,
     overlay: Rc<RefCell<Overlay>>,
   ) -> Self {
     let metronome = DeltaMetronome {
@@ -126,6 +133,7 @@ impl OverlayUpdater {
       frame_rater,
       inputs,
       metronome,
+      options,
       overlay,
     }
   }
@@ -141,17 +149,18 @@ impl OverlayUpdater {
 impl Updater for OverlayUpdater {
   fn update(&mut self) {
     let inputs: Ref<dyn OverlayUpdaterInputs> = self.inputs.borrow();
-    if inputs.get_reset_requested()
+    if inputs.get_bug_requested().is_some()
       || inputs.get_frame_rate_display_change_requested().is_some()
       || inputs.get_pause_change_requested().is_some()
+      || inputs.get_reset_requested()
     {
       self.update_overlay();
       return;
     }
-    if !inputs.get_time_to_update() {
+    if !inputs.get_time_to_update() || self.options.borrow().get_pause() {
       return;
     }
-    let current_time_millis = inputs.get_current_time_millis();
+    let current_time_millis: f64 = inputs.get_current_time_millis();
     if self.metronome.tick(current_time_millis) {
       self.update_overlay();
     }

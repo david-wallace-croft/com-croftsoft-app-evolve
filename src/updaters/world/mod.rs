@@ -24,6 +24,7 @@ use super::frame_rater::{FrameRaterUpdater, FrameRaterUpdaterInputs};
 use super::options::{OptionsUpdater, OptionsUpdaterInputs};
 use super::overlay::{
   OverlayUpdater, OverlayUpdaterEvents, OverlayUpdaterInputs,
+  OverlayUpdaterOptions,
 };
 use crate::models::clock::Clock;
 use crate::models::fauna::Fauna;
@@ -246,6 +247,10 @@ impl OptionsUpdaterInputs for WorldUpdaterInputsAdapter {
 }
 
 impl OverlayUpdaterInputs for WorldUpdaterInputsAdapter {
+  fn get_bug_requested(&self) -> Option<usize> {
+    self.inputs.borrow().get_bug_requested()
+  }
+
   fn get_current_time_millis(&self) -> f64 {
     self.inputs.borrow().get_current_time_millis()
   }
@@ -301,6 +306,12 @@ impl FloraUpdaterOptions for WorldUpdaterOptionsAdapter {
   }
 }
 
+impl OverlayUpdaterOptions for WorldUpdaterOptionsAdapter {
+  fn get_pause(&self) -> bool {
+    self.options.borrow().get_pause()
+  }
+}
+
 pub struct WorldUpdater {
   child_updaters: Vec<Box<dyn Updater>>,
 }
@@ -345,11 +356,12 @@ impl WorldUpdater {
       world_updater_events_adapter.clone(),
       flora,
       world_updater_inputs_adapter.clone(),
-      world_updater_options_adapter,
+      world_updater_options_adapter.clone(),
     );
     let frame_rater_updater = FrameRaterUpdater::new(
       frame_rater.clone(),
       world_updater_inputs_adapter.clone(),
+      // TODO: should this be an options adapter?
       options.clone(),
     );
     let options_updater =
@@ -360,6 +372,7 @@ impl WorldUpdater {
       fauna,
       frame_rater,
       world_updater_inputs_adapter.clone(),
+      world_updater_options_adapter,
       overlay,
     );
     let metronome = Rc::new(RefCell::new(DeltaMetronome {
