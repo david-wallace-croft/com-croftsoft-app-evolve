@@ -251,7 +251,7 @@ impl Updater for FaunaUpdater {
       self.fauna.borrow_mut().bugs.retain(|bug| bug.energy > 0);
       self.events.borrow_mut().set_updated();
     }
-    if new_bugs.len() > 0 {
+    if !new_bugs.is_empty() {
       self.fauna.borrow_mut().bugs.append(&mut new_bugs);
       self.events.borrow_mut().set_updated();
     }
