@@ -5,33 +5,43 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-02-09
-//! - Updated: 2023-02-27
+//! - Updated: 2023-02-28
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
 use crate::constants::{GENES_MAX, OVERLAY_REFRESH_PERIOD_MILLIS};
-use crate::engine::update_timer::UpdateTimer;
 use crate::models::clock::Clock;
 use crate::models::fauna::Fauna;
 use crate::models::overlay::Overlay;
 use com_croftsoft_lib_animation::frame_rater::FrameRater;
+use com_croftsoft_lib_animation::metronome::delta::DeltaMetronome;
+use com_croftsoft_lib_animation::metronome::Metronome;
 use com_croftsoft_lib_role::Updater;
-use core::cell::{RefCell, RefMut};
+use core::cell::{Ref, RefCell, RefMut};
 use std::rc::Rc;
+
+pub trait OverlayUpdaterEvents {
+  fn set_updated(&mut self);
+}
 
 pub trait OverlayUpdaterInputs {
   fn get_current_time_millis(&self) -> f64;
+  fn get_frame_rate_display_change_requested(&self) -> Option<bool>;
+  fn get_pause_change_requested(&self) -> Option<bool>;
+  fn get_time_to_update(&self) -> bool;
+  fn get_reset_requested(&self) -> bool;
 }
 
 pub struct OverlayUpdater {
   clock: Rc<RefCell<Clock>>,
+  events: Rc<RefCell<dyn OverlayUpdaterEvents>>,
   fauna: Rc<RefCell<Fauna>>,
   frame_rater: Rc<RefCell<FrameRater>>,
   inputs: Rc<RefCell<dyn OverlayUpdaterInputs>>,
+  metronome: DeltaMetronome,
   overlay: Rc<RefCell<Overlay>>,
-  update_timer: UpdateTimer,
 }
 
 impl OverlayUpdater {
@@ -99,34 +109,51 @@ impl OverlayUpdater {
 
   pub fn new(
     clock: Rc<RefCell<Clock>>,
+    events: Rc<RefCell<dyn OverlayUpdaterEvents>>,
     fauna: Rc<RefCell<Fauna>>,
     frame_rater: Rc<RefCell<FrameRater>>,
     inputs: Rc<RefCell<dyn OverlayUpdaterInputs>>,
     overlay: Rc<RefCell<Overlay>>,
   ) -> Self {
-    let update_timer = UpdateTimer {
-      update_period_millis: OVERLAY_REFRESH_PERIOD_MILLIS,
-      update_time_millis_next: 0.,
+    let metronome = DeltaMetronome {
+      period_millis: OVERLAY_REFRESH_PERIOD_MILLIS,
+      time_millis_next_tick: 0.,
     };
     Self {
       clock,
+      events,
       fauna,
       frame_rater,
       inputs,
+      metronome,
       overlay,
-      update_timer,
     }
+  }
+
+  fn update_overlay(&self) {
+    let mut overlay: RefMut<Overlay> = self.overlay.borrow_mut();
+    overlay.frame_rate_string = self.make_frame_rate_string();
+    overlay.status_string = self.make_status_string();
+    self.events.borrow_mut().set_updated();
   }
 }
 
 impl Updater for OverlayUpdater {
   fn update(&mut self) {
-    let update_time_millis = self.inputs.borrow().get_current_time_millis();
-    if self.update_timer.before_next_update_time(update_time_millis) {
+    let inputs: Ref<dyn OverlayUpdaterInputs> = self.inputs.borrow();
+    if inputs.get_reset_requested()
+      || inputs.get_frame_rate_display_change_requested().is_some()
+      || inputs.get_pause_change_requested().is_some()
+    {
+      self.update_overlay();
       return;
     }
-    let mut overlay: RefMut<Overlay> = self.overlay.borrow_mut();
-    overlay.frame_rate_string = self.make_frame_rate_string();
-    overlay.status_string = self.make_status_string();
+    if !inputs.get_time_to_update() {
+      return;
+    }
+    let current_time_millis = inputs.get_current_time_millis();
+    if self.metronome.tick(current_time_millis) {
+      self.update_overlay();
+    }
   }
 }

@@ -22,7 +22,9 @@ use super::flora::{
 };
 use super::frame_rater::{FrameRaterUpdater, FrameRaterUpdaterInputs};
 use super::options::{OptionsUpdater, OptionsUpdaterInputs};
-use super::overlay::{OverlayUpdater, OverlayUpdaterInputs};
+use super::overlay::{
+  OverlayUpdater, OverlayUpdaterEvents, OverlayUpdaterInputs,
+};
 use crate::models::clock::Clock;
 use crate::models::fauna::Fauna;
 use crate::models::flora::Flora;
@@ -97,6 +99,12 @@ impl MetronomeUpdaterEvents for WorldUpdaterEventsAdapter {
 
   fn set_tick(&mut self) {
     self.events.borrow_mut().set_time_to_update();
+  }
+}
+
+impl OverlayUpdaterEvents for WorldUpdaterEventsAdapter {
+  fn set_updated(&mut self) {
+    self.events.borrow_mut().set_updated();
   }
 }
 
@@ -241,6 +249,22 @@ impl OverlayUpdaterInputs for WorldUpdaterInputsAdapter {
   fn get_current_time_millis(&self) -> f64 {
     self.inputs.borrow().get_current_time_millis()
   }
+
+  fn get_frame_rate_display_change_requested(&self) -> Option<bool> {
+    self.inputs.borrow().get_frame_rate_display_change_requested()
+  }
+
+  fn get_pause_change_requested(&self) -> Option<bool> {
+    self.inputs.borrow().get_pause_change_requested()
+  }
+
+  fn get_reset_requested(&self) -> bool {
+    self.inputs.borrow().get_reset_requested()
+  }
+
+  fn get_time_to_update(&self) -> bool {
+    self.events.borrow().get_time_to_update()
+  }
 }
 
 pub trait WorldUpdaterOptions {
@@ -332,6 +356,7 @@ impl WorldUpdater {
       OptionsUpdater::new(world_updater_inputs_adapter.clone(), options);
     let overlay_updater = OverlayUpdater::new(
       clock,
+      world_updater_events_adapter.clone(),
       fauna,
       frame_rater,
       world_updater_inputs_adapter.clone(),

@@ -4,5 +4,6 @@ pub mod evolve;
 pub mod flora;
 pub mod frame_rate;
 pub mod garden;
+pub mod pause;
 pub mod reset;
 pub mod speed;

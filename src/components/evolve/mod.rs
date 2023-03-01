@@ -16,6 +16,7 @@ use super::canvas::CanvasComponent;
 use super::flora::FloraComponent;
 use super::frame_rate::FrameRateComponent;
 use super::garden::GardenComponent;
+use super::pause::PauseComponent;
 use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
 use crate::engine::functions::web_sys::get_window;
@@ -32,11 +33,12 @@ use web_sys::{Document, HtmlCollection};
 pub struct EvolveComponent {
   blight_component: Rc<RefCell<BlightComponent>>,
   canvas_component: Rc<RefCell<CanvasComponent>>,
-  components: [Rc<RefCell<dyn Component>>; 7],
+  components: [Rc<RefCell<dyn Component>>; 8],
   events: Rc<RefCell<Events>>,
   flora_component: Rc<RefCell<FloraComponent>>,
   frame_rate_component: Rc<RefCell<FrameRateComponent>>,
   garden_component: Rc<RefCell<GardenComponent>>,
+  pause_component: Rc<RefCell<PauseComponent>>,
   reset_component: Rc<RefCell<ResetComponent>>,
   speed_component: Rc<RefCell<SpeedComponent>>,
 }
@@ -66,16 +68,19 @@ impl EvolveComponent {
     )));
     let garden_component =
       Rc::new(RefCell::new(GardenComponent::new("garden", inputs.clone())));
+    let pause_component =
+      Rc::new(RefCell::new(PauseComponent::new("pause", inputs.clone())));
     let reset_component =
       Rc::new(RefCell::new(ResetComponent::new("reset", inputs.clone())));
     let speed_component =
       Rc::new(RefCell::new(SpeedComponent::new("speed", inputs)));
-    let components: [Rc<RefCell<dyn Component>>; 7] = [
+    let components: [Rc<RefCell<dyn Component>>; 8] = [
       blight_component.clone(),
       canvas_component.clone(),
       flora_component.clone(),
       frame_rate_component.clone(),
       garden_component.clone(),
+      pause_component.clone(),
       reset_component.clone(),
       speed_component.clone(),
     ];
@@ -87,6 +92,7 @@ impl EvolveComponent {
       flora_component,
       frame_rate_component,
       garden_component,
+      pause_component,
       reset_component,
       speed_component,
     }
@@ -101,6 +107,7 @@ impl Component for EvolveComponent {
     let frame_rate_html: String =
       self.frame_rate_component.borrow().make_html();
     let garden_html: String = self.garden_component.borrow().make_html();
+    let pause_html: String = self.pause_component.borrow().make_html();
     let reset_html: String = self.reset_component.borrow().make_html();
     let speed_html: String = self.speed_component.borrow().make_html();
     // TODO: Assemble this from an HTML template
@@ -115,6 +122,7 @@ impl Component for EvolveComponent {
       String::from("<br>"),
       speed_html,
       frame_rate_html,
+      pause_html,
       String::from("</div>"),
     ]
     .join("\n")
