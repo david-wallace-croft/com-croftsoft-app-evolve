@@ -4,8 +4,8 @@
 //! # Metadata
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-06
-//! - Since: 2023-01-25
+//! - Created: 2023-01-25
+//! - Updated: 2023-02-28
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -30,16 +30,27 @@ use std::rc::Rc;
 // TODO: Should I be using the js_sys random?
 use rand::{rngs::ThreadRng, Rng};
 
+pub trait FaunaUpdaterEvents {
+  fn set_updated(&mut self);
+}
+
 pub trait FaunaUpdaterInputs {
   fn get_bug_requested(&self) -> Option<usize>;
   fn get_reset_requested(&self) -> bool;
+  fn get_time_to_update(&self) -> bool;
+}
+
+pub trait FaunaUpdaterOptions {
+  fn get_pause(&self) -> bool;
 }
 
 pub struct FaunaUpdater {
   clock: Rc<RefCell<Clock>>,
+  events: Rc<RefCell<dyn FaunaUpdaterEvents>>,
   fauna: Rc<RefCell<Fauna>>,
   flora: Rc<RefCell<Flora>>,
   inputs: Rc<RefCell<dyn FaunaUpdaterInputs>>,
+  options: Rc<RefCell<dyn FaunaUpdaterOptions>>,
 }
 
 impl FaunaUpdater {
@@ -93,15 +104,19 @@ impl FaunaUpdater {
 
   pub fn new(
     clock: Rc<RefCell<Clock>>,
+    events: Rc<RefCell<dyn FaunaUpdaterEvents>>,
     fauna: Rc<RefCell<Fauna>>,
     flora: Rc<RefCell<Flora>>,
     inputs: Rc<RefCell<dyn FaunaUpdaterInputs>>,
+    options: Rc<RefCell<dyn FaunaUpdaterOptions>>,
   ) -> Self {
     Self {
       clock,
+      events,
       fauna,
       flora,
       inputs,
+      options,
     }
   }
 
@@ -212,6 +227,7 @@ impl Updater for FaunaUpdater {
   fn update(&mut self) {
     if self.inputs.borrow().get_reset_requested() {
       self.reset();
+      self.events.borrow_mut().set_updated();
       return;
     }
     let mut new_bugs = Vec::<Bug>::new();
@@ -221,17 +237,23 @@ impl Updater for FaunaUpdater {
         new_bugs.push(Self::make_bug(position_index));
       }
     }
-    for bug in self.fauna.borrow_mut().bugs.iter_mut() {
-      Self::update_bug(
-        bug,
-        bugs_length,
-        &mut self.flora.borrow_mut().flora_present,
-        &mut new_bugs,
-        self.clock.borrow().time,
-      );
+    let time_to_update: bool = self.inputs.borrow().get_time_to_update();
+    if time_to_update && !self.options.borrow().get_pause() {
+      for bug in self.fauna.borrow_mut().bugs.iter_mut() {
+        Self::update_bug(
+          bug,
+          bugs_length,
+          &mut self.flora.borrow_mut().flora_present,
+          &mut new_bugs,
+          self.clock.borrow().time,
+        );
+      }
+      self.fauna.borrow_mut().bugs.retain(|bug| bug.energy > 0);
+      self.events.borrow_mut().set_updated();
     }
-    let mut fauna: RefMut<Fauna> = self.fauna.borrow_mut();
-    fauna.bugs.retain(|bug| bug.energy > 0);
-    fauna.bugs.append(&mut new_bugs);
+    if new_bugs.len() > 0 {
+      self.fauna.borrow_mut().bugs.append(&mut new_bugs);
+      self.events.borrow_mut().set_updated();
+    }
   }
 }

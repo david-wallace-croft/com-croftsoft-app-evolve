@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2023-02-27
+//! - Updated: 2023-02-28
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -14,7 +14,9 @@
 use super::clock::{
   ClockUpdater, ClockUpdaterEvents, ClockUpdaterInputs, ClockUpdaterOptions,
 };
-use super::fauna::{FaunaUpdater, FaunaUpdaterInputs};
+use super::fauna::{
+  FaunaUpdater, FaunaUpdaterEvents, FaunaUpdaterInputs, FaunaUpdaterOptions,
+};
 use super::flora::{
   FloraUpdater, FloraUpdaterEvents, FloraUpdaterInputs, FloraUpdaterOptions,
 };
@@ -65,6 +67,12 @@ impl WorldUpdaterEventsAdapter {
 }
 
 impl ClockUpdaterEvents for WorldUpdaterEventsAdapter {
+  fn set_updated(&mut self) {
+    self.events.borrow_mut().set_updated();
+  }
+}
+
+impl FaunaUpdaterEvents for WorldUpdaterEventsAdapter {
   fn set_updated(&mut self) {
     self.events.borrow_mut().set_updated();
   }
@@ -138,6 +146,10 @@ impl FaunaUpdaterInputs for WorldUpdaterInputsAdapter {
 
   fn get_reset_requested(&self) -> bool {
     self.inputs.borrow().get_reset_requested()
+  }
+
+  fn get_time_to_update(&self) -> bool {
+    self.events.borrow().get_time_to_update()
   }
 }
 
@@ -253,6 +265,12 @@ impl ClockUpdaterOptions for WorldUpdaterOptionsAdapter {
   }
 }
 
+impl FaunaUpdaterOptions for WorldUpdaterOptionsAdapter {
+  fn get_pause(&self) -> bool {
+    self.options.borrow().get_pause()
+  }
+}
+
 impl FloraUpdaterOptions for WorldUpdaterOptionsAdapter {
   fn get_pause(&self) -> bool {
     self.options.borrow().get_pause()
@@ -293,9 +311,11 @@ impl WorldUpdater {
     );
     let fauna_updater = FaunaUpdater::new(
       clock.clone(),
+      world_updater_events_adapter.clone(),
       fauna.clone(),
       flora.clone(),
       world_updater_inputs_adapter.clone(),
+      world_updater_options_adapter.clone(),
     );
     let flora_updater = FloraUpdater::new(
       world_updater_events_adapter.clone(),
