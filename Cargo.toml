@@ -1,6 +1,6 @@
 [package]
 name = "com-crofsoft-app-evolve"
-version = "0.10.0"
+version = "0.10.1-SNAPSHOT"
 authors = ["David Wallace Croft <david@CroftSoft.com>"]
 categories = ["games", "simulation"]
 description = "Evolve the movement of critters through food distribution"
