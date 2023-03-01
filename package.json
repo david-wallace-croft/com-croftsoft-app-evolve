@@ -1,7 +1,7 @@
 {
   "name": "com-croftsoft-app-evolve",
-  "version": "0.9.1-SNAPSHOT",
-  "author": "David Wallace Croft <david@croftsoft.com>",
+  "version": "0.10.0",
+  "author": "David Wallace Croft <david@CroftSoft.com>",
   "description": "Evolve critter movements via food distribution",
   "scripts": {
     "build": "rimraf dist pkg && webpack",

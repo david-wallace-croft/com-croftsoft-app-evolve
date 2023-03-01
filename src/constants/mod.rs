@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-11-27
-//! - Updated: 2023-02-12
+//! - Updated: 2023-02-28
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -14,7 +14,7 @@
 use crate::engine::configuration::Configuration;
 
 pub static INFO: &str =
-  "CroftSoft Evolve v0.9.1-SNAPSHOT Copyright 2022-2023 CroftSoft Inc";
+  "CroftSoft Evolve v0.10.0 Copyright 2022-2023 CroftSoft Inc";
 
 pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;
