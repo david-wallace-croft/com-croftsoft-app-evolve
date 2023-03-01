@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-17
-//! - Updated: 2023-02-27
+//! - Updated: 2023-02-28
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -140,10 +140,9 @@ impl Initializer for EvolveComponent {
 
 impl Painter for EvolveComponent {
   fn paint(&self) {
-    // TODO
-    // if !self.events.borrow().updated {
-    //   return;
-    // }
+    if !self.events.borrow().updated {
+      return;
+    }
     self.canvas_component.borrow().paint();
   }
 }

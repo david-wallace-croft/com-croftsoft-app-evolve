@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-02-06
-//! - Updated: 2023-02-27
+//! - Updated: 2023-02-28
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -22,6 +22,7 @@ pub struct Events {
 
 impl Events {
   pub fn clear(&mut self) {
+    self.time_to_update = false;
     self.update_period_millis_changed = None;
     self.updated = false;
   }
