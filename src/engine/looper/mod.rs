@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-07
-//! - Updated: 2023-02-27
+//! - Updated: 2023-03-01
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -20,6 +20,7 @@ use crate::messages::inputs::Inputs;
 use crate::models::options::Options;
 use crate::models::world::World;
 use crate::updaters::world::{WorldUpdater, WorldUpdaterConfiguration};
+use com_croftsoft_lib_animation::frame_rater::simple::SimpleFrameRater;
 use com_croftsoft_lib_animation::frame_rater::FrameRater;
 use com_croftsoft_lib_role::{Initializer, Painter, Updater};
 use core::cell::RefCell;
@@ -47,8 +48,9 @@ impl Looper {
     let world_updater_configuration = WorldUpdaterConfiguration {
       update_period_millis_initial,
     };
-    let frame_rater =
-      Rc::new(RefCell::new(FrameRater::new(update_period_millis_initial)));
+    let frame_rater: Rc<RefCell<dyn FrameRater>> = Rc::new(RefCell::new(
+      SimpleFrameRater::new(update_period_millis_initial),
+    ));
     let events = Rc::new(RefCell::new(Events::default()));
     let inputs = Rc::new(RefCell::new(Inputs::default()));
     let options = Rc::new(RefCell::new(Options::default()));

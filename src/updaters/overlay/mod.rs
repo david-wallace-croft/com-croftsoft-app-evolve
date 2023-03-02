@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-02-09
-//! - Updated: 2023-02-28
+//! - Updated: 2023-03-01
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -43,7 +43,7 @@ pub struct OverlayUpdater {
   clock: Rc<RefCell<Clock>>,
   events: Rc<RefCell<dyn OverlayUpdaterEvents>>,
   fauna: Rc<RefCell<Fauna>>,
-  frame_rater: Rc<RefCell<FrameRater>>,
+  frame_rater: Rc<RefCell<dyn FrameRater>>,
   inputs: Rc<RefCell<dyn OverlayUpdaterInputs>>,
   metronome: DeltaMetronome,
   options: Rc<RefCell<dyn OverlayUpdaterOptions>>,
@@ -117,7 +117,7 @@ impl OverlayUpdater {
     clock: Rc<RefCell<Clock>>,
     events: Rc<RefCell<dyn OverlayUpdaterEvents>>,
     fauna: Rc<RefCell<Fauna>>,
-    frame_rater: Rc<RefCell<FrameRater>>,
+    frame_rater: Rc<RefCell<dyn FrameRater>>,
     inputs: Rc<RefCell<dyn OverlayUpdaterInputs>>,
     options: Rc<RefCell<dyn OverlayUpdaterOptions>>,
     overlay: Rc<RefCell<Overlay>>,
