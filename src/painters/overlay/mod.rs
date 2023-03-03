@@ -5,35 +5,36 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-10
-//! - Updated: 2023-02-27
+//! - Updated: 2023-03-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::engine::traits::CanvasPainter;
 use crate::models::options::Options;
 use crate::models::overlay::Overlay;
+use com_croftsoft_lib_role::Painter;
 use core::cell::{Ref, RefCell};
 use std::rc::Rc;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
 pub struct OverlayPainter {
+  context: Rc<RefCell<CanvasRenderingContext2d>>,
   fill_style: JsValue,
-  // frame_rate: Rc<RefCell<FrameRate>>,
   options: Rc<RefCell<Options>>,
   overlay: Rc<RefCell<Overlay>>,
 }
 
 impl OverlayPainter {
   pub fn new(
-    // frame_rate: Rc<RefCell<FrameRate>>,
+    context: Rc<RefCell<CanvasRenderingContext2d>>,
     options: Rc<RefCell<Options>>,
     overlay: Rc<RefCell<Overlay>>,
   ) -> Self {
     let fill_style: JsValue = JsValue::from_str("white");
     Self {
+      context,
       fill_style,
       options,
       overlay,
@@ -41,11 +42,9 @@ impl OverlayPainter {
   }
 }
 
-impl CanvasPainter for OverlayPainter {
-  fn paint(
-    &self,
-    context: &CanvasRenderingContext2d,
-  ) {
+impl Painter for OverlayPainter {
+  fn paint(&self) {
+    let context = self.context.borrow();
     context.set_fill_style(&self.fill_style);
     context.set_font("bold 17px monospace");
     let overlay: Ref<Overlay> = self.overlay.borrow();

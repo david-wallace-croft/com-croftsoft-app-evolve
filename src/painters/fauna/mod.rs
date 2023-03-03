@@ -4,8 +4,8 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-29
-//! - Since: 2022-12-10
+//! - Created: 2022-12-10
+//! - Updated: 2023-03-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -13,9 +13,9 @@
 
 use crate::constants::{PAINT_OFFSET, PAINT_SCALE};
 use crate::engine::functions::location::{to_x_from_index, to_y_from_index};
-use crate::engine::traits::CanvasPainter;
 use crate::models::bug::Species;
 use crate::models::fauna::Fauna;
+use com_croftsoft_lib_role::Painter;
 use core::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::JsValue;
@@ -27,6 +27,7 @@ pub struct FaunaPainter {
   bug_color_twirler: JsValue,
   bug_height: f64,
   bug_width: f64,
+  context: Rc<RefCell<CanvasRenderingContext2d>>,
   fauna: Rc<RefCell<Fauna>>,
   scale_x: f64,
   scale_y: f64,
@@ -34,6 +35,7 @@ pub struct FaunaPainter {
 
 impl FaunaPainter {
   pub fn new(
+    context: Rc<RefCell<CanvasRenderingContext2d>>,
     fauna: Rc<RefCell<Fauna>>,
     scale_x: f64,
     scale_y: f64,
@@ -49,6 +51,7 @@ impl FaunaPainter {
       bug_color_twirler,
       bug_height,
       bug_width,
+      context,
       fauna,
       scale_x,
       scale_y,
@@ -56,11 +59,9 @@ impl FaunaPainter {
   }
 }
 
-impl CanvasPainter for FaunaPainter {
-  fn paint(
-    &self,
-    context: &CanvasRenderingContext2d,
-  ) {
+impl Painter for FaunaPainter {
+  fn paint(&self) {
+    let context = self.context.borrow();
     for bug in self.fauna.borrow().bugs.iter() {
       let bug_color = match bug.species {
         Species::Cruiser => &self.bug_color_cruiser,

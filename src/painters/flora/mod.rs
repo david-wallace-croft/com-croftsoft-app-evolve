@@ -4,8 +4,8 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-01-29
-//! - Since: 2022-12-10
+//! - Created: 2022-12-10
+//! - Updated: 2023-03-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -13,14 +13,15 @@
 
 use crate::constants::{PAINT_OFFSET, PAINT_SCALE};
 use crate::engine::functions::location::{to_x_from_index, to_y_from_index};
-use crate::engine::traits::CanvasPainter;
 use crate::models::flora::Flora;
+use com_croftsoft_lib_role::Painter;
 use core::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
 pub struct FloraPainter {
+  context: Rc<RefCell<CanvasRenderingContext2d>>,
   fill_style: JsValue,
   flora: Rc<RefCell<Flora>>,
   flora_height: f64,
@@ -31,6 +32,7 @@ pub struct FloraPainter {
 
 impl FloraPainter {
   pub fn new(
+    context: Rc<RefCell<CanvasRenderingContext2d>>,
     flora: Rc<RefCell<Flora>>,
     scale_x: f64,
     scale_y: f64,
@@ -39,6 +41,7 @@ impl FloraPainter {
     let flora_height = (PAINT_SCALE * scale_y).trunc();
     let flora_width = (PAINT_SCALE * scale_x).trunc();
     Self {
+      context,
       fill_style,
       flora_height,
       flora_width,
@@ -49,11 +52,9 @@ impl FloraPainter {
   }
 }
 
-impl CanvasPainter for FloraPainter {
-  fn paint(
-    &self,
-    context: &CanvasRenderingContext2d,
-  ) {
+impl Painter for FloraPainter {
+  fn paint(&self) {
+    let context = self.context.borrow();
     context.set_fill_style(&self.fill_style);
     self.flora.borrow().flora_present.iter().enumerate().for_each(
       |(index, location)| {
