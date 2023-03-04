@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-18
-//! - Updated: 2023-02-27
+//! - Updated: 2023-03-03
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -115,8 +115,8 @@ impl Initializer for CanvasComponent {
 }
 
 impl Painter for CanvasComponent {
-  fn paint(&self) {
-    if let Some(root_painter) = &self.root_painter_option {
+  fn paint(&mut self) {
+    if let Some(root_painter) = &mut self.root_painter_option {
       root_painter.paint();
     }
   }

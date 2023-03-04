@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-11-27
-//! - Updated: 2023-02-28
+//! - Updated: 2023-03-03
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -26,6 +26,7 @@ pub const EDEN_X0: usize = (SPACE_WIDTH - EDEN_WIDTH) / 2;
 pub const EDEN_X1: usize = EDEN_X0 + EDEN_WIDTH - 1;
 pub const EDEN_Y0: usize = (SPACE_WIDTH - EDEN_WIDTH) / 2;
 pub const EDEN_Y1: usize = EDEN_Y0 + EDEN_HEIGHT - 1;
+pub const FILL_STYLE_BACKGROUND: &str = "black";
 pub const FLORA_ENERGY: usize = 20;
 pub const GENES_MAX: usize = 8;
 pub const FLORA_GROWTH_RATE_INIT: usize = 10;

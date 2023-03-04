@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-10
-//! - Updated: 2023-03-02
+//! - Updated: 2023-03-03
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -53,7 +53,7 @@ impl FloraPainter {
 }
 
 impl Painter for FloraPainter {
-  fn paint(&self) {
+  fn paint(&mut self) {
     let context = self.context.borrow();
     context.set_fill_style(&self.fill_style);
     self.flora.borrow().flora_present.iter().enumerate().for_each(
