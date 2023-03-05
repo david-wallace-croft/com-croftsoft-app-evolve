@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-10
-//! - Updated: 2023-03-03
+//! - Updated: 2023-03-04
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -48,11 +48,13 @@ impl Painter for OverlayPainter {
     context.set_fill_style(&self.fill_style);
     context.set_font("bold 17px monospace");
     let overlay: Ref<Overlay> = self.overlay.borrow();
-    context.fill_text(&overlay.status_string, 4.0, 17.0).unwrap();
+    context.fill_text(&overlay.status_string, 4., 17.).unwrap();
     let options = self.options.borrow();
-    if options.frame_rate_display && !options.pause {
-      // self.frame_rate.borrow().display {
-      context.fill_text(&overlay.frame_rate_string, 4.0, 34.0).unwrap();
+    if options.update_rate_display && !options.pause {
+      context.fill_text(&overlay.update_rate_string, 4., 34.).unwrap();
+    }
+    if options.time_display {
+      context.fill_text(&overlay.time_string, 4., 51.).unwrap();
     }
   }
 }

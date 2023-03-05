@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2023-03-01
+//! - Updated: 2023-03-04
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -120,6 +120,7 @@ pub trait WorldUpdaterInputs {
   fn get_pause_change_requested(&self) -> Option<bool>;
   fn get_period_millis_change_requested(&self) -> Option<f64>;
   fn get_reset_requested(&self) -> bool;
+  fn get_time_display_change_requested(&self) -> Option<bool>;
 }
 
 struct WorldUpdaterInputsAdapter {
@@ -222,10 +223,6 @@ impl MetronomeUpdaterInputs for WorldUpdaterInputsAdapter {
 }
 
 impl OptionsUpdaterInputs for WorldUpdaterInputsAdapter {
-  fn get_frame_rate_display_change_requested(&self) -> Option<bool> {
-    self.inputs.borrow().get_frame_rate_display_change_requested()
-  }
-
   fn get_pause_change_requested(&self) -> Option<bool> {
     self.inputs.borrow().get_pause_change_requested()
   }
@@ -234,12 +231,20 @@ impl OptionsUpdaterInputs for WorldUpdaterInputsAdapter {
     self.inputs.borrow().get_reset_requested()
   }
 
+  fn get_time_display_change_requested(&self) -> Option<bool> {
+    self.inputs.borrow().get_time_display_change_requested()
+  }
+
   fn get_time_to_update(&self) -> bool {
     self.events.borrow().get_time_to_update()
   }
 
   fn get_update_period_millis_changed(&self) -> Option<f64> {
     self.events.borrow().get_update_period_millis_changed()
+  }
+
+  fn get_update_rate_display_change_requested(&self) -> Option<bool> {
+    self.inputs.borrow().get_frame_rate_display_change_requested()
   }
 
   fn get_update_time_millis(&self) -> f64 {
@@ -256,10 +261,6 @@ impl OverlayUpdaterInputs for WorldUpdaterInputsAdapter {
     self.inputs.borrow().get_current_time_millis()
   }
 
-  fn get_frame_rate_display_change_requested(&self) -> Option<bool> {
-    self.inputs.borrow().get_frame_rate_display_change_requested()
-  }
-
   fn get_pause_change_requested(&self) -> Option<bool> {
     self.inputs.borrow().get_pause_change_requested()
   }
@@ -268,13 +269,23 @@ impl OverlayUpdaterInputs for WorldUpdaterInputsAdapter {
     self.inputs.borrow().get_reset_requested()
   }
 
+  fn get_time_display_change_requested(&self) -> Option<bool> {
+    self.inputs.borrow().get_time_display_change_requested()
+  }
+
   fn get_time_to_update(&self) -> bool {
     self.events.borrow().get_time_to_update()
+  }
+
+  fn get_update_rate_display_change_requested(&self) -> Option<bool> {
+    self.inputs.borrow().get_frame_rate_display_change_requested()
   }
 }
 
 pub trait WorldUpdaterOptions {
   fn get_pause(&self) -> bool;
+  fn get_time_display(&self) -> bool;
+  fn get_update_rate_display(&self) -> bool;
 }
 
 struct WorldUpdaterOptionsAdapter {
@@ -310,6 +321,14 @@ impl FloraUpdaterOptions for WorldUpdaterOptionsAdapter {
 impl OverlayUpdaterOptions for WorldUpdaterOptionsAdapter {
   fn get_pause(&self) -> bool {
     self.options.borrow().get_pause()
+  }
+
+  fn get_time_display(&self) -> bool {
+    self.options.borrow().get_time_display()
+  }
+
+  fn get_update_rate_display(&self) -> bool {
+    self.options.borrow().get_update_rate_display()
   }
 }
 

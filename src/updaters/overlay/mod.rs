@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-02-09
-//! - Updated: 2023-03-01
+//! - Updated: 2023-03-04
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -20,6 +20,7 @@ use com_croftsoft_lib_animation::metronome::delta::DeltaMetronome;
 use com_croftsoft_lib_animation::metronome::Metronome;
 use com_croftsoft_lib_role::Updater;
 use core::cell::{Ref, RefCell, RefMut};
+use js_sys::Date;
 use std::rc::Rc;
 
 pub trait OverlayUpdaterEvents {
@@ -29,14 +30,17 @@ pub trait OverlayUpdaterEvents {
 pub trait OverlayUpdaterInputs {
   fn get_bug_requested(&self) -> Option<usize>;
   fn get_current_time_millis(&self) -> f64;
-  fn get_frame_rate_display_change_requested(&self) -> Option<bool>;
   fn get_pause_change_requested(&self) -> Option<bool>;
-  fn get_time_to_update(&self) -> bool;
   fn get_reset_requested(&self) -> bool;
+  fn get_time_display_change_requested(&self) -> Option<bool>;
+  fn get_time_to_update(&self) -> bool;
+  fn get_update_rate_display_change_requested(&self) -> Option<bool>;
 }
 
 pub trait OverlayUpdaterOptions {
   fn get_pause(&self) -> bool;
+  fn get_time_display(&self) -> bool;
+  fn get_update_rate_display(&self) -> bool;
 }
 
 pub struct OverlayUpdater {
@@ -51,13 +55,6 @@ pub struct OverlayUpdater {
 }
 
 impl OverlayUpdater {
-  fn make_frame_rate_string(&self) -> String {
-    format!(
-      "Simulation updates per second: {:.3}",
-      self.frame_rater.borrow().get_frames_per_second_sampled()
-    )
-  }
-
   fn make_genes_average_string(&self) -> String {
     let mut gene_x_string = String::from("X:");
     let mut gene_y_string = String::from("Y:");
@@ -113,6 +110,18 @@ impl OverlayUpdater {
     )
   }
 
+  fn make_time_string(&self) -> String {
+    let date: Date = Date::new_0();
+    date.to_locale_time_string("en-US").into()
+  }
+
+  fn make_update_rate_string(&self) -> String {
+    format!(
+      "Simulation updates per second: {:.3}",
+      self.frame_rater.borrow().get_frames_per_second_sampled()
+    )
+  }
+
   pub fn new(
     clock: Rc<RefCell<Clock>>,
     events: Rc<RefCell<dyn OverlayUpdaterEvents>>,
@@ -140,9 +149,15 @@ impl OverlayUpdater {
 
   fn update_overlay(&self) {
     let mut overlay: RefMut<Overlay> = self.overlay.borrow_mut();
-    overlay.frame_rate_string = self.make_frame_rate_string();
     overlay.status_string = self.make_status_string();
     self.events.borrow_mut().set_updated();
+    let options = self.options.borrow();
+    if options.get_time_display() {
+      overlay.time_string = self.make_time_string();
+    }
+    if options.get_update_rate_display() && !options.get_pause() {
+      overlay.update_rate_string = self.make_update_rate_string();
+    }
   }
 }
 
@@ -150,19 +165,19 @@ impl Updater for OverlayUpdater {
   fn update(&mut self) {
     let inputs: Ref<dyn OverlayUpdaterInputs> = self.inputs.borrow();
     if inputs.get_bug_requested().is_some()
-      || inputs.get_frame_rate_display_change_requested().is_some()
       || inputs.get_pause_change_requested().is_some()
       || inputs.get_reset_requested()
+      || inputs.get_time_display_change_requested().is_some()
+      || inputs.get_update_rate_display_change_requested().is_some()
     {
       self.update_overlay();
       return;
     }
-    if !inputs.get_time_to_update() || self.options.borrow().get_pause() {
-      return;
-    }
-    let current_time_millis: f64 = inputs.get_current_time_millis();
-    if self.metronome.tick(current_time_millis) {
-      self.update_overlay();
+    if inputs.get_time_to_update() {
+      let current_time_millis: f64 = inputs.get_current_time_millis();
+      if self.metronome.tick(current_time_millis) {
+        self.update_overlay();
+      }
     }
   }
 }

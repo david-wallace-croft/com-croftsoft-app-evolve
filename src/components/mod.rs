@@ -7,3 +7,4 @@ pub mod garden;
 pub mod pause;
 pub mod reset;
 pub mod speed;
+pub mod time;

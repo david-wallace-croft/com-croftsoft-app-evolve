@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-31
-//! - Updated: 2023-02-27
+//! - Updated: 2023-03-04
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -24,6 +24,7 @@ pub struct Inputs {
   pub pause_change_requested: Option<bool>,
   pub period_millis_change_requested: Option<f64>,
   pub reset_requested: bool,
+  pub time_display_change_requested: Option<bool>,
 }
 
 impl Inputs {
@@ -37,6 +38,7 @@ impl Inputs {
     self.pause_change_requested = None;
     self.period_millis_change_requested = None;
     self.reset_requested = false;
+    self.time_display_change_requested = None;
   }
 }
 
@@ -75,5 +77,9 @@ impl WorldUpdaterInputs for Inputs {
 
   fn get_reset_requested(&self) -> bool {
     self.reset_requested
+  }
+
+  fn get_time_display_change_requested(&self) -> Option<bool> {
+    self.time_display_change_requested
   }
 }

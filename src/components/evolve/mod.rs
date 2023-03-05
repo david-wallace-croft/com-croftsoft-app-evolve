@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-17
-//! - Updated: 2023-03-03
+//! - Updated: 2023-03-04
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -19,6 +19,7 @@ use super::garden::GardenComponent;
 use super::pause::PauseComponent;
 use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
+use super::time::TimeComponent;
 use crate::engine::functions::web_sys::get_window;
 use crate::engine::traits::Component;
 use crate::messages::events::Events;
@@ -33,7 +34,7 @@ use web_sys::{Document, HtmlCollection};
 pub struct EvolveComponent {
   blight_component: Rc<RefCell<BlightComponent>>,
   canvas_component: Rc<RefCell<CanvasComponent>>,
-  components: [Rc<RefCell<dyn Component>>; 8],
+  components: [Rc<RefCell<dyn Component>>; 9],
   events: Rc<RefCell<Events>>,
   flora_component: Rc<RefCell<FloraComponent>>,
   frame_rate_component: Rc<RefCell<FrameRateComponent>>,
@@ -41,6 +42,7 @@ pub struct EvolveComponent {
   pause_component: Rc<RefCell<PauseComponent>>,
   reset_component: Rc<RefCell<ResetComponent>>,
   speed_component: Rc<RefCell<SpeedComponent>>,
+  time_component: Rc<RefCell<TimeComponent>>,
 }
 
 impl EvolveComponent {
@@ -73,8 +75,10 @@ impl EvolveComponent {
     let reset_component =
       Rc::new(RefCell::new(ResetComponent::new("reset", inputs.clone())));
     let speed_component =
-      Rc::new(RefCell::new(SpeedComponent::new("speed", inputs)));
-    let components: [Rc<RefCell<dyn Component>>; 8] = [
+      Rc::new(RefCell::new(SpeedComponent::new("speed", inputs.clone())));
+    let time_component =
+      Rc::new(RefCell::new(TimeComponent::new("time", inputs)));
+    let components: [Rc<RefCell<dyn Component>>; 9] = [
       blight_component.clone(),
       canvas_component.clone(),
       flora_component.clone(),
@@ -83,6 +87,7 @@ impl EvolveComponent {
       pause_component.clone(),
       reset_component.clone(),
       speed_component.clone(),
+      time_component.clone(),
     ];
     Self {
       blight_component,
@@ -95,6 +100,7 @@ impl EvolveComponent {
       pause_component,
       reset_component,
       speed_component,
+      time_component,
     }
   }
 }
@@ -110,6 +116,7 @@ impl Component for EvolveComponent {
     let pause_html: String = self.pause_component.borrow().make_html();
     let reset_html: String = self.reset_component.borrow().make_html();
     let speed_html: String = self.speed_component.borrow().make_html();
+    let time_html: String = self.time_component.borrow().make_html();
     // TODO: Assemble this from an HTML template
     [
       String::from("<div id=\"evolve\">"),
@@ -122,6 +129,7 @@ impl Component for EvolveComponent {
       String::from("<br>"),
       speed_html,
       frame_rate_html,
+      time_html,
       pause_html,
       String::from("</div>"),
     ]
