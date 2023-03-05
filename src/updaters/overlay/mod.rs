@@ -148,16 +148,17 @@ impl OverlayUpdater {
   }
 
   fn update_overlay(&self) {
+    let options: Ref<dyn OverlayUpdaterOptions> = self.options.borrow();
     let mut overlay: RefMut<Overlay> = self.overlay.borrow_mut();
     overlay.status_string = self.make_status_string();
-    self.events.borrow_mut().set_updated();
-    let options = self.options.borrow();
+    if !options.get_pause() && options.get_update_rate_display() {
+      overlay.update_rate_string = self.make_update_rate_string();
+    }
     if options.get_time_display() {
       overlay.time_string = self.make_time_string();
     }
-    if options.get_update_rate_display() && !options.get_pause() {
-      overlay.update_rate_string = self.make_update_rate_string();
-    }
+    // TODO: Only set updated to true when the overlay data changes
+    self.events.borrow_mut().set_updated();
   }
 }
 
