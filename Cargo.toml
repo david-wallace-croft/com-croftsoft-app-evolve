@@ -1,6 +1,4 @@
 [package]
-name = "com-crofsoft-app-evolve"
-version = "0.11.1-SNAPSHOT"
 authors = ["David Wallace Croft <david@CroftSoft.com>"]
 categories = ["games", "simulation"]
 description = "Evolve the movement of critters through food distribution"
@@ -8,31 +6,32 @@ edition = "2021"
 homepage = "https://www.CroftSoft.com/"
 keywords = ["evolution", "simulation"]
 license = "MIT"
+name = "com-crofsoft-app-evolve"
 publish = false
 readme = "README.md"
 repository = "https://github.com/david-wallace-croft/com-croftsoft-app-evolve"
+version = "0.11.1-SNAPSHOT"
 
 [dependencies]
+anyhow = "1.0.66"
 # com-croftsoft-lib-animation = { git = "https://github.com/david-wallace-croft/com-croftsoft-lib-animation" }
 com-croftsoft-lib-animation = "0.0.4"
 com-croftsoft-lib-role = "0.2.0"
 console_error_panic_hook = "0.1.7"
-js-sys = "0.3.60"
-wasm-bindgen = "0.2.83"
+js-sys = "0.3.61"
 wee_alloc = { version = "0.4.5", optional = true }
+futures = "0.3.26"
 rand = "0.8.5"
-futures = "0.3.25"
-wasm-bindgen-futures = "0.4.33"
-anyhow = "1.0.66"
+wasm-bindgen = "0.2.84"
+wasm-bindgen-futures = "0.4.34"
 
 [dependencies.getrandom]
-version = "0.2.8"
 features = [
   "js",
 ]
+version = "0.2.8"
 
 [dependencies.web-sys]
-version = "0.3.60"
 features = [
   "CanvasRenderingContext2d",
   "Document",
@@ -48,12 +47,10 @@ features = [
   "Window",
   "console",
 ]
+version = "0.3.61"
 
 [dev-dependencies]
-futures = "0.3.25"
-js-sys = "0.3.60"
-wasm-bindgen-futures = "0.4.33"
-wasm-bindgen-test = "0.3.33"
+wasm-bindgen-test = "0.3.34"
 
 [features]
 default = ["wee_alloc"]
