@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-17
-//! - Updated: 2023-03-04
+//! - Updated: 2023-03-07
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -20,12 +20,12 @@ use super::pause::PauseComponent;
 use super::reset::ResetComponent;
 use super::speed::SpeedComponent;
 use super::time::TimeComponent;
-use crate::engine::functions::web_sys::get_window;
 use crate::engine::traits::Component;
 use crate::messages::events::Events;
 use crate::messages::inputs::Inputs;
 use crate::models::options::Options;
 use crate::models::world::World;
+use com_croftsoft_lib_animation::web_sys::get_window;
 use com_croftsoft_lib_role::{Initializer, Painter, Updater};
 use core::cell::RefCell;
 use std::rc::Rc;

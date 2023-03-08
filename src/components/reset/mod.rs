@@ -4,16 +4,16 @@
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
-//! - Version: 2023-02-06
-//! - Since: 2022-12-17
+//! - Created: 2022-12-17
+//! - Updated: 2023-03-07
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::engine::functions::web_sys::add_click_handler_by_id;
 use crate::engine::traits::Component;
 use crate::messages::inputs::Inputs;
+use com_croftsoft_lib_animation::web_sys::add_click_handler_by_id;
 use com_croftsoft_lib_role::{Initializer, Updater};
 use core::cell::RefCell;
 use futures::channel::mpsc::UnboundedReceiver;
