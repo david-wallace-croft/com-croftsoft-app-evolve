@@ -5,13 +5,13 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-31
-//! - Updated: 2023-03-04
+//! - Updated: 2023-03-08
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::updaters::world::WorldUpdaterInputs;
+use crate::updaters::root::RootUpdaterInputs;
 
 #[derive(Default)]
 pub struct Inputs {
@@ -42,7 +42,7 @@ impl Inputs {
   }
 }
 
-impl WorldUpdaterInputs for Inputs {
+impl RootUpdaterInputs for Inputs {
   fn get_blight_requested(&self) -> bool {
     self.blight_requested
   }

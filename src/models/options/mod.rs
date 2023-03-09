@@ -5,13 +5,13 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-02-27
-//! - Updated: 2023-03-04
+//! - Updated: 2023-03-08
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-use crate::updaters::world::WorldUpdaterOptions;
+use crate::updaters::root::RootUpdaterOptions;
 
 #[derive(Default)]
 pub struct Options {
@@ -20,7 +20,7 @@ pub struct Options {
   pub update_rate_display: bool,
 }
 
-impl WorldUpdaterOptions for Options {
+impl RootUpdaterOptions for Options {
   fn get_pause(&self) -> bool {
     self.pause
   }

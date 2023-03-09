@@ -1,11 +1,11 @@
 // =============================================================================
-//! - World Model for CroftSoft Evolve
+//! - Root Model for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-10
-//! - Updated: 2023-02-09
+//! - Updated: 2023-03-08
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -19,7 +19,7 @@ use core::cell::RefCell;
 use std::rc::Rc;
 
 #[derive(Default)]
-pub struct World {
+pub struct Root {
   pub clock: Rc<RefCell<Clock>>,
   pub fauna: Rc<RefCell<Fauna>>,
   pub flora: Rc<RefCell<Flora>>,
