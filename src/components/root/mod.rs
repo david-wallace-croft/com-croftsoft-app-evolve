@@ -1,11 +1,11 @@
 // =============================================================================
-//! - Component for the Evolve application
+//! - Root Component for CroftSoft Evolve
 //!
 //! # Metadata
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-17
-//! - Updated: 2023-03-08
+//! - Updated: 2023-03-09
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -31,7 +31,7 @@ use core::cell::RefCell;
 use std::rc::Rc;
 use web_sys::{Document, HtmlCollection};
 
-pub struct EvolveComponent {
+pub struct RootComponent {
   blight_component: Rc<RefCell<BlightComponent>>,
   canvas_component: Rc<RefCell<CanvasComponent>>,
   components: [Rc<RefCell<dyn Component>>; 9],
@@ -45,7 +45,7 @@ pub struct EvolveComponent {
   time_component: Rc<RefCell<TimeComponent>>,
 }
 
-impl EvolveComponent {
+impl RootComponent {
   pub fn new(
     events: Rc<RefCell<Events>>,
     // TODO: do something with the ID
@@ -105,7 +105,7 @@ impl EvolveComponent {
   }
 }
 
-impl Component for EvolveComponent {
+impl Component for RootComponent {
   fn make_html(&self) -> String {
     let blight_html: String = self.blight_component.borrow().make_html();
     let canvas_html: String = self.canvas_component.borrow().make_html();
@@ -119,7 +119,7 @@ impl Component for EvolveComponent {
     let time_html: String = self.time_component.borrow().make_html();
     // TODO: Assemble this from an HTML template
     [
-      String::from("<div id=\"evolve\">"),
+      String::from("<div id=\"root\">"),
       canvas_html,
       String::from("<br>"),
       reset_html,
@@ -137,16 +137,16 @@ impl Component for EvolveComponent {
   }
 }
 
-impl Initializer for EvolveComponent {
+impl Initializer for RootComponent {
   fn initialize(&mut self) {
     let document: Document = get_window().unwrap().document().unwrap();
     let html_collection: HtmlCollection =
       document.get_elements_by_tag_name("com-croftsoft-app-evolve");
     let element_option = html_collection.item(0);
     let element = element_option.unwrap();
-    let evolve_html: String = self.make_html();
+    let root_html: String = self.make_html();
     // TODO: Remove existing child nodes
-    let _result = element.insert_adjacent_html("afterbegin", &evolve_html);
+    let _result = element.insert_adjacent_html("afterbegin", &root_html);
     self
       .components
       .iter()
@@ -154,7 +154,7 @@ impl Initializer for EvolveComponent {
   }
 }
 
-impl Painter for EvolveComponent {
+impl Painter for RootComponent {
   fn paint(&mut self) {
     if !self.events.borrow().updated {
       return;
@@ -163,7 +163,7 @@ impl Painter for EvolveComponent {
   }
 }
 
-impl Updater for EvolveComponent {
+impl Updater for RootComponent {
   fn update(&mut self) {
     self
       .components
