@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-02-27
-//! - Updated: 2023-03-04
+//! - Updated: 2023-06-26
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -18,12 +18,8 @@ use std::rc::Rc;
 
 pub trait OptionsUpdaterInputs {
   fn get_pause_change_requested(&self) -> Option<bool>;
-  fn get_reset_requested(&self) -> bool;
   fn get_time_display_change_requested(&self) -> Option<bool>;
-  fn get_time_to_update(&self) -> bool;
-  fn get_update_period_millis_changed(&self) -> Option<f64>;
   fn get_update_rate_display_change_requested(&self) -> Option<bool>;
-  fn get_update_time_millis(&self) -> f64;
 }
 
 pub struct OptionsUpdater {

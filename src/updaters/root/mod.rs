@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2023-03-08
+//! - Updated: 2023-06-26
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -227,28 +227,12 @@ impl OptionsUpdaterInputs for RootUpdaterInputsAdapter {
     self.inputs.borrow().get_pause_change_requested()
   }
 
-  fn get_reset_requested(&self) -> bool {
-    self.inputs.borrow().get_reset_requested()
-  }
-
   fn get_time_display_change_requested(&self) -> Option<bool> {
     self.inputs.borrow().get_time_display_change_requested()
   }
 
-  fn get_time_to_update(&self) -> bool {
-    self.events.borrow().get_time_to_update()
-  }
-
-  fn get_update_period_millis_changed(&self) -> Option<f64> {
-    self.events.borrow().get_update_period_millis_changed()
-  }
-
   fn get_update_rate_display_change_requested(&self) -> Option<bool> {
     self.inputs.borrow().get_frame_rate_display_change_requested()
-  }
-
-  fn get_update_time_millis(&self) -> f64 {
-    self.inputs.borrow().get_current_time_millis()
   }
 }
 
