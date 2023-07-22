@@ -10,7 +10,7 @@ name = "com-crofsoft-app-evolve"
 publish = false
 readme = "README.md"
 repository = "https://github.com/david-wallace-croft/com-croftsoft-app-evolve"
-version = "0.11.1"
+version = "0.11.2-SNAPSHOT"
 
 [dependencies]
 anyhow = "1.0.72"

@@ -14,7 +14,7 @@
 use crate::engine::configuration::Configuration;
 
 pub static INFO: &str =
-  "CroftSoft Evolve v0.11.1 Copyright 2022-2023 CroftSoft Inc";
+  "CroftSoft Evolve v0.11.2-SNAPSHOT Copyright 2022-2023 CroftSoft Inc";
 
 pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;
