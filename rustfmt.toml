@@ -16,5 +16,6 @@ struct_lit_width = 0
 struct_variant_width = 0
 tab_spaces = 2
 use_try_shorthand = true
+use_field_init_shorthand = true
 # version = "Two"
 # wrap_comments = true
