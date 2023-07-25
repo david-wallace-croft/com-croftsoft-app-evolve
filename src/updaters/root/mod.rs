@@ -170,7 +170,10 @@ impl FloraUpdaterInputs for RootUpdaterInputsAdapter {
   }
 
   fn get_flora_growth_rate_change_requested(&self) -> Option<usize> {
-    self.inputs.borrow().get_flora_growth_rate_change_requested()
+    self
+      .inputs
+      .borrow()
+      .get_flora_growth_rate_change_requested()
   }
 
   fn get_garden_change_requested(&self) -> Option<bool> {
@@ -188,7 +191,10 @@ impl FloraUpdaterInputs for RootUpdaterInputsAdapter {
 
 impl FrameRaterUpdaterInputs for RootUpdaterInputsAdapter {
   fn get_frame_rate_display_change_requested(&self) -> Option<bool> {
-    self.inputs.borrow().get_frame_rate_display_change_requested()
+    self
+      .inputs
+      .borrow()
+      .get_frame_rate_display_change_requested()
   }
 
   fn get_reset_requested(&self) -> bool {
@@ -232,7 +238,10 @@ impl OptionsUpdaterInputs for RootUpdaterInputsAdapter {
   }
 
   fn get_update_rate_display_change_requested(&self) -> Option<bool> {
-    self.inputs.borrow().get_frame_rate_display_change_requested()
+    self
+      .inputs
+      .borrow()
+      .get_frame_rate_display_change_requested()
   }
 }
 
@@ -262,7 +271,10 @@ impl OverlayUpdaterInputs for RootUpdaterInputsAdapter {
   }
 
   fn get_update_rate_display_change_requested(&self) -> Option<bool> {
-    self.inputs.borrow().get_frame_rate_display_change_requested()
+    self
+      .inputs
+      .borrow()
+      .get_frame_rate_display_change_requested()
   }
 }
 
@@ -404,6 +416,9 @@ impl RootUpdater {
 
 impl Updater for RootUpdater {
   fn update(&mut self) {
-    self.child_updaters.iter_mut().for_each(|updater| updater.update());
+    self
+      .child_updaters
+      .iter_mut()
+      .for_each(|updater| updater.update());
   }
 }

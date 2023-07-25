@@ -114,8 +114,10 @@ impl Updater for FloraUpdater {
       self.events.borrow_mut().set_updated();
       return;
     }
-    if let Some(flora_growth_rate) =
-      self.inputs.borrow().get_flora_growth_rate_change_requested()
+    if let Some(flora_growth_rate) = self
+      .inputs
+      .borrow()
+      .get_flora_growth_rate_change_requested()
     {
       let mut flora: RefMut<Flora> = self.flora.borrow_mut();
       if flora_growth_rate < FLORA_GROWTH_RATE_MAX {

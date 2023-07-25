@@ -51,7 +51,9 @@ impl Painter for OverlayPainter {
     context.fill_text(&overlay.status_string, 4., 17.).unwrap();
     let options = self.options.borrow();
     if options.update_rate_display && !options.pause {
-      context.fill_text(&overlay.update_rate_string, 4., 34.).unwrap();
+      context
+        .fill_text(&overlay.update_rate_string, 4., 34.)
+        .unwrap();
     }
     if options.time_display {
       context.fill_text(&overlay.time_string, 4., 51.).unwrap();

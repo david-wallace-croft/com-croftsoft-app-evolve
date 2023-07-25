@@ -56,8 +56,13 @@ impl Painter for FloraPainter {
   fn paint(&mut self) {
     let context = self.context.borrow();
     context.set_fill_style(&self.fill_style);
-    self.flora.borrow().flora_present.iter().enumerate().for_each(
-      |(index, location)| {
+    self
+      .flora
+      .borrow()
+      .flora_present
+      .iter()
+      .enumerate()
+      .for_each(|(index, location)| {
         if *location {
           let x: f64 = to_x_from_index(index) as f64;
           let y: f64 = to_y_from_index(index) as f64;
@@ -70,7 +75,6 @@ impl Painter for FloraPainter {
             self.flora_height,
           );
         }
-      },
-    );
+      });
   }
 }
