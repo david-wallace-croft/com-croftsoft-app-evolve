@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-10
-//! - Updated: 2023-03-03
+//! - Updated: 2023-09-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -60,7 +60,7 @@ impl FaunaPainter {
 }
 
 impl Painter for FaunaPainter {
-  fn paint(&mut self) {
+  fn paint(&self) {
     let context = self.context.borrow();
     for bug in self.fauna.borrow().bugs.iter() {
       let bug_color = match bug.species {

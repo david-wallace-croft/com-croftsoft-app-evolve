@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-16
-//! - Updated: 2023-02-07
+//! - Updated: 2023-09-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -14,7 +14,7 @@
 use crate::engine::traits::Component;
 use crate::messages::inputs::Inputs;
 use com_croftsoft_lib_animation::web_sys::add_change_handler_by_id;
-use com_croftsoft_lib_role::{Initializer, Updater};
+use com_croftsoft_lib_role::{InitializerMut, UpdaterMut};
 use core::cell::RefCell;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
 use std::rc::Rc;
@@ -60,13 +60,13 @@ impl Component for GardenComponent {
   }
 }
 
-impl Initializer for GardenComponent {
+impl InitializerMut for GardenComponent {
   fn initialize(&mut self) {
     self.event_unbounded_receiver_option = add_change_handler_by_id(&self.id);
   }
 }
 
-impl Updater for GardenComponent {
+impl UpdaterMut for GardenComponent {
   fn update(&mut self) {
     let event_option = self.changed();
     if let Some(event) = event_option {

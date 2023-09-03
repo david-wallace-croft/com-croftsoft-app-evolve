@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-02-09
-//! - Updated: 2023-03-04
+//! - Updated: 2023-09-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -49,7 +49,7 @@ pub struct OverlayUpdater {
   fauna: Rc<RefCell<Fauna>>,
   frame_rater: Rc<RefCell<dyn FrameRater>>,
   inputs: Rc<RefCell<dyn OverlayUpdaterInputs>>,
-  metronome: DeltaMetronome,
+  metronome: RefCell<DeltaMetronome>,
   options: Rc<RefCell<dyn OverlayUpdaterOptions>>,
   overlay: Rc<RefCell<Overlay>>,
 }
@@ -131,10 +131,10 @@ impl OverlayUpdater {
     options: Rc<RefCell<dyn OverlayUpdaterOptions>>,
     overlay: Rc<RefCell<Overlay>>,
   ) -> Self {
-    let metronome = DeltaMetronome {
+    let metronome = RefCell::new(DeltaMetronome {
       period_millis: OVERLAY_REFRESH_PERIOD_MILLIS,
       time_millis_next_tick: 0.,
-    };
+    });
     Self {
       clock,
       events,
@@ -163,7 +163,7 @@ impl OverlayUpdater {
 }
 
 impl Updater for OverlayUpdater {
-  fn update(&mut self) {
+  fn update(&self) {
     let inputs: Ref<dyn OverlayUpdaterInputs> = self.inputs.borrow();
     if inputs.get_bug_requested().is_some()
       || inputs.get_pause_change_requested().is_some()
@@ -176,7 +176,7 @@ impl Updater for OverlayUpdater {
     }
     if inputs.get_time_to_update() {
       let current_time_millis: f64 = inputs.get_current_time_millis();
-      if self.metronome.tick(current_time_millis) {
+      if self.metronome.borrow_mut().tick(current_time_millis) {
         self.update_overlay();
       }
     }

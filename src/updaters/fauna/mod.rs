@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2023-02-28
+//! - Updated: 2023-09-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -120,7 +120,7 @@ impl FaunaUpdater {
     }
   }
 
-  fn reset(&mut self) {
+  fn reset(&self) {
     let position: usize = to_index_from_xy(SPACE_WIDTH / 2, SPACE_HEIGHT / 2);
     let mut fauna: RefMut<Fauna> = self.fauna.borrow_mut();
     fauna.bugs.clear();
@@ -224,7 +224,7 @@ impl FaunaUpdater {
 }
 
 impl Updater for FaunaUpdater {
-  fn update(&mut self) {
+  fn update(&self) {
     if self.inputs.borrow().get_reset_requested() {
       self.reset();
       self.events.borrow_mut().set_updated();

@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2023-02-27
+//! - Updated: 2023-09-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -61,7 +61,7 @@ impl FloraUpdater {
   }
 
   fn set_flora_present_for_all_locations(
-    &mut self,
+    &self,
     present: bool,
   ) {
     self
@@ -73,7 +73,7 @@ impl FloraUpdater {
   }
 
   fn set_garden_values(
-    &mut self,
+    &self,
     value: bool,
   ) {
     let mut flora: RefMut<Flora> = self.flora.borrow_mut();
@@ -86,7 +86,7 @@ impl FloraUpdater {
   }
 
   // TODO: move this
-  fn update_garden(&mut self) {
+  fn update_garden(&self) {
     let garden_change_requested: Option<bool> =
       self.inputs.borrow().get_garden_change_requested();
     if let Some(enabled) = garden_change_requested {
@@ -108,7 +108,7 @@ impl FloraUpdater {
 }
 
 impl Updater for FloraUpdater {
-  fn update(&mut self) {
+  fn update(&self) {
     if self.inputs.borrow().get_reset_requested() {
       self.set_flora_present_for_all_locations(true);
       self.events.borrow_mut().set_updated();

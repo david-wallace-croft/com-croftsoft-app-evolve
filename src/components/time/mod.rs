@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-03-04
-//! - Updated: 2023-03-07
+//! - Updated: 2023-09-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -14,7 +14,7 @@
 use crate::engine::traits::Component;
 use crate::messages::inputs::Inputs;
 use com_croftsoft_lib_animation::web_sys::add_change_handler_by_id;
-use com_croftsoft_lib_role::{Initializer, Updater};
+use com_croftsoft_lib_role::{InitializerMut, UpdaterMut};
 use core::cell::RefCell;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
 use std::rc::Rc;
@@ -57,13 +57,13 @@ impl Component for TimeComponent {
   }
 }
 
-impl Initializer for TimeComponent {
+impl InitializerMut for TimeComponent {
   fn initialize(&mut self) {
     self.event_unbounded_receiver_option = add_change_handler_by_id(&self.id);
   }
 }
 
-impl Updater for TimeComponent {
+impl UpdaterMut for TimeComponent {
   fn update(&mut self) {
     let event_option = self.changed();
     if let Some(event) = event_option {

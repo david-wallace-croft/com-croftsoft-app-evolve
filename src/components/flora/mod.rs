@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-25
-//! - Updated: 2023-03-07
+//! - Updated: 2023-09-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -15,7 +15,7 @@ use crate::constants::{FLORA_GROWTH_RATE_INIT, FLORA_GROWTH_RATE_MAX};
 use crate::engine::traits::Component;
 use crate::messages::inputs::Inputs;
 use com_croftsoft_lib_animation::web_sys::add_change_handler_by_id;
-use com_croftsoft_lib_role::{Initializer, Updater};
+use com_croftsoft_lib_role::{InitializerMut, UpdaterMut};
 use core::cell::RefCell;
 use futures::channel::mpsc::{TryRecvError, UnboundedReceiver};
 use std::rc::Rc;
@@ -61,13 +61,13 @@ impl Component for FloraComponent {
   }
 }
 
-impl Initializer for FloraComponent {
+impl InitializerMut for FloraComponent {
   fn initialize(&mut self) {
     self.unbounded_receiver_option = add_change_handler_by_id(&self.id);
   }
 }
 
-impl Updater for FloraComponent {
+impl UpdaterMut for FloraComponent {
   fn update(&mut self) {
     let event_option = self.changed();
     if let Some(event) = event_option {

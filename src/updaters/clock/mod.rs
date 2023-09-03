@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2023-02-27
+//! - Updated: 2023-09-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -54,7 +54,7 @@ impl ClockUpdater {
 }
 
 impl Updater for ClockUpdater {
-  fn update(&mut self) {
+  fn update(&self) {
     let mut clock: RefMut<Clock> = self.clock.borrow_mut();
     let inputs: Ref<dyn ClockUpdaterInputs> = self.inputs.borrow();
     if inputs.get_reset_requested() {
