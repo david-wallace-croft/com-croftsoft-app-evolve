@@ -2,10 +2,10 @@
 //! - Constants for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2024 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-11-27
-//! - Updated: 2023-07-22
+//! - Updated: 2024-02-23
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
