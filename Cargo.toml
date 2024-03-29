@@ -10,6 +10,7 @@ name = "com-crofsoft-app-evolve"
 publish = false
 readme = "README.md"
 repository = "https://github.com/david-wallace-croft/com-croftsoft-app-evolve"
+rust-version = "1.58.1"
 version = "0.11.2-SNAPSHOT"
 
 [dependencies]
