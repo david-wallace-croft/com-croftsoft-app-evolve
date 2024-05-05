@@ -2,10 +2,10 @@
 //! - Root Updater for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2023-2024 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2023-09-02
+//! - Updated: 2024-05-05
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -47,6 +47,7 @@ pub struct RootUpdaterConfiguration {
 }
 
 pub trait RootUpdaterEvents {
+  // TODO: clippy is flagging this as not being used
   fn get_updated(&self) -> bool;
   fn get_time_to_update(&self) -> bool;
   fn get_update_period_millis_changed(&self) -> Option<f64>;
