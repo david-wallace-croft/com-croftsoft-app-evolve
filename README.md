@@ -11,6 +11,11 @@
 
 ![CroftSoft Evolve version 0.6.0](./media/croftsoft-evolve-v0.6.0-2022-12-26-a.png)
 
+## Update 2025-04-06
+
+- You might have to revert npm to version 8.19.4 to get this to work again
+- See https://github.com/parrotmac/rust-wasm-hello-world
+
 ## Usage
 
 - cd com-croftsoft-app-evolve/
