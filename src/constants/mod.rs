@@ -2,10 +2,10 @@
 //! - Constants for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022-2024 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-11-27
-//! - Updated: 2024-02-23
+//! - Updated: 2026-08-23
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -14,7 +14,7 @@
 use crate::engine::configuration::Configuration;
 
 pub static INFO: &str =
-  "CroftSoft Evolve v0.11.2-SNAPSHOT Copyright 2022-2024 CroftSoft Inc";
+  "CroftSoft Evolve v0.12.0 Copyright 2022-2026 CroftSoft Inc";
 
 pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;

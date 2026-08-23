@@ -2,10 +2,10 @@
 //! - Fauna Updater for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2023-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2023-09-02
+//! - Updated: 2026-08-23
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -23,12 +23,10 @@ use crate::models::bug::{Bug, Species};
 use crate::models::clock::Clock;
 use crate::models::fauna::Fauna;
 use crate::models::flora::Flora;
+use ::web_sys::js_sys::Math::random;
 use com_croftsoft_lib_role::Updater;
 use core::cell::{RefCell, RefMut};
 use std::rc::Rc;
-
-// TODO: Should I be using the js_sys random?
-use rand::{rngs::ThreadRng, Rng};
 
 pub trait FaunaUpdaterEvents {
   fn set_updated(&mut self);
@@ -88,8 +86,8 @@ impl FaunaUpdater {
     let mut genes_x: [bool; GENES_MAX] = [false; GENES_MAX];
     let mut genes_y: [bool; GENES_MAX] = [false; GENES_MAX];
     for index in 0..GENES_MAX {
-      genes_x[index] = rand::random();
-      genes_y[index] = rand::random();
+      genes_x[index] = random() < 0.5;
+      genes_y[index] = random() < 0.5;
     }
     let mut bug = Bug {
       energy,
@@ -162,7 +160,7 @@ impl FaunaUpdater {
     let bug_position: usize = bug.position;
     let mut x = to_x_from_index(bug_position);
     let mut y = to_y_from_index(bug_position);
-    if rand::random() {
+    if random() < 0.5 {
       if bug.genes_x[time] {
         if x < SPACE_WIDTH - 1 {
           x += 1;
@@ -175,7 +173,7 @@ impl FaunaUpdater {
         x = SPACE_WIDTH - 1;
       }
     }
-    if rand::random() {
+    if random() < 0.5 {
       if bug.genes_y[time] {
         if y < SPACE_HEIGHT - 1 {
           y += 1;
@@ -208,11 +206,10 @@ impl FaunaUpdater {
       position: bug.position,
       species: bug.species,
     };
-    let mut thread_rng: ThreadRng = rand::thread_rng();
-    let roll: usize = thread_rng.gen_range(0..10);
+    let roll: usize = (random() * 10.) as usize;
     if roll == 0 {
-      let mutant_gene_index: usize = thread_rng.gen_range(0..GENES_MAX);
-      if rand::random() {
+      let mutant_gene_index: usize = (random() * GENES_MAX as f64) as usize;
+      if random() < 0.5 {
         baby_bug.genes_x[mutant_gene_index] = !bug.genes_x[mutant_gene_index];
       } else {
         baby_bug.genes_y[mutant_gene_index] = !bug.genes_y[mutant_gene_index];

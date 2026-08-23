@@ -2,10 +2,10 @@
 //! - Flora Updater for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2023-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2023-09-02
+//! - Updated: 2026-08-23
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -16,11 +16,10 @@ use crate::constants::{
 };
 use crate::engine::functions::location::to_index_from_xy;
 use crate::models::flora::Flora;
+use ::web_sys::js_sys::Math::random;
 use com_croftsoft_lib_role::Updater;
 use core::cell::{RefCell, RefMut};
 use std::rc::Rc;
-// TODO: Should I be using the js_sys random?
-use rand::{rngs::ThreadRng, Rng};
 
 pub trait FloraUpdaterEvents {
   fn set_updated(&mut self);
@@ -132,11 +131,11 @@ impl Updater for FloraUpdater {
     } else {
       let time_to_update: bool = self.inputs.borrow().get_time_to_update();
       if time_to_update && !self.options.borrow().get_pause() {
-        let mut thread_rng: ThreadRng = rand::thread_rng();
         let mut flora: RefMut<Flora> = self.flora.borrow_mut();
         for _i in 0..flora.flora_growth_rate {
           // Randomly position food flora
-          let index: usize = thread_rng.gen_range(0..flora.flora_present.len());
+          let index: usize =
+            (random() * flora.flora_present.len() as f64) as usize;
           flora.flora_present[index] = true;
         }
         self.events.borrow_mut().set_updated();
