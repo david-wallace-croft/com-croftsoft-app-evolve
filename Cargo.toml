@@ -11,7 +11,7 @@ publish = false
 readme = "README.md"
 repository = "https://github.com/david-wallace-croft/com-croftsoft-app-evolve"
 rust-version = "1.98"
-version = "0.12.0"
+version = "0.12.1-SNAPSHOT"
 
 [dependencies]
 anyhow = "~1.0.104"
