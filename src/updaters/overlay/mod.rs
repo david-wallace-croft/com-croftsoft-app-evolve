@@ -2,10 +2,10 @@
 //! - Overlay Updater for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2023-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-02-09
-//! - Updated: 2023-09-02
+//! - Updated: 2026-08-26
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -16,8 +16,8 @@ use crate::models::clock::Clock;
 use crate::models::fauna::Fauna;
 use crate::models::overlay::Overlay;
 use com_croftsoft_lib_animation::frame_rater::FrameRater;
-use com_croftsoft_lib_animation::metronome::delta::DeltaMetronome;
 use com_croftsoft_lib_animation::metronome::Metronome;
+use com_croftsoft_lib_animation::metronome::delta::DeltaMetronome;
 use com_croftsoft_lib_role::Updater;
 use core::cell::{Ref, RefCell, RefMut};
 use js_sys::Date;

@@ -2,10 +2,10 @@
 //! - Root Updater for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2023-2024 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2023-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2024-05-05
+//! - Updated: 2026-08-26
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -31,9 +31,9 @@ use crate::models::flora::Flora;
 use crate::models::options::Options;
 use crate::models::overlay::Overlay;
 use crate::models::root::Root;
+use com_croftsoft_lib_animation::frame_rater::FrameRater;
 use com_croftsoft_lib_animation::frame_rater::updater::FrameRaterUpdater;
 use com_croftsoft_lib_animation::frame_rater::updater::FrameRaterUpdaterInputs;
-use com_croftsoft_lib_animation::frame_rater::FrameRater;
 use com_croftsoft_lib_animation::metronome::delta::DeltaMetronome;
 use com_croftsoft_lib_animation::metronome::updater::{
   MetronomeUpdater, MetronomeUpdaterEvents, MetronomeUpdaterInputs,

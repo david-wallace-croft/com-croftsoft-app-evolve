@@ -2,10 +2,10 @@
 //! - Root Painter for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-11-27
-//! - Updated: 2023-09-02
+//! - Updated: 2026-08-26
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -24,7 +24,7 @@ use js_sys::Object;
 use std::rc::Rc;
 use wasm_bindgen::JsCast;
 use web_sys::{
-  window, CanvasRenderingContext2d, Document, Element, HtmlCanvasElement,
+  CanvasRenderingContext2d, Document, Element, HtmlCanvasElement, window,
 };
 
 pub struct RootPainter {
