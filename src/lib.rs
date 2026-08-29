@@ -2,16 +2,17 @@
 //! - Main function for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-09-12
-//! - Updated: 2023-03-07
+//! - Updated: 2026-08-28
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
 // =============================================================================
 
-#![allow(clippy::uninlined_format_args)]
+#![expect(clippy::uninlined_format_args)]
+#![expect(deprecated)]
 
 use com_croftsoft_lib_animation::web_sys::log;
 use constants::INFO;

@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2026-08-26
+//! - Updated: 2026-08-28
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -48,6 +48,7 @@ pub struct RootUpdaterConfiguration {
 
 pub trait RootUpdaterEvents {
   // TODO: clippy is flagging this as not being used
+  #[expect(dead_code)]
   fn get_updated(&self) -> bool;
   fn get_time_to_update(&self) -> bool;
   fn get_update_period_millis_changed(&self) -> Option<f64>;

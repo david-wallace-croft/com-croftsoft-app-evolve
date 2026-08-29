@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2023-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2023-01-25
-//! - Updated: 2026-08-23
+//! - Updated: 2026-08-28
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -229,11 +229,13 @@ impl Updater for FaunaUpdater {
     }
     let mut new_bugs = Vec::<Bug>::new();
     let bugs_length = self.fauna.borrow().bugs.len();
-    if bugs_length < BUGS_MAX {
-      if let Some(position_index) = self.inputs.borrow().get_bug_requested() {
-        new_bugs.push(Self::make_bug(position_index));
-      }
+
+    if bugs_length < BUGS_MAX
+      && let Some(position_index) = self.inputs.borrow().get_bug_requested()
+    {
+      new_bugs.push(Self::make_bug(position_index));
     }
+
     let time_to_update: bool = self.inputs.borrow().get_time_to_update();
     if time_to_update && !self.options.borrow().get_pause() {
       for bug in self.fauna.borrow_mut().bugs.iter_mut() {
