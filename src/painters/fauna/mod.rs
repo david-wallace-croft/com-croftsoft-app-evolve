@@ -2,10 +2,10 @@
 //! - Fauna Painter for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-10
-//! - Updated: 2023-09-02
+//! - Updated: 2026-09-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -18,13 +18,16 @@ use crate::models::fauna::Fauna;
 use com_croftsoft_lib_role::Painter;
 use core::cell::RefCell;
 use std::rc::Rc;
-use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
+const FILL_STYLE_BLUE: &str = "blue";
+const FILL_STYLE_MAGENTA: &str = "magenta";
+const FILL_STYLE_RED: &str = "red";
+
 pub struct FaunaPainter {
-  bug_color_cruiser: JsValue,
-  bug_color_normal: JsValue,
-  bug_color_twirler: JsValue,
+  bug_color_cruiser: &'static str,
+  bug_color_normal: &'static str,
+  bug_color_twirler: &'static str,
   bug_height: f64,
   bug_width: f64,
   context: Rc<RefCell<CanvasRenderingContext2d>>,
@@ -40,9 +43,9 @@ impl FaunaPainter {
     scale_x: f64,
     scale_y: f64,
   ) -> Self {
-    let bug_color_cruiser = JsValue::from_str("red");
-    let bug_color_normal = JsValue::from_str("magenta");
-    let bug_color_twirler = JsValue::from_str("blue");
+    let bug_color_cruiser = FILL_STYLE_RED;
+    let bug_color_normal = FILL_STYLE_MAGENTA;
+    let bug_color_twirler = FILL_STYLE_BLUE;
     let bug_height = (PAINT_SCALE * scale_y).trunc();
     let bug_width = (PAINT_SCALE * scale_x).trunc();
     Self {
@@ -63,12 +66,12 @@ impl Painter for FaunaPainter {
   fn paint(&self) {
     let context = self.context.borrow();
     for bug in self.fauna.borrow().bugs.iter() {
-      let bug_color = match bug.species {
-        Species::Cruiser => &self.bug_color_cruiser,
-        Species::Normal => &self.bug_color_normal,
-        Species::Twirlie => &self.bug_color_twirler,
+      let bug_color: &str = match bug.species {
+        Species::Cruiser => self.bug_color_cruiser,
+        Species::Normal => self.bug_color_normal,
+        Species::Twirlie => self.bug_color_twirler,
       };
-      context.set_fill_style(bug_color);
+      context.set_fill_style_str(bug_color);
       let index = bug.position;
       let x: f64 = to_x_from_index(index) as f64;
       let y: f64 = to_y_from_index(index) as f64;

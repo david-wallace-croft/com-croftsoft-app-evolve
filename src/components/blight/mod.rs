@@ -2,10 +2,10 @@
 //! - Component for the blight button
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-14
-//! - Updated: 2023-09-02
+//! - Updated: 2026-09-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -30,10 +30,7 @@ impl BlightComponent {
     if self.unbounded_receiver.is_none() {
       return false;
     }
-    matches!(
-      self.unbounded_receiver.as_mut().unwrap().try_next(),
-      Ok(Some(()))
-    )
+    matches!(self.unbounded_receiver.as_mut().unwrap().try_recv(), Ok(()))
   }
 
   pub fn new(

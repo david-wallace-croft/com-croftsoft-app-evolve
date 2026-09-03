@@ -2,10 +2,10 @@
 //! - Flora Painter for CroftSoft Evolve
 //!
 //! # Metadata
-//! - Copyright: &copy; 2022-2023 [`CroftSoft Inc`]
+//! - Copyright: &copy; 2022-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-12-10
-//! - Updated: 2023-09-02
+//! - Updated: 2026-09-02
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -17,12 +17,13 @@ use crate::models::flora::Flora;
 use com_croftsoft_lib_role::Painter;
 use core::cell::RefCell;
 use std::rc::Rc;
-use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
+
+const FILL_STYLE_GREEN: &str = "green";
 
 pub struct FloraPainter {
   context: Rc<RefCell<CanvasRenderingContext2d>>,
-  fill_style: JsValue,
+  fill_style: &'static str,
   flora: Rc<RefCell<Flora>>,
   flora_height: f64,
   flora_width: f64,
@@ -37,12 +38,11 @@ impl FloraPainter {
     scale_x: f64,
     scale_y: f64,
   ) -> Self {
-    let fill_style = JsValue::from_str("green");
     let flora_height = (PAINT_SCALE * scale_y).trunc();
     let flora_width = (PAINT_SCALE * scale_x).trunc();
     Self {
       context,
-      fill_style,
+      fill_style: FILL_STYLE_GREEN,
       flora_height,
       flora_width,
       flora,
@@ -55,7 +55,7 @@ impl FloraPainter {
 impl Painter for FloraPainter {
   fn paint(&self) {
     let context = self.context.borrow();
-    context.set_fill_style(&self.fill_style);
+    context.set_fill_style_str(self.fill_style);
     self
       .flora
       .borrow()
