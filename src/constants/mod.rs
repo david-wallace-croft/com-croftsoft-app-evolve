@@ -5,7 +5,7 @@
 //! - Copyright: &copy; 2022-2026 [`CroftSoft Inc`]
 //! - Author: [`David Wallace Croft`]
 //! - Created: 2022-11-27
-//! - Updated: 2026-08-23
+//! - Updated: 2026-09-05
 //!
 //! [`CroftSoft Inc`]: https://www.croftsoft.com/
 //! [`David Wallace Croft`]: https://www.croftsoft.com/people/david/
@@ -13,8 +13,11 @@
 
 use crate::engine::configuration::Configuration;
 
-pub static INFO: &str =
-  "CroftSoft Evolve v0.12.0 Copyright 2022-2026 CroftSoft Inc";
+pub const INFO: &str = concat!(
+  "CroftSoft Evolve v",
+  env!("CARGO_PKG_VERSION"),
+  " \u{00a9} 2022-2026 CroftSoft Inc",
+);
 
 pub const BABY_ENERGY: usize = 10;
 pub const BIRTH_ENERGY: usize = 30;
